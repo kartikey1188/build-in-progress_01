@@ -40,7 +40,7 @@ func CreateUser(storage storage.Storage) gin.HandlerFunc {
 		user.IsVerified = false
 		user.IsFlagged = false
 
-		// Fields the user needs to pass at the frontend: Email, PasswordHash, FullName, PhoneNumber, PhoneNumber (Optional), Address (Optional), ProfileImage (Optional), Role (should be one of Business, Collector, Admin or Government)
+		// Fields the user needs to pass at the frontend: Email, PasswordHash, FullName, PhoneNumber (Optional), Address (Optional), ProfileImage (Optional), Role (should be one of Business, Collector, Admin or Government)
 
 		lastId, err := storage.CreateUser(user)
 		if err != nil {

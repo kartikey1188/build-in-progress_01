@@ -29,20 +29,22 @@ paths:
 
         **Required Frontend Fields:**
         - email
-        - passwordHash
-        - fullName
-        - phoneNumber
+        - password_hash
+        - full_name
+        - phone_number
         - role (`Business`, `Collector`, `Admin`, `Government`)
 
         **Optional Fields:**
         - address
-        - profileImage
+        - profile_image
+        - phone_number
 
         **Server-side Defaults:**
-        - `isActive`: true
-        - `isVerified`: false
-        - `isFlagged`: false
+        - `is_active`: true
+        - `is_verified`: false
+        - `is_flagged`: false
         - `registration`: current timestamp
+        - `last_login`
       requestBody:
         required: true
         content:
@@ -51,22 +53,21 @@ paths:
               type: object
               required:
                 - email
-                - passwordHash
-                - fullName
-                - phoneNumber
+                - password_hash
+                - full_name
                 - role
               properties:
                 email:
                   type: string
                   format: email
                   example: "user@example.com"
-                passwordHash:
+                password_hash:
                   type: string
                   example: "mySecurePassword123!"
-                fullName:
+                full_name:
                   type: string
                   example: "John Doe"
-                phoneNumber:
+                phone_number:
                   type: string
                   example: "+1234567890"
                 role:
@@ -76,7 +77,7 @@ paths:
                 address:
                   type: string
                   example: "123 Main Street, Springfield"
-                profileImage:
+                profile_image:
                   type: string
                   example: "https://cdn.example.com/image.jpg"
       responses:
