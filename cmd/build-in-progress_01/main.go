@@ -14,8 +14,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kartikey1188/build-in-progress_01/internal/config"
-	"github.com/kartikey1188/build-in-progress_01/internal/http/handlers/handleuser"
-	"github.com/kartikey1188/build-in-progress_01/internal/http/handlers/home"
+	"github.com/kartikey1188/build-in-progress_01/internal/http/routes"
 	"github.com/kartikey1188/build-in-progress_01/internal/storage/databaseone"
 )
 
@@ -33,13 +32,11 @@ func main() {
 
 	slog.Info("storage initialized", slog.String("env", cfg.Env), slog.String("version", "1.0.0"))
 
-	// setting up router
+	// setting up router and routes
 
 	router := gin.Default()
 
-	router.GET("/", home.Home())
-	router.POST("/auth/register", handleuser.CreateUser(storage))
-	router.POST("/auth/login", handleuser.Login(storage))
+	routes.SetupRoutes(router, storage)
 
 	//setting up server (with graceful shutdown)
 
