@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Authentication Service - API Endpoints
+  title: API Endpoints
   description: |
 
     **Description:**
