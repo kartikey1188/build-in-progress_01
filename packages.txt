@@ -1,0 +1,30 @@
+Packages Installed:
+
+1) pgx - PostgreSQL Driver and Toolkit:
+    go get github.com/jackc/pgx/v5
+
+2) Clean Env:
+    go get -u github.com/ilyakaznacheev/cleanenv
+
+3) godotenv:
+    go get github.com/joho/godotenv   
+
+4) gin:
+    go get -u github.com/gin-gonic/gin
+
+5) bcrypt
+    go get -u golang.org/x/crypto/bcrypt
+
+6) jwt-go
+    go get -u github.com/golang-jwt/jwt/v5
+
+7) swagger UI handler
+    go get -u github.com/swaggo/http-swagger
+
+
+
+
+
+
+
+

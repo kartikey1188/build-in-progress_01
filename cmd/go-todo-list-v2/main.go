@@ -1,0 +1,81 @@
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"log/slog"
+	"net/http"
+	"os"
+	"os/signal"
+	"strconv"
+	"syscall"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/kartikey1188/build-in-progress_01/internal/config"
+	"github.com/kartikey1188/build-in-progress_01/internal/http/handlers/handleuser"
+	"github.com/kartikey1188/build-in-progress_01/internal/http/handlers/home"
+	"github.com/kartikey1188/build-in-progress_01/internal/storage/databaseone"
+)
+
+func main() {
+	// loading config
+
+	cfg := config.MustLoad()
+
+	// setting up database
+
+	storage, err := databaseone.New(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	slog.Info("storage initialized", slog.String("env", cfg.Env), slog.String("version", "1.0.0"))
+
+	// setting up router
+
+	router := gin.Default()
+
+	router.GET("/", home.Home())
+	router.POST("/auth/register", handleuser.CreateUser(storage))
+	router.POST("/auth/login", handleuser.Login(storage))
+
+	//setting up server (with graceful shutdown)
+
+	port, err := strconv.Atoi(cfg.Port)
+	if err != nil {
+		log.Fatal("Invalid PORT value")
+	}
+
+	server := http.Server{
+		Addr:    fmt.Sprintf("localhost:%d", port),
+		Handler: router,
+	}
+
+	slog.Info("server started", slog.String("address", fmt.Sprintf("localhost:%d", port)))
+
+	done := make(chan os.Signal, 1)
+
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		err := server.ListenAndServe()
+		if err != nil {
+			log.Fatal("failed to start server")
+		}
+	}()
+
+	<-done
+
+	slog.Info("shutting down the server")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := server.Shutdown(ctx); err != nil {
+		slog.Error("Failed to shutdown server", slog.String("error", err.Error()))
+	}
+
+	slog.Info("sever shutdown successfully")
+}

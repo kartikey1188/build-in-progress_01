@@ -1,0 +1,193 @@
+openapi: 3.0.3
+info:
+  title: Authentication Service - API Endpoints
+  description: |
+
+    **Description:**
+    This document currently specifies the API endpoints provided by the Authentication module, which is responsible for user account creation and login functionalities in the system.
+
+    **Note:**
+    - Passwords are securely hashed using bcrypt before storage.
+    - Each user must belong to one of the following roles: Business, Collector, Admin, or Government.
+  version: 1.0.0
+
+servers:
+  - url: "http://localhost:8080"
+
+tags:
+  - name: Authentication
+    description: Endpoints for user registration and login.
+
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user in the system.
+      tags:
+        - Authentication
+      description: |
+        Creates a new user with the provided credentials and details. This endpoint performs server-side default assignments and password hashing.
+
+        **Required Frontend Fields:**
+        - email
+        - passwordHash
+        - fullName
+        - phoneNumber
+        - role (`Business`, `Collector`, `Admin`, `Government`)
+
+        **Optional Fields:**
+        - address
+        - profileImage
+
+        **Server-side Defaults:**
+        - `isActive`: true
+        - `isVerified`: false
+        - `isFlagged`: false
+        - `registration`: current timestamp
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - passwordHash
+                - fullName
+                - phoneNumber
+                - role
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                passwordHash:
+                  type: string
+                  example: "mySecurePassword123!"
+                fullName:
+                  type: string
+                  example: "John Doe"
+                phoneNumber:
+                  type: string
+                  example: "+1234567890"
+                role:
+                  type: string
+                  enum: [Business, Collector, Admin, Government]
+                  example: "Business"
+                address:
+                  type: string
+                  example: "123 Main Street, Springfield"
+                profileImage:
+                  type: string
+                  example: "https://cdn.example.com/image.jpg"
+      responses:
+        "201":
+          description: User successfully created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  user:
+                    type: integer
+                    description: The newly created user's ID.
+              example:
+                status: "OK"
+                user: 101
+        "400":
+          description: Invalid request body.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid input data"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to hash password"
+
+  /auth/login:
+    post:
+      summary: Authenticate a user and initiate a session.
+      tags:
+        - Authentication
+      description: |
+        Authenticates a user using email and password. If credentials are valid, the user's last login timestamp is updated.
+
+        **Required Fields:**
+        - email
+        - password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                password:
+                  type: string
+                  example: "mySecurePassword123!"
+      responses:
+        "200":
+          description: Login successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  token:
+                    type: string
+                    description: JWT token for authenticated access.
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  user:
+                    type: object
+                    description: User object including details such as ID, name, role, etc.
+              example:
+                status: "OK"
+                token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                user:
+                  userID: 101
+                  fullName: "John Doe"
+                  email: "user@example.com"
+                  role: "Business"
+        "400":
+          description: Missing or invalid credentials in request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Email and password are required"
+        "401":
+          description: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid email or password"
