@@ -124,7 +124,25 @@ func Login(storage storage.Storage) gin.HandlerFunc {
 			c.JSON(http.StatusUnauthorized, response.GeneralError(fmt.Errorf("invalid email or password")))
 			return
 		}
+		var business types.Business
+		var collector types.Collector
 
+		switch user.Role {
+
+		case "Business":
+			business, err = storage.GetBusinessByEmail(loginData.Email)
+			if err != nil {
+				c.JSON(http.StatusUnauthorized, err)
+				return
+			}
+
+		case "Collector":
+			collector, err = storage.GetCollectorByEmail(loginData.Email)
+			if err != nil {
+				c.JSON(http.StatusUnauthorized, err)
+				return
+			}
+		}
 		// Updating last login timestamp
 		user.LastLogin = types.DateTime{Time: time.Now()}
 		storage.UpdateLastLogin(user.UserID, user.LastLogin)
@@ -152,10 +170,19 @@ func Login(storage storage.Storage) gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{
-			"status": "OK",
-			"token":  signedToken,
-			"user":   user,
-		})
+		switch user.Role {
+		case "Business":
+			c.JSON(http.StatusOK, gin.H{
+				"status": "OK",
+				"token":  signedToken,
+				"user":   business,
+			})
+		case "Collector":
+			c.JSON(http.StatusOK, gin.H{
+				"status": "OK",
+				"token":  signedToken,
+				"user":   collector,
+			})
+		}
 	}
 }

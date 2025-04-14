@@ -165,3 +165,78 @@ func (p *Postgres) CreateBusinessUser(user types.Business) (int64, error) {
 	}
 	return id, nil
 }
+
+func (p *Postgres) GetCollectorByEmail(email string) (types.Collector, error) {
+	var collector types.Collector
+	var user types.User
+	var registration, lastLogin, licenseExpiry time.Time
+
+	query := `
+        SELECT 
+            u.user_id, u.email, u.password_hash, u.full_name, u.phone_number,
+            u.address, u.registration_date, u.role, u.is_active, u.profile_image,
+            u.last_login, u.is_verified, u.is_flagged,
+            c.company_name, c.license_number, c.authorized_categories, c.capacity, c.license_expiry
+        FROM users u
+        JOIN collectors c ON u.user_id = c.user_id
+        WHERE u.email = $1
+        LIMIT 1
+    `
+	err := p.Db.QueryRow(query, email).Scan(
+		&user.UserID, &user.Email, &user.PasswordHash, &user.FullName, &user.PhoneNumber,
+		&user.Address, &registration, &user.Role, &user.IsActive, &user.ProfileImage,
+		&lastLogin, &user.IsVerified, &user.IsFlagged,
+		&collector.Company_name, &collector.License_number, &collector.Authorized_categories,
+		&collector.Capacity, &licenseExpiry,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return types.Collector{}, fmt.Errorf("collector not found")
+		}
+		return types.Collector{}, fmt.Errorf("query error: %w", err)
+	}
+
+	user.Registration = types.Date{Time: registration}
+	user.LastLogin = types.DateTime{Time: lastLogin}
+	collector.User = user
+	collector.License_expiry = types.Date{Time: licenseExpiry}
+
+	return collector, nil
+}
+
+func (p *Postgres) GetBusinessByEmail(email string) (types.Business, error) {
+	var business types.Business
+	var user types.User
+	var registration, lastLogin time.Time
+
+	query := `
+        SELECT 
+            u.user_id, u.email, u.password_hash, u.full_name, u.phone_number,
+            u.address, u.registration_date, u.role, u.is_active, u.profile_image,
+            u.last_login, u.is_verified, u.is_flagged,
+            b.business_name, b.business_type, b.registration_number, b.gst_id, b.business_address
+        FROM users u
+        JOIN businesses b ON u.user_id = b.user_id
+        WHERE u.email = $1
+        LIMIT 1
+    `
+	err := p.Db.QueryRow(query, email).Scan(
+		&user.UserID, &user.Email, &user.PasswordHash, &user.FullName, &user.PhoneNumber,
+		&user.Address, &registration, &user.Role, &user.IsActive, &user.ProfileImage,
+		&lastLogin, &user.IsVerified, &user.IsFlagged,
+		&business.Business_name, &business.Business_type, &business.Registration_number,
+		&business.Gst_id, &business.Business_address,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return types.Business{}, fmt.Errorf("business not found")
+		}
+		return types.Business{}, fmt.Errorf("query error: %w", err)
+	}
+
+	user.Registration = types.Date{Time: registration}
+	user.LastLogin = types.DateTime{Time: lastLogin}
+	business.User = user
+
+	return business, nil
+}

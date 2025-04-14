@@ -7,7 +7,7 @@ info:
 
     **Note:**
     - Passwords are securely hashed using bcrypt before storage.
-    - Each user must belong to one of the following roles: Business, Collector, Admin, or Government.
+    - User role is determined by the registration endpoint used (Business/Collector)
   version: 1.0.0
 
 servers:
@@ -20,18 +20,18 @@ tags:
 paths:
   /auth/register/business:
     post:
-      summary: Register a new Business user in the system.
+      summary: Register a new business user
       tags:
         - Authentication
       description: |
-        Creates a new Business user with the provided credentials and details. This endpoint performs server-side default assignments and password hashing.
+        Creates a new business user with provided credentials and details. 
+        Server-side handles role assignment, password hashing, and default values.
 
-        **Required Frontend Fields:**
+        **Required Fields:**
+        - role
         - email
         - password_hash
         - full_name
-        - phone_number
-        - role (`Business`)
         - business_name
         - business_type
         - registration_number
@@ -39,16 +39,15 @@ paths:
         - business_address
 
         **Optional Fields:**
+        - phone_number
         - address
         - profile_image
-        - phone_number
 
         **Server-side Defaults:**
         - is_active: true
         - is_verified: false
         - is_flagged: false
         - registration: current timestamp
-        - last_login
       requestBody:
         required: true
         content:
@@ -56,57 +55,57 @@ paths:
             schema:
               type: object
               required:
+                - role
                 - email
                 - password_hash
                 - full_name
-                - role
                 - business_name
                 - business_type
                 - registration_number
                 - gst_id
                 - business_address
               properties:
+                role:
+                  type: string
+                  enum: [Business]
+                  example: "Business"
                 email:
                   type: string
                   format: email
-                  example: "user@example.com"
+                  example: "business@example.com"
                 password_hash:
                   type: string
-                  example: "mySecurePassword123!"
+                  example: "businessPass123!"
                 full_name:
                   type: string
-                  example: "John Doe"
-                phone_number:
-                  type: string
-                  example: "+1234567890"
-                role:
-                  type: string
-                  enum: [Business, Collector, Admin, Government]
-                  example: "Business"
+                  example: "Business Owner"
                 business_name:
                   type: string
-                  example: "John's Business"
+                  example: "Eco-Friendly Packaging Co."
                 business_type:
                   type: string
-                  example: "Retail"
+                  example: "Manufacturing"
                 registration_number:
                   type: string
-                  example: "1234567890"
+                  example: "REG-123456"
                 gst_id:
                   type: string
-                  example: "GSTIN1234567"
+                  example: "GSTIN-789456"
                 business_address:
                   type: string
-                  example: "123 Main Street, Springfield"
+                  example: "456 Industry Park, Mumbai"
+                phone_number:
+                  type: string
+                  example: "+919876543210"
                 address:
                   type: string
-                  example: "123 Main Street, Springfield"
+                  example: "123 Business Street"
                 profile_image:
                   type: string
-                  example: "https://cdn.example.com/image.jpg"
+                  example: "https://cdn.example.com/business.jpg"
       responses:
         "201":
-          description: User successfully created.
+          description: Business user created successfully
           content:
             application/json:
               schema:
@@ -117,45 +116,29 @@ paths:
                     example: "OK"
                   user:
                     type: integer
-                    description: The newly created user's ID.
+                    description: The newly created user's ID
               example:
                 status: "OK"
                 user: 101
         "400":
-          description: Invalid request body.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Invalid input data"
+          description: Invalid request body
         "500":
-          description: Internal server error.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Failed to hash password"
+          description: Internal server error
 
   /auth/register/collector:
     post:
-      summary: Register a new Collector user in the system.
+      summary: Register a new waste collector user
       tags:
         - Authentication
       description: |
-        Creates a new Collector user with the provided credentials and details. This endpoint performs server-side default assignments and password hashing.
+        Creates a new waste collector user with provided credentials and details.
+        Server-side handles role assignment, password hashing, and default values.
 
-        **Required Frontend Fields:**
+        **Required Fields:**
+        - role
         - email
         - password_hash
         - full_name
-        - phone_number
-        - role (`Collector`)
         - company_name
         - license_number
         - authorized_categories
@@ -163,16 +146,15 @@ paths:
         - license_expiry
 
         **Optional Fields:**
+        - phone_number
         - address
         - profile_image
-        - phone_number
 
         **Server-side Defaults:**
         - is_active: true
         - is_verified: false
         - is_flagged: false
         - registration: current timestamp
-        - last_login
       requestBody:
         required: true
         content:
@@ -180,58 +162,58 @@ paths:
             schema:
               type: object
               required:
+                - role
                 - email
                 - password_hash
                 - full_name
-                - role
                 - company_name
                 - license_number
                 - authorized_categories
                 - capacity
                 - license_expiry
               properties:
+                role:
+                  type: string
+                  enum: [Collector]
+                  example: "Collector"
                 email:
                   type: string
                   format: email
-                  example: "user@example.com"
+                  example: "collector@example.com"
                 password_hash:
                   type: string
-                  example: "mySecurePassword123!"
+                  example: "collectorPass123!"
                 full_name:
                   type: string
-                  example: "John Doe"
-                phone_number:
-                  type: string
-                  example: "+1234567890"
-                role:
-                  type: string
-                  enum: [Business, Collector, Admin, Government]
-                  example: "Collector"
+                  example: "Waste Collector"
                 company_name:
                   type: string
-                  example: "John's Collectors"
+                  example: "Green Waste Management"
                 license_number:
                   type: string
-                  example: "LIC123456"
+                  example: "LIC-789456"
                 authorized_categories:
                   type: string
-                  example: "Electronics, Appliances"
+                  example: "Plastic,Paper,Metal"
                 capacity:
                   type: integer
-                  example: 100
+                  example: 5000
                 license_expiry:
                   type: string
                   format: date
                   example: "2025-12-31"
+                phone_number:
+                  type: string
+                  example: "+919876543210"
                 address:
                   type: string
-                  example: "123 Main Street, Springfield"
+                  example: "789 Recycling Lane"
                 profile_image:
                   type: string
-                  example: "https://cdn.example.com/image.jpg"
+                  example: "https://cdn.example.com/collector.jpg"
       responses:
         "201":
-          description: User successfully created.
+          description: Collector user created successfully
           content:
             application/json:
               schema:
@@ -242,38 +224,23 @@ paths:
                     example: "OK"
                   user:
                     type: integer
-                    description: The newly created user's ID.
+                    description: The newly created user's ID
               example:
                 status: "OK"
                 user: 102
         "400":
-          description: Invalid request body.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Invalid input data"
+          description: Invalid request body
         "500":
-          description: Internal server error.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Failed to hash password"
+          description: Internal server error
 
   /auth/login:
     post:
-      summary: Authenticate a user and initiate a session.
+      summary: Authenticate a user and initiate a session
       tags:
         - Authentication
       description: |
-        Authenticates a user using email and password. If credentials are valid, the user's last login timestamp is updated.
+        Authenticates a user using email and password. If credentials are valid, 
+        the user's last login timestamp is updated.
 
         **Required Fields:**
         - email
@@ -297,7 +264,7 @@ paths:
                   example: "mySecurePassword123!"
       responses:
         "200":
-          description: Login successful.
+          description: Login successful
           content:
             application/json:
               schema:
@@ -308,36 +275,18 @@ paths:
                     example: "OK"
                   token:
                     type: string
-                    description: JWT token for authenticated access.
                     example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                   user:
                     type: object
-                    description: User object including details such as ID, name, role, etc.
               example:
                 status: "OK"
                 token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                 user:
                   userID: 101
-                  fullName: "John Doe"
-                  email: "user@example.com"
+                  fullName: "Business Owner"
+                  email: "business@example.com"
                   role: "Business"
         "400":
-          description: Missing or invalid credentials in request.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Email and password are required"
+          description: Missing or invalid credentials
         "401":
-          description: Invalid login credentials.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Invalid email or password"
+          description: Invalid login credentials
