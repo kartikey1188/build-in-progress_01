@@ -21,6 +21,24 @@ type User struct {
 	IsFlagged    bool     `json:"is_flagged"`
 }
 
+type Business struct {
+	User
+	Business_name       string `json:"business_name" binding:"required"`
+	Business_type       string `json:"business_type" binding:"required"`
+	Registration_number string `json:"registration_number" binding:"required"`
+	Gst_id              string `json:"gst_id" binding:"required"`
+	Business_address    string `json:"business_address" binding:"required"`
+}
+
+type Collector struct {
+	User
+	Company_name          string `json:"company_name" binding:"required"`
+	License_number        string `json:"license_number" binding:"required"`
+	Authorized_categories string `json:"authorized_categories" binding:"required"`
+	Capacity              int64  `json:"capacity" binding:"required"`
+	License_expiry        Date   `json:"license_expiry" binding:"required"`
+}
+
 type Date struct {
 	time.Time
 }

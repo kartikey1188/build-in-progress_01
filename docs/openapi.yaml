@@ -2,7 +2,6 @@ openapi: 3.0.3
 info:
   title: API Endpoints
   description: |
-
     **Description:**
     This document currently specifies the API endpoints provided by the Authentication module, which is responsible for user account creation and login functionalities in the system.
 
@@ -19,20 +18,25 @@ tags:
     description: Endpoints for user registration and login.
 
 paths:
-  /auth/register:
+  /auth/register/business:
     post:
-      summary: Register a new user in the system.
+      summary: Register a new Business user in the system.
       tags:
         - Authentication
       description: |
-        Creates a new user with the provided credentials and details. This endpoint performs server-side default assignments and password hashing.
+        Creates a new Business user with the provided credentials and details. This endpoint performs server-side default assignments and password hashing.
 
         **Required Frontend Fields:**
         - email
         - password_hash
         - full_name
         - phone_number
-        - role (`Business`, `Collector`, `Admin`, `Government`)
+        - role (`Business`)
+        - business_name
+        - business_type
+        - registration_number
+        - gst_id
+        - business_address
 
         **Optional Fields:**
         - address
@@ -56,6 +60,11 @@ paths:
                 - password_hash
                 - full_name
                 - role
+                - business_name
+                - business_type
+                - registration_number
+                - gst_id
+                - business_address
               properties:
                 email:
                   type: string
@@ -74,6 +83,21 @@ paths:
                   type: string
                   enum: [Business, Collector, Admin, Government]
                   example: "Business"
+                business_name:
+                  type: string
+                  example: "John's Business"
+                business_type:
+                  type: string
+                  example: "Retail"
+                registration_number:
+                  type: string
+                  example: "1234567890"
+                gst_id:
+                  type: string
+                  example: "GSTIN1234567"
+                business_address:
+                  type: string
+                  example: "123 Main Street, Springfield"
                 address:
                   type: string
                   example: "123 Main Street, Springfield"
@@ -97,6 +121,131 @@ paths:
               example:
                 status: "OK"
                 user: 101
+        "400":
+          description: Invalid request body.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid input data"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to hash password"
+
+  /auth/register/collector:
+    post:
+      summary: Register a new Collector user in the system.
+      tags:
+        - Authentication
+      description: |
+        Creates a new Collector user with the provided credentials and details. This endpoint performs server-side default assignments and password hashing.
+
+        **Required Frontend Fields:**
+        - email
+        - password_hash
+        - full_name
+        - phone_number
+        - role (`Collector`)
+        - company_name
+        - license_number
+        - authorized_categories
+        - capacity
+        - license_expiry
+
+        **Optional Fields:**
+        - address
+        - profile_image
+        - phone_number
+
+        **Server-side Defaults:**
+        - `is_active`: true
+        - `is_verified`: false
+        - `is_flagged`: false
+        - `registration`: current timestamp
+        - `last_login`
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password_hash
+                - full_name
+                - role
+                - company_name
+                - license_number
+                - authorized_categories
+                - capacity
+                - license_expiry
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                password_hash:
+                  type: string
+                  example: "mySecurePassword123!"
+                full_name:
+                  type: string
+                  example: "John Doe"
+                phone_number:
+                  type: string
+                  example: "+1234567890"
+                role:
+                  type: string
+                  enum: [Business, Collector, Admin, Government]
+                  example: "Collector"
+                company_name:
+                  type: string
+                  example: "John's Collectors"
+                license_number:
+                  type: string
+                  example: "LIC123456"
+                authorized_categories:
+                  type: string
+                  example: "Electronics, Appliances"
+                capacity:
+                  type: integer
+                  example: 100
+                license_expiry:
+                  type: string
+                  format: date
+                  example: "2025-12-31"
+                address:
+                  type: string
+                  example: "123 Main Street, Springfield"
+                profile_image:
+                  type: string
+                  example: "https://cdn.example.com/image.jpg"
+      responses:
+        "201":
+          description: User successfully created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  user:
+                    type: integer
+                    description: The newly created user's ID.
+              example:
+                status: "OK"
+                user: 102
         "400":
           description: Invalid request body.
           content:

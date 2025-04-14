@@ -7,7 +7,8 @@ type Storage interface {
 }
 
 type LoginAndRegister interface {
-	CreateUser(user types.User) (int64, error)
+	CreateCollectorUser(user types.Collector) (int64, error)
+	CreateBusinessUser(user types.Business) (int64, error)
 	GetUserByEmail(email string) (types.User, error)
 	UpdateLastLogin(userID int64, lastLogin types.DateTime) error
 }
