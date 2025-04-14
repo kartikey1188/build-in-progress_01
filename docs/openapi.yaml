@@ -44,11 +44,11 @@ paths:
         - phone_number
 
         **Server-side Defaults:**
-        - `is_active`: true
-        - `is_verified`: false
-        - `is_flagged`: false
-        - `registration`: current timestamp
-        - `last_login`
+        - is_active: true
+        - is_verified: false
+        - is_flagged: false
+        - registration: current timestamp
+        - last_login
       requestBody:
         required: true
         content:
@@ -168,11 +168,11 @@ paths:
         - phone_number
 
         **Server-side Defaults:**
-        - `is_active`: true
-        - `is_verified`: false
-        - `is_flagged`: false
-        - `registration`: current timestamp
-        - `last_login`
+        - is_active: true
+        - is_verified: false
+        - is_flagged: false
+        - registration: current timestamp
+        - last_login
       requestBody:
         required: true
         content:

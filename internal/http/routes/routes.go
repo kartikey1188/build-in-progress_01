@@ -9,8 +9,8 @@ import (
 
 func SetupRoutes(router *gin.Engine, storage storage.Storage) {
 	router.GET("/", home.Home())
-	router.POST("/auth/register/business", handleuser.CreateUser(storage))
-	router.POST("/auth/register/collector", handleuser.CreateUser(storage))
+	router.POST("/auth/register/business", handleuser.CreateBusinessUser(storage))   // Changed
+	router.POST("/auth/register/collector", handleuser.CreateCollectorUser(storage)) // Changed
 	router.POST("/auth/login", handleuser.Login(storage))
 	router.StaticFile("/docs/openapi.yaml", "./docs/openapi.yaml")
 }

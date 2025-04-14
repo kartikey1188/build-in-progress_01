@@ -15,85 +15,52 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func CreateUser(storage storage.Storage) gin.HandlerFunc {
+func CreateBusinessUser(storage storage.Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var roleCheck struct {
-			Role string `json:"role" binding:"required"`
-		}
-
-		// Checking if role is provided in the request body
-		if err := c.ShouldBindJSON(&roleCheck); err != nil {
-			c.JSON(http.StatusBadRequest, response.GeneralError(fmt.Errorf("Role is required")))
+		var business types.Business
+		if err := c.ShouldBindJSON(&business); err != nil {
+			c.JSON(http.StatusBadRequest, response.GeneralError(err))
 			return
 		}
 
-		// Processing based on role
-		switch roleCheck.Role {
-		case "Business":
-			if err := CreateBusinessUser(c, storage); err != nil {
-				return
-			}
-		case "Collector":
-			if err := CreateCollectorUser(c, storage); err != nil {
-				return
-			}
-		default:
-			c.JSON(http.StatusBadRequest, response.GeneralError(fmt.Errorf("Invalid role")))
+		if err := setUserDefaults(&business); err != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
 			return
 		}
+
+		lastId, err := storage.CreateBusinessUser(business)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+
+		slog.Info("Business user created successfully", slog.String("User ID", fmt.Sprint(lastId)))
+		c.JSON(http.StatusCreated, gin.H{"status": "OK", "user": lastId})
 	}
 }
 
-// Helper function for creating a Business
-func CreateBusinessUser(c *gin.Context, storage storage.Storage) error {
-	var business types.Business
-	if err := c.ShouldBindJSON(&business); err != nil {
-		c.JSON(http.StatusBadRequest, response.GeneralError(err))
-		return err
+func CreateCollectorUser(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var collector types.Collector
+		if err := c.ShouldBindJSON(&collector); err != nil {
+			c.JSON(http.StatusBadRequest, response.GeneralError(err))
+			return
+		}
+
+		if err := setUserDefaults(&collector); err != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+
+		lastId, err := storage.CreateCollectorUser(collector)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+
+		slog.Info("Collector user created successfully", slog.String("User ID", fmt.Sprint(lastId)))
+		c.JSON(http.StatusCreated, gin.H{"status": "OK", "user": lastId})
 	}
-
-	// Hashing password and setting default values
-	if err := setUserDefaults(&business); err != nil {
-		c.JSON(http.StatusInternalServerError, response.GeneralError(err))
-		return err
-	}
-
-	// Saving user in database
-	lastId, err := storage.CreateBusinessUser(business)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.GeneralError(err))
-		return err
-	}
-
-	slog.Info("Business user created successfully", slog.String("User ID", fmt.Sprint(lastId)))
-	c.JSON(http.StatusCreated, gin.H{"status": "OK", "user": lastId})
-	return nil
-}
-
-// Helper function for creating a Collector
-func CreateCollectorUser(c *gin.Context, storage storage.Storage) error {
-	var collector types.Collector
-	if err := c.ShouldBindJSON(&collector); err != nil {
-		c.JSON(http.StatusBadRequest, response.GeneralError(err))
-		return err
-	}
-
-	// Hashing password and setting default values
-	if err := setUserDefaults(&collector); err != nil {
-		c.JSON(http.StatusInternalServerError, response.GeneralError(err))
-		return err
-	}
-
-	// Saving user in database
-	lastId, err := storage.CreateCollectorUser(collector)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.GeneralError(err))
-		return err
-	}
-
-	slog.Info("Collector user created successfully", slog.String("User ID", fmt.Sprint(lastId)))
-	c.JSON(http.StatusCreated, gin.H{"status": "OK", "user": lastId})
-	return nil
 }
 
 // Helper function to hash the password and set default values
