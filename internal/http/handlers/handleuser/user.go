@@ -115,7 +115,7 @@ func Login(storage storage.Storage) gin.HandlerFunc {
 
 		user, err := storage.GetUserByEmail(loginData.Email)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, response.GeneralError(fmt.Errorf("invalid email or password")))
+			c.JSON(http.StatusUnauthorized, response.GeneralError(fmt.Errorf("User with this email not found")))
 			return
 		}
 

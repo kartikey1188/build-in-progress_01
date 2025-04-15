@@ -6,6 +6,7 @@ import (
 	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/kartikey1188/build-in-progress_01/internal/config"
 	"github.com/kartikey1188/build-in-progress_01/internal/types"
@@ -33,6 +34,13 @@ func New(cfg *config.Config) (*Postgres, error) {
 }
 
 func createTables(db *sql.DB) error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
+	if err != nil {
+		return fmt.Errorf("failed to hash admin password: %w", err)
+	}
+
+	insertAdminQuery := fmt.Sprintf("INSERT INTO users (email, password_hash, full_name, role, is_active, is_verified, is_flagged, registration_date, last_login, phone_number, address, profile_image) VALUES ('admin@gmail.com', '%s', 'Application Admin', 'Admin', TRUE, TRUE, FALSE, CURRENT_DATE, CURRENT_TIMESTAMP, '10000000', 'N/A', 'default.jpg') ON CONFLICT (email) DO NOTHING", string(hashedPassword))
+
 	tables := []string{
 		`CREATE TABLE IF NOT EXISTS users (
 			user_id SERIAL PRIMARY KEY,
@@ -49,19 +57,7 @@ func createTables(db *sql.DB) error {
 			is_verified BOOLEAN,
 			is_flagged BOOLEAN
 		)`,
-		`INSERT INTO users (
-			email, password_hash, full_name, role, is_active, is_verified, is_flagged, registration_date, last_login
-		) VALUES (
-		 	'admincontrols@gmail.com', 
-			'admin123',
-			'Application Admin',
-			'Admin',
-			TRUE,
-			TRUE,
-			FALSE,
-			CURRENT_DATE,
-			CURRENT_TIMESTAMP
-		) ON CONFLICT (email) DO NOTHING`,
+		insertAdminQuery,
 		`CREATE TABLE IF NOT EXISTS businesses (
 			user_id INTEGER PRIMARY KEY REFERENCES users(user_id),
 			business_name TEXT NOT NULL,
