@@ -16,6 +16,8 @@ servers:
 tags:
   - name: Authentication
     description: Endpoints for user registration and login.
+  - name: Admin
+    description: Endpoints for administrative user management
 
 paths:
   /auth/register/business:
@@ -290,3 +292,168 @@ paths:
           description: Missing or invalid credentials
         "401":
           description: Invalid login credentials
+  /admin/verify/{id}:
+    put:
+      summary: Verify a user account
+      tags: [Admin]
+      description: |
+        Marks a user as verified (admin-only).
+        Requires valid JWT token with Admin role.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User ID to verify
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User verified successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  Verified User ID:
+                    type: string
+                    example: "123"
+              example:
+                status: "OK"
+                Verified User ID: "123"
+        "401":
+          description: Unauthorized (missing/invalid token)
+        "403":
+          description: Forbidden (non-admin user)
+        "500":
+          description: Internal server error
+
+  /admin/unverify/{id}:
+    put:
+      summary: Unverify a user account
+      tags: [Admin]
+      description: |
+        Removes verified status from a user (admin-only).
+        Requires valid JWT token with Admin role.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User ID to unverify
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User unverified successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  Unverified User ID:
+                    type: string
+                    example: "123"
+              example:
+                status: "OK"
+                Unverified User ID: "123"
+        "401":
+          description: Unauthorized (missing/invalid token)
+        "403":
+          description: Forbidden (non-admin user)
+        "500":
+          description: Internal server error
+
+  /admin/flag/{id}:
+    put:
+      summary: Flag a user account
+      tags: [Admin]
+      description: |
+        Flags a user and deactivates their account (admin-only).
+        Requires valid JWT token with Admin role.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User ID to flag
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User flagged successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  Flagged User ID:
+                    type: string
+                    example: "123"
+              example:
+                status: "OK"
+                Flagged User ID: "123"
+        "401":
+          description: Unauthorized (missing/invalid token)
+        "403":
+          description: Forbidden (non-admin user)
+        "500":
+          description: Internal server error
+
+  /admin/unflag/{id}:
+    put:
+      summary: Unflag a user account
+      tags: [Admin]
+      description: |
+        Removes flag from a user and reactivates account (admin-only).
+        Requires valid JWT token with Admin role.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User ID to unflag
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User unflagged successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  Unflagged User ID:
+                    type: string
+                    example: "123"
+              example:
+                status: "OK"
+                Unflagged User ID: "123"
+        "401":
+          description: Unauthorized (missing/invalid token)
+        "403":
+          description: Forbidden (non-admin user)
+        "500":
+          description: Internal server error
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

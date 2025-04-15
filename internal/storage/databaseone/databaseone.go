@@ -49,6 +49,19 @@ func createTables(db *sql.DB) error {
 			is_verified BOOLEAN,
 			is_flagged BOOLEAN
 		)`,
+		`INSERT INTO users (
+			email, password_hash, full_name, role, is_active, is_verified, is_flagged, registration_date, last_login
+		) VALUES (
+		 	'admincontrols@gmail.com', 
+			'admin123',
+			'Application Admin',
+			'Admin',
+			TRUE,
+			TRUE,
+			FALSE,
+			CURRENT_DATE,
+			CURRENT_TIMESTAMP
+		) ON CONFLICT (email) DO NOTHING`,
 		`CREATE TABLE IF NOT EXISTS businesses (
 			user_id INTEGER PRIMARY KEY REFERENCES users(user_id),
 			business_name TEXT NOT NULL,
@@ -239,4 +252,32 @@ func (p *Postgres) GetBusinessByEmail(email string) (types.Business, error) {
 	business.User = user
 
 	return business, nil
+}
+
+func (p *Postgres) GetUserById(userID int64) (types.User, error) {
+	var user types.User
+	var registration, lastLogin time.Time
+
+	err := p.Db.QueryRow(`
+		SELECT user_id, email, password_hash, full_name, phone_number,
+			address, registration_date, role, is_active, profile_image,
+			last_login, is_verified, is_flagged
+		FROM users
+		WHERE user_id = $1
+		LIMIT 1`, userID,
+	).Scan(
+		&user.UserID, &user.Email, &user.PasswordHash, &user.FullName, &user.PhoneNumber,
+		&user.Address, &registration, &user.Role, &user.IsActive, &user.ProfileImage,
+		&lastLogin, &user.IsVerified, &user.IsFlagged,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return types.User{}, fmt.Errorf("user not found")
+		}
+		return types.User{}, fmt.Errorf("query error: %w", err)
+	}
+
+	user.Registration = types.Date{Time: registration}
+	user.LastLogin = types.DateTime{Time: lastLogin}
+	return user, nil
 }

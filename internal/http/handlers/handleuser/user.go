@@ -126,6 +126,7 @@ func Login(storage storage.Storage) gin.HandlerFunc {
 		}
 		var business types.Business
 		var collector types.Collector
+		var admin types.User
 
 		switch user.Role {
 
@@ -142,7 +143,14 @@ func Login(storage storage.Storage) gin.HandlerFunc {
 				c.JSON(http.StatusUnauthorized, err)
 				return
 			}
+
+		case "Admin":
+			admin, err = storage.GetUserByEmail(loginData.Email)
+			if err != nil {
+				c.JSON(http.StatusUnauthorized, err)
+			}
 		}
+
 		// Updating last login timestamp
 		user.LastLogin = types.DateTime{Time: time.Now()}
 		storage.UpdateLastLogin(user.UserID, user.LastLogin)
@@ -182,6 +190,12 @@ func Login(storage storage.Storage) gin.HandlerFunc {
 				"status": "OK",
 				"token":  signedToken,
 				"user":   collector,
+			})
+		case "Admin":
+			c.JSON(http.StatusOK, gin.H{
+				"status": "OK",
+				"token":  signedToken,
+				"user":   admin,
 			})
 		}
 	}
