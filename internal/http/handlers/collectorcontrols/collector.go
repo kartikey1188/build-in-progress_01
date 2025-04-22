@@ -2,26 +2,13 @@ package collectorcontrols
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/kartikey1188/build-in-progress_01/internal/storage"
 	"github.com/kartikey1188/build-in-progress_01/internal/types"
 	"github.com/kartikey1188/build-in-progress_01/internal/utils/response"
 )
-
-func GetCollector(storage storage.Storage) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		id := c.Param("id")
-
-		collector, err := storage.GetCollector(id)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
-			return
-		}
-
-		c.JSON(http.StatusOK, collector)
-	}
-}
 
 func ListCollectors(storage storage.Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -37,13 +24,21 @@ func ListCollectors(storage storage.Storage) gin.HandlerFunc {
 
 func UpdateProfile(storage storage.Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var input types.Collector
+		// Get ID from URL parameter
+		userID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user ID"})
+			return
+		}
+
+		var input types.CollectorUpdate
 		if err := c.BindJSON(&input); err != nil {
 			c.JSON(http.StatusBadRequest, response.GeneralError(err))
 			return
 		}
 
-		id, err := storage.UpdateProfile(input)
+		// Pass the URL parameter ID to the storage layer
+		id, err := storage.UpdateProfile(userID, input)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
 			return

@@ -1,16 +1,17 @@
-package routes
+package check
 
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/kartikey1188/build-in-progress_01/internal/http/handlers/collectorcontrols"
+	"github.com/kartikey1188/build-in-progress_01/internal/http/middleware"
 	"github.com/kartikey1188/build-in-progress_01/internal/storage"
 )
 
 func CollectorRoutes(router *gin.Engine, storage storage.Storage) {
 	collector := router.Group("/collector")
-	// collector.Use(middleware.CollectorOnly())
+	collector.Use(middleware.CollectorOnly())
 
-	collector.PUT("/profile/:id", collectorcontrols.UpdateProfile(storage))
+	collector.PUT("/profile", collectorcontrols.UpdateProfile(storage))
 
 	// Service Categories
 	collector.POST("/service-categories", collectorcontrols.AddServiceCategory(storage))
@@ -34,8 +35,6 @@ func CollectorRoutes(router *gin.Engine, storage storage.Storage) {
 	// collector.PUT("/pickup-requests/:id/assign", collectorcontrols.AssignPickup(storage))
 
 	// Open-access by ID
-	router.GET("/collectors", collectorcontrols.ListCollectors(storage))
-	router.GET("/collectors/:id", collectorcontrols.GetCollectorDetails(storage))
 	router.GET("/collectors/:id/service-categories", collectorcontrols.GetServiceCategories(storage))
 	router.GET("/collectors/:id/vehicles", collectorcontrols.GetCollectorVehicles(storage))
 	router.GET("/collectors/:id/drivers", collectorcontrols.GetCollectorDrivers(storage))
@@ -46,7 +45,7 @@ func CollectorRoutes(router *gin.Engine, storage storage.Storage) {
 
 func DriverRoutes(router *gin.Engine, storage storage.Storage) {
 	driver := router.Group("/driver")
-	// driver.Use(middleware.DriverOnly())
+	driver.Use(middleware.DriverOnly())
 
 	driver.GET("/trips", collectorcontrols.GetDriverTrips(storage))
 	// driver.PUT("/trips/:id/status", collectorcontrols.UpdateTripStatus(storage))

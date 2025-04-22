@@ -3,6 +3,7 @@ package databaseone
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/kartikey1188/build-in-progress_01/internal/types"
@@ -89,50 +90,120 @@ func (p *Postgres) GetCollectors() ([]types.Collector, error) {
 	return collectors, nil
 }
 
-func (p *Postgres) UpdateProfile(collector types.Collector) (int64, error) {
+func (p *Postgres) UpdateProfile(userID int64, collector types.CollectorUpdate) (int64, error) {
 	tx, err := p.Db.Begin()
 	if err != nil {
 		return 0, fmt.Errorf("failed to begin transaction: %w", err)
 	}
 	defer tx.Rollback()
 
-	// Update users table
-	_, err = tx.Exec(`
-		UPDATE users SET
-			full_name = $1,
-			phone_number = $2,
-			address = $3,
-			profile_image = $4
-		WHERE user_id = $5`,
-		collector.FullName, collector.PhoneNumber, collector.Address,
-		collector.ProfileImage, collector.UserID,
-	)
-	if err != nil {
-		return 0, fmt.Errorf("failed to update user: %w", err)
+	// ==================== Users Table Update ====================
+	var userSet []string
+	var userParams []interface{}
+	userParamIndex := 1
+
+	// FullName
+	if collector.FullName != nil {
+		userSet = append(userSet, fmt.Sprintf("full_name = $%d", userParamIndex))
+		userParams = append(userParams, *collector.FullName)
+		userParamIndex++
 	}
 
-	// Update collectors table
-	_, err = tx.Exec(`
-		UPDATE collectors SET
-			company_name = $1,
-			license_number = $2,
-			authorized_categories = $3,
-			capacity = $4,
-			license_expiry = $5
-		WHERE user_id = $6`,
-		collector.Company_name, collector.License_number,
-		collector.Authorized_categories, collector.Capacity,
-		collector.License_expiry.Time, collector.UserID,
-	)
-	if err != nil {
-		return 0, fmt.Errorf("failed to update collector: %w", err)
+	// PhoneNumber
+	if collector.PhoneNumber != nil {
+		userSet = append(userSet, fmt.Sprintf("phone_number = $%d", userParamIndex))
+		userParams = append(userParams, *collector.PhoneNumber)
+		userParamIndex++
 	}
 
+	// Address
+	if collector.Address != nil {
+		userSet = append(userSet, fmt.Sprintf("address = $%d", userParamIndex))
+		userParams = append(userParams, *collector.Address)
+		userParamIndex++
+	}
+
+	// ProfileImage
+	if collector.ProfileImage != nil {
+		userSet = append(userSet, fmt.Sprintf("profile_image = $%d", userParamIndex))
+		userParams = append(userParams, *collector.ProfileImage)
+		userParamIndex++
+	}
+
+	// Execute users update if any fields are set
+	if len(userSet) > 0 {
+		userQuery := fmt.Sprintf(
+			"UPDATE users SET %s WHERE user_id = $%d",
+			strings.Join(userSet, ", "),
+			userParamIndex,
+		)
+		userParams = append(userParams, userID)
+
+		if _, err := tx.Exec(userQuery, userParams...); err != nil {
+			return 0, fmt.Errorf("failed to update user: %w", err)
+		}
+	}
+
+	// ==================== Collectors Table Update ====================
+	var collectorSet []string
+	var collectorParams []interface{}
+	collectorParamIndex := 1
+
+	// CompanyName
+	if collector.CompanyName != nil {
+		collectorSet = append(collectorSet, fmt.Sprintf("company_name = $%d", collectorParamIndex))
+		collectorParams = append(collectorParams, *collector.CompanyName)
+		collectorParamIndex++
+	}
+
+	// LicenseNumber
+	if collector.LicenseNumber != nil {
+		collectorSet = append(collectorSet, fmt.Sprintf("license_number = $%d", collectorParamIndex))
+		collectorParams = append(collectorParams, *collector.LicenseNumber)
+		collectorParamIndex++
+	}
+
+	// AuthorizedCategories
+	if collector.AuthorizedCategories != nil {
+		collectorSet = append(collectorSet, fmt.Sprintf("authorized_categories = $%d", collectorParamIndex))
+		collectorParams = append(collectorParams, *collector.AuthorizedCategories)
+		collectorParamIndex++
+	}
+
+	// Capacity
+	if collector.Capacity != nil {
+		collectorSet = append(collectorSet, fmt.Sprintf("capacity = $%d", collectorParamIndex))
+		collectorParams = append(collectorParams, *collector.Capacity)
+		collectorParamIndex++
+	}
+
+	// LicenseExpiry
+	if collector.LicenseExpiry != nil {
+		collectorSet = append(collectorSet, fmt.Sprintf("license_expiry = $%d", collectorParamIndex))
+		collectorParams = append(collectorParams, collector.LicenseExpiry.Time)
+		collectorParamIndex++
+	}
+
+	// Execute collectors update if any fields are set
+	if len(collectorSet) > 0 {
+		collectorQuery := fmt.Sprintf(
+			"UPDATE collectors SET %s WHERE user_id = $%d",
+			strings.Join(collectorSet, ", "),
+			collectorParamIndex,
+		)
+		collectorParams = append(collectorParams, userID)
+
+		if _, err := tx.Exec(collectorQuery, collectorParams...); err != nil {
+			return 0, fmt.Errorf("failed to update collector: %w", err)
+		}
+	}
+
+	// Commit transaction
 	if err := tx.Commit(); err != nil {
 		return 0, fmt.Errorf("failed to commit transaction: %w", err)
 	}
 
-	return collector.UserID, nil
+	return userID, nil
 }
 
 // Service Category operations

@@ -33,7 +33,7 @@ type AdminControls interface {
 type CollectorOperations interface {
 	GetCollector(id string) (types.Collector, error)
 	GetCollectors() ([]types.Collector, error)
-	UpdateProfile(collector types.Collector) (int64, error)
+	UpdateProfile(userId int64, collector types.CollectorUpdate) (int64, error)
 }
 
 type ServiceCategoryOperations interface {
