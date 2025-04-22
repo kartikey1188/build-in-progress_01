@@ -13,7 +13,7 @@ type User struct {
 	PhoneNumber  string   `json:"phone_number,omitempty"`
 	Address      string   `json:"address,omitempty"`
 	Registration Date     `json:"registration_date"`
-	Role         string   `json:"role" binding:"required,oneof=Business Collector Admin Government"`
+	Role         string   `json:"role" binding:"required,oneof=Business Collector Admin Government Driver"`
 	IsActive     bool     `json:"is_active"`
 	ProfileImage string   `json:"profile_image,omitempty"`
 	LastLogin    DateTime `json:"last_login"`

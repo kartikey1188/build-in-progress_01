@@ -42,6 +42,7 @@ func createTables(db *sql.DB) error {
 	insertAdminQuery := fmt.Sprintf("INSERT INTO users (email, password_hash, full_name, role, is_active, is_verified, is_flagged, registration_date, last_login, phone_number, address, profile_image) VALUES ('admin@gmail.com', '%s', 'Application Admin', 'Admin', TRUE, TRUE, FALSE, CURRENT_DATE, CURRENT_TIMESTAMP, '10000000', 'N/A', 'default.jpg') ON CONFLICT (email) DO NOTHING", string(hashedPassword))
 
 	tables := []string{
+
 		`CREATE TABLE IF NOT EXISTS users (
 			user_id SERIAL PRIMARY KEY,
 			email TEXT UNIQUE NOT NULL,
@@ -73,6 +74,57 @@ func createTables(db *sql.DB) error {
 			authorized_categories TEXT NOT NULL,
 			capacity BIGINT NOT NULL,
 			license_expiry DATE NOT NULL
+		)`,
+
+		`CREATE TABLE IF NOT EXISTS service_categories (
+			category_id SERIAL PRIMARY KEY,
+			waste_type TEXT NOT NULL UNIQUE
+		)`,
+		`CREATE TABLE IF NOT EXISTS collector_service_categories (
+			category_id INTEGER REFERENCES service_categories(category_id),
+			collector_id INTEGER REFERENCES collectors(user_id),
+			price_per_kg DECIMAL NOT NULL,
+			maximum_capacity DECIMAL NOT NULL,
+			handling_requirements TEXT,
+			PRIMARY KEY (category_id, collector_id)
+		)`,
+		`CREATE TABLE IF NOT EXISTS vehicles (
+			vehicle_id SERIAL PRIMARY KEY,
+			vehicle_type TEXT NOT NULL,
+			capacity DECIMAL NOT NULL
+		)`,
+		`CREATE TABLE IF NOT EXISTS collector_drivers (
+			driver_id SERIAL PRIMARY KEY,
+			collector_id INTEGER REFERENCES collectors(user_id),
+			license_number TEXT NOT NULL UNIQUE,
+			license_expiry DATE NOT NULL,
+			is_active BOOLEAN NOT NULL DEFAULT true,
+			rating DECIMAL DEFAULT 0.0,
+			joining_date DATE NOT NULL
+		)`,
+		`CREATE TABLE IF NOT EXISTS collector_vehicles (
+			vehicle_id SERIAL PRIMARY KEY,
+			collector_id INTEGER REFERENCES collectors(user_id),
+			vehicle_type TEXT NOT NULL,
+			capacity DECIMAL NOT NULL,
+			vehicle_number TEXT NOT NULL UNIQUE,
+			maintenance_date DATE NOT NULL,
+			is_active BOOLEAN NOT NULL DEFAULT true,
+			gps_tracking_id TEXT,
+			registration_document TEXT NOT NULL,
+			registration_expiry DATE NOT NULL
+		)`,
+		`ALTER TABLE collector_drivers ADD COLUMN IF NOT EXISTS 
+			assigned_vehicle_id INTEGER REFERENCES collector_vehicles(vehicle_id)`,
+		`CREATE TABLE IF NOT EXISTS collector_driver_locations (
+			location_id SERIAL PRIMARY KEY,
+			driver_id INTEGER REFERENCES collector_drivers(driver_id),
+			latitude DECIMAL NOT NULL,
+			longitude DECIMAL NOT NULL,
+			timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			is_active BOOLEAN NOT NULL DEFAULT true,
+			trip_id INTEGER,
+			vehicle_id INTEGER REFERENCES collector_vehicles(vehicle_id)
 		)`,
 	}
 
