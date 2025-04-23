@@ -9,7 +9,6 @@ import (
 	"github.com/kartikey1188/build-in-progress_01/internal/types"
 )
 
-// Collector operations
 func (p *Postgres) GetCollectorByID(id string) (types.Collector, error) {
 	var collector types.Collector
 	var user types.User
@@ -205,8 +204,6 @@ func (p *Postgres) UpdateProfile(userID int64, collector types.CollectorUpdate) 
 
 	return userID, nil
 }
-
-// New functions below
 
 func (p *Postgres) AddCollectorServiceCategory(input types.CollectorServiceCategory) (int64, error) {
 	query := `
