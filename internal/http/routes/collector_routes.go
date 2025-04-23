@@ -3,12 +3,13 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/kartikey1188/build-in-progress_01/internal/http/handlers/collectorcontrols"
+	"github.com/kartikey1188/build-in-progress_01/internal/http/middleware"
 	"github.com/kartikey1188/build-in-progress_01/internal/storage"
 )
 
 func CollectorRoutes(router *gin.Engine, storage storage.Storage) {
 	collector := router.Group("/collector")
-	// collector.Use(middleware.CollectorOnly())
+	collector.Use(middleware.CollectorOnly())
 
 	collector.PUT("/profile/:id", collectorcontrols.UpdateProfile(storage))
 

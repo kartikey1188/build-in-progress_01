@@ -143,7 +143,6 @@ paths:
         - full_name
         - company_name
         - license_number
-        - authorized_categories
         - capacity
         - license_expiry
 
@@ -170,7 +169,6 @@ paths:
                 - full_name
                 - company_name
                 - license_number
-                - authorized_categories
                 - capacity
                 - license_expiry
               properties:
@@ -194,9 +192,6 @@ paths:
                 license_number:
                   type: string
                   example: "LIC-789456"
-                authorized_categories:
-                  type: string
-                  example: "Plastic,Paper,Metal"
                 capacity:
                   type: integer
                   example: 5000
