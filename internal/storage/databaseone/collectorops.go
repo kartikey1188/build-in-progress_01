@@ -9,7 +9,7 @@ import (
 	"github.com/kartikey1188/build-in-progress_01/internal/types"
 )
 
-func (p *Postgres) GetCollectorByID(id string) (types.Collector, error) {
+func (p *Postgres) GetCollectorByID(id int64) (types.Collector, error) {
 	var collector types.Collector
 	var user types.User
 	var registration, lastLogin, licenseExpiry time.Time
