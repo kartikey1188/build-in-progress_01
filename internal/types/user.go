@@ -32,11 +32,10 @@ type Business struct {
 
 type Collector struct {
 	User
-	Company_name          string `json:"company_name" binding:"required"`
-	License_number        string `json:"license_number" binding:"required"`
-	Authorized_categories string `json:"authorized_categories" binding:"required"`
-	Capacity              int64  `json:"capacity" binding:"required"`
-	License_expiry        Date   `json:"license_expiry" binding:"required"`
+	Company_name   string `json:"company_name" binding:"required"`
+	License_number string `json:"license_number" binding:"required"`
+	Capacity       int64  `json:"capacity" binding:"required"`
+	License_expiry Date   `json:"license_expiry" binding:"required"`
 }
 
 type Date struct {

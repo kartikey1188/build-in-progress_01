@@ -19,7 +19,7 @@ func (p *Postgres) GetCollectorByID(id int64) (types.Collector, error) {
             u.user_id, u.email, u.password_hash, u.full_name, u.phone_number,
             u.address, u.registration_date, u.role, u.is_active, u.profile_image,
             u.last_login, u.is_verified, u.is_flagged,
-            c.company_name, c.license_number, c.authorized_categories, c.capacity, c.license_expiry
+            c.company_name, c.license_number, c.capacity, c.license_expiry
         FROM users u
         JOIN collectors c ON u.user_id = c.user_id
         WHERE u.user_id = $1
@@ -29,7 +29,7 @@ func (p *Postgres) GetCollectorByID(id int64) (types.Collector, error) {
 		&user.UserID, &user.Email, &user.PasswordHash, &user.FullName, &user.PhoneNumber,
 		&user.Address, &registration, &user.Role, &user.IsActive, &user.ProfileImage,
 		&lastLogin, &user.IsVerified, &user.IsFlagged,
-		&collector.Company_name, &collector.License_number, &collector.Authorized_categories,
+		&collector.Company_name, &collector.License_number,
 		&collector.Capacity, &licenseExpiry,
 	)
 	if err != nil {
@@ -52,7 +52,7 @@ func (p *Postgres) GetCollectors() ([]types.Collector, error) {
         SELECT 
             u.user_id, u.email, u.full_name, u.phone_number, u.address,
             u.registration_date, u.profile_image, u.last_login,
-            c.company_name, c.license_number, c.authorized_categories, c.capacity, c.license_expiry
+            c.company_name, c.license_number, c.capacity, c.license_expiry
         FROM users u
         JOIN collectors c ON u.user_id = c.user_id
         WHERE u.role = 'Collector'
@@ -72,7 +72,7 @@ func (p *Postgres) GetCollectors() ([]types.Collector, error) {
 		err := rows.Scan(
 			&user.UserID, &user.Email, &user.FullName, &user.PhoneNumber, &user.Address,
 			&regDate, &user.ProfileImage, &lastLogin,
-			&c.Company_name, &c.License_number, &c.Authorized_categories,
+			&c.Company_name, &c.License_number,
 			&c.Capacity, &licenseExp,
 		)
 		if err != nil {
@@ -150,12 +150,6 @@ func (p *Postgres) UpdateProfile(userID int64, collector types.CollectorUpdate) 
 	if collector.LicenseNumber != nil {
 		collectorSet = append(collectorSet, fmt.Sprintf("license_number = $%d", collectorParamIndex))
 		collectorParams = append(collectorParams, *collector.LicenseNumber)
-		collectorParamIndex++
-	}
-
-	if collector.AuthorizedCategories != nil {
-		collectorSet = append(collectorSet, fmt.Sprintf("authorized_categories = $%d", collectorParamIndex))
-		collectorParams = append(collectorParams, *collector.AuthorizedCategories)
 		collectorParamIndex++
 	}
 
