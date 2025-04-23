@@ -18,6 +18,8 @@ tags:
     description: Endpoints for user registration and login.
   - name: Admin
     description: Endpoints for administrative user management
+  - name: Collector
+    description: Endpoints for collector operations
 
 paths:
   /auth/register/business:
@@ -292,6 +294,7 @@ paths:
           description: Missing or invalid credentials
         "401":
           description: Invalid login credentials
+
   /admin/verify/{id}:
     put:
       summary: Verify a user account
@@ -451,9 +454,911 @@ paths:
           description: Forbidden (non-admin user)
         "500":
           description: Internal server error
+
+  /admin/service-categories:
+    post:
+      summary: Add a new service category
+      tags:
+        - Admin
+      description: |
+        Adds a new predefined service category.
+        Requires valid JWT token with Admin role.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                waste_type:
+                  type: string
+                  example: "Plastic"
+      responses:
+        "200":
+          description: Service category added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  Added Service Category ID:
+                    type: integer
+                    example: 789
+        "400":
+          description: Invalid request body
+        "401":
+          description: Unauthorized (missing/invalid token)
+        "403":
+          description: Forbidden (non-admin user)
+        "500":
+          description: Internal server error
+
+  /admin/vehicles:
+    post:
+      summary: Add a new vehicle type
+      tags:
+        - Admin
+      description: |
+        Adds a new predefined vehicle type.
+        Requires valid JWT token with Admin role.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vehicle_type:
+                  type: string
+                  example: "Truck"
+                capacity:
+                  type: number
+                  example: 10000.0
+      responses:
+        "200":
+          description: Vehicle added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  Added Vehicle ID:
+                    type: integer
+                    example: 101
+        "400":
+          description: Invalid request body
+        "401":
+          description: Unauthorized (missing/invalid token)
+        "403":
+          description: Forbidden (non-admin user)
+        "500":
+          description: Internal server error
+
+  /collector/profile/{id}:
+    put:
+      summary: Update collector profile
+      tags:
+        - Collector
+      description: |
+        Updates the profile of the authenticated collector.
+        The ID in the path must match the authenticated user's ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Collector user ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CollectorUpdate"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  Updated Collector ID:
+                    type: integer
+                    example: 123
+        "400":
+          description: Invalid request body
+        "401":
+          description: Unauthorized (missing/invalid token)
+        "403":
+          description: Forbidden (ID mismatch or non-collector user)
+        "500":
+          description: Internal server error
+
+  /collector/service-categories:
+    post:
+      summary: Offer a new service category
+      tags:
+        - Collector
+      description: |
+        Allows a collector to offer a new service category by selecting a predefined category and providing additional details.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category_id:
+                  type: integer
+                  example: 789
+                waste_type:
+                  type: string
+                  example: "Plastic"
+                price_per_kg:
+                  type: number
+                  example: 5.0
+                maximum_capacity:
+                  type: number
+                  example: 1000.0
+                handling_requirements:
+                  type: string
+                  example: "Requires protective gear"
+      responses:
+        "200":
+          description: Service category offered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  Added Collector Service Category ID:
+                    type: integer
+                    example: 456
+        "400":
+          description: Invalid request body
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+
+  /collector/service-categories/{id}:
+    put:
+      summary: Update an offered service category
+      tags:
+        - Collector
+      description: |
+        Updates an existing service category offered by the collector.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Service category ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CollectorServiceCategory"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Service category updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  Updated Service Category ID:
+                    type: integer
+                    example: 456
+        "400":
+          description: Invalid request body
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden (not owned by collector)
+        "500":
+          description: Internal server error
+
+    delete:
+      summary: Delete an offered service category
+      tags:
+        - Collector
+      description: |
+        Deletes an existing service category offered by the collector.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Service category ID
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Service category deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  Deleted Service Category ID:
+                    type: integer
+                    example: 456
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden (not owned by collector)
+        "500":
+          description: Internal server error
+
+  /collector/vehicles:
+    post:
+      summary: Append a new vehicle
+      tags:
+        - Collector
+      description: |
+        Allows a collector to append a new vehicle by selecting a predefined vehicle type and providing additional details.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vehicle_id:
+                  type: integer
+                  example: 101
+                vehicle_type:
+                  type: string
+                  example: "Truck"
+                capacity:
+                  type: number
+                  example: 10000.0
+                vehicle_number:
+                  type: string
+                  example: "ABC123"
+                maintenance_date:
+                  type: string
+                  format: date
+                  example: "2024-12-31"
+                is_active:
+                  type: boolean
+                  example: true
+                gps_tracking_id:
+                  type: string
+                  example: "GPS789"
+                assigned_driver_id:
+                  type: integer
+                  example: 101
+                registration_document:
+                  type: string
+                  example: "https://cdn.example.com/reg_doc.pdf"
+                registration_expiry:
+                  type: string
+                  format: date
+                  example: "2025-12-31"
+      responses:
+        "200":
+          description: Vehicle appended successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  Added Collector Vehicle ID:
+                    type: integer
+                    example: 789
+        "400":
+          description: Invalid request body
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+
+  /collector/vehicles/{id}:
+    put:
+      summary: Update a vehicle
+      tags:
+        - Collector
+      description: |
+        Updates an existing vehicle for the collector.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Vehicle ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CollectorVehicle"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Vehicle updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  Updated Vehicle ID:
+                    type: integer
+                    example: 789
+        "400":
+          description: Invalid request body
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden (not owned by collector)
+        "500":
+          description: Internal server error
+
+  /collector/vehicles/{id}/activate:
+    put:
+      summary: Activate a vehicle
+      tags:
+        - Collector
+      description: |
+        Activates a vehicle for the collector.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Vehicle ID
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Vehicle activated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  Activated Vehicle ID:
+                    type: integer
+                    example: 789
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden (not owned by collector)
+        "500":
+          description: Internal server error
+
+  /collector/vehicles/{id}/deactivate:
+    put:
+      summary: Deactivate a vehicle
+      tags:
+        - Collector
+      description: |
+        Deactivates a vehicle for the collector.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Vehicle ID
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Vehicle deactivated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  Deactivated Vehicle ID:
+                    type: integer
+                    example: 789
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden (not owned by collector)
+        "500":
+          description: Internal server error
+
+  /collector/drivers:
+    post:
+      summary: Register a new driver
+      tags:
+        - Collector
+      description: |
+        Registers a new driver for the collector.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                license_number:
+                  type: string
+                  example: "DRV-456789"
+                license_expiry:
+                  type: string
+                  format: date
+                  example: "2025-12-31"
+                assigned_vehicle_id:
+                  type: integer
+                  example: 789
+                is_employed:
+                  type: integer
+                  example: 1
+                is_active:
+                  type: boolean
+                  example: true
+                rating:
+                  type: number
+                  example: 4.5
+                joining_date:
+                  type: string
+                  format: date
+                  example: "2023-01-01"
+      responses:
+        "200":
+          description: Driver registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  Added Driver ID:
+                    type: integer
+                    example: 101
+        "400":
+          description: Invalid request body
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+
+  /collector/drivers/{id}:
+    put:
+      summary: Update a driver
+      tags:
+        - Collector
+      description: |
+        Updates an existing driver for the collector.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Driver ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CollectorDriver"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Driver updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  Updated Driver ID:
+                    type: integer
+                    example: 101
+        "400":
+          description: Invalid request body
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden (not owned by collector)
+        "500":
+          description: Internal server error
+
+  /collector/drivers/{id}/assign-vehicle:
+    put:
+      summary: Assign a vehicle to a driver
+      tags:
+        - Collector
+      description: |
+        Assigns a vehicle to a driver for the collector.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Driver ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vehicle_id:
+                  type: integer
+                  example: 789
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Vehicle assigned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  Assigned Vehicle ID:
+                    type: integer
+                    example: 789
+                  to Driver ID:
+                    type: integer
+                    example: 101
+        "400":
+          description: Invalid request body
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden (not owned by collector)
+        "500":
+          description: Internal server error
+
+  /collectors:
+    get:
+      summary: List all collectors
+      tags:
+        - Collector
+      description: |
+        Retrieves a list of all collectors.
+      responses:
+        "200":
+          description: List of collectors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Collector"
+        "500":
+          description: Internal server error
+
+  /collectors/{id}:
+    get:
+      summary: Get collector details
+      tags:
+        - Collector
+      description: |
+        Retrieves details of a specific collector.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Collector ID
+      responses:
+        "200":
+          description: Collector details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Collector"
+        "404":
+          description: Collector not found
+        "500":
+          description: Internal server error
+
+  /collectors/{id}/service-categories:
+    get:
+      summary: Get service categories of a collector
+      tags:
+        - Collector
+      description: |
+        Retrieves service categories offered by a specific collector.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Collector ID
+      responses:
+        "200":
+          description: List of service categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CollectorServiceCategory"
+        "404":
+          description: Collector not found
+        "500":
+          description: Internal server error
+
+  /collectors/{id}/vehicles:
+    get:
+      summary: Get vehicles of a collector
+      tags:
+        - Collector
+      description: |
+        Retrieves vehicles appended by a specific collector.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Collector ID
+      responses:
+        "200":
+          description: List of vehicles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CollectorVehicle"
+        "404":
+          description: Collector not found
+        "500":
+          description: Internal server error
+
+  /collectors/{id}/drivers:
+    get:
+      summary: Get drivers of a collector
+      tags:
+        - Collector
+      description: |
+        Retrieves drivers registered by a specific collector.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Collector ID
+      responses:
+        "200":
+          description: List of drivers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CollectorDriver"
+        "404":
+          description: Collector not found
+        "500":
+          description: Internal server error
+
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        email:
+          type: string
+          format: email
+        full_name:
+          type: string
+        phone_number:
+          type: string
+        address:
+          type: string
+        registration_date:
+          type: string
+          format: date
+        role:
+          type: string
+          enum: [Business, Collector, Admin, Government, Driver]
+        is_active:
+          type: boolean
+        profile_image:
+          type: string
+        last_login:
+          type: string
+          format: date-time
+        is_verified:
+          type: boolean
+        is_flagged:
+          type: boolean
+
+    Collector:
+      allOf:
+        - $ref: "#/components/schemas/User"
+        - type: object
+          properties:
+            company_name:
+              type: string
+            license_number:
+              type: string
+            authorized_categories:
+              type: string
+            capacity:
+              type: integer
+            license_expiry:
+              type: string
+              format: date
+
+    CollectorUpdate:
+      type: object
+      properties:
+        full_name:
+          type: string
+        phone_number:
+          type: string
+        address:
+          type: string
+        profile_image:
+          type: string
+        company_name:
+          type: string
+        license_number:
+          type: string
+        authorized_categories:
+          type: string
+        capacity:
+          type: integer
+        license_expiry:
+          type: string
+          format: date
+
+    CollectorServiceCategory:
+      type: object
+      properties:
+        category_id:
+          type: integer
+        collector_id:
+          type: integer
+        waste_type:
+          type: string
+        price_per_kg:
+          type: number
+        maximum_capacity:
+          type: number
+        handling_requirements:
+          type: string
+
+    CollectorVehicle:
+      type: object
+      properties:
+        vehicle_id:
+          type: integer
+        collector_id:
+          type: integer
+        vehicle_type:
+          type: string
+        capacity:
+          type: number
+        vehicle_number:
+          type: string
+        maintenance_date:
+          type: string
+          format: date
+        is_active:
+          type: boolean
+        gps_tracking_id:
+          type: string
+        assigned_driver_id:
+          type: integer
+        registration_document:
+          type: string
+        registration_expiry:
+          type: string
+          format: date
+
+    CollectorDriver:
+      type: object
+      properties:
+        driver_id:
+          type: integer
+        collector_id:
+          type: integer
+        license_number:
+          type: string
+        license_expiry:
+          type: string
+          format: date
+        assigned_vehicle_id:
+          type: integer
+        is_employed:
+          type: integer
+        is_active:
+          type: boolean
+        rating:
+          type: number
+        joining_date:
+          type: string
+          format: date
+
+    ServiceCategory:
+      type: object
+      properties:
+        category_id:
+          type: integer
+        waste_type:
+          type: string
+
+    Vehicle:
+      type: object
+      properties:
+        vehicle_id:
+          type: integer
+        vehicle_type:
+          type: string
+        capacity:
+          type: number

@@ -96,40 +96,34 @@ func (p *Postgres) UpdateProfile(userID int64, collector types.CollectorUpdate) 
 	}
 	defer tx.Rollback()
 
-	// ==================== Users Table Update ====================
 	var userSet []string
 	var userParams []interface{}
 	userParamIndex := 1
 
-	// FullName
 	if collector.FullName != nil {
 		userSet = append(userSet, fmt.Sprintf("full_name = $%d", userParamIndex))
 		userParams = append(userParams, *collector.FullName)
 		userParamIndex++
 	}
 
-	// PhoneNumber
 	if collector.PhoneNumber != nil {
 		userSet = append(userSet, fmt.Sprintf("phone_number = $%d", userParamIndex))
 		userParams = append(userParams, *collector.PhoneNumber)
 		userParamIndex++
 	}
 
-	// Address
 	if collector.Address != nil {
 		userSet = append(userSet, fmt.Sprintf("address = $%d", userParamIndex))
 		userParams = append(userParams, *collector.Address)
 		userParamIndex++
 	}
 
-	// ProfileImage
 	if collector.ProfileImage != nil {
 		userSet = append(userSet, fmt.Sprintf("profile_image = $%d", userParamIndex))
 		userParams = append(userParams, *collector.ProfileImage)
 		userParamIndex++
 	}
 
-	// Execute users update if any fields are set
 	if len(userSet) > 0 {
 		userQuery := fmt.Sprintf(
 			"UPDATE users SET %s WHERE user_id = $%d",
@@ -143,47 +137,40 @@ func (p *Postgres) UpdateProfile(userID int64, collector types.CollectorUpdate) 
 		}
 	}
 
-	// ==================== Collectors Table Update ====================
 	var collectorSet []string
 	var collectorParams []interface{}
 	collectorParamIndex := 1
 
-	// CompanyName
 	if collector.CompanyName != nil {
 		collectorSet = append(collectorSet, fmt.Sprintf("company_name = $%d", collectorParamIndex))
 		collectorParams = append(collectorParams, *collector.CompanyName)
 		collectorParamIndex++
 	}
 
-	// LicenseNumber
 	if collector.LicenseNumber != nil {
 		collectorSet = append(collectorSet, fmt.Sprintf("license_number = $%d", collectorParamIndex))
 		collectorParams = append(collectorParams, *collector.LicenseNumber)
 		collectorParamIndex++
 	}
 
-	// AuthorizedCategories
 	if collector.AuthorizedCategories != nil {
 		collectorSet = append(collectorSet, fmt.Sprintf("authorized_categories = $%d", collectorParamIndex))
 		collectorParams = append(collectorParams, *collector.AuthorizedCategories)
 		collectorParamIndex++
 	}
 
-	// Capacity
 	if collector.Capacity != nil {
 		collectorSet = append(collectorSet, fmt.Sprintf("capacity = $%d", collectorParamIndex))
 		collectorParams = append(collectorParams, *collector.Capacity)
 		collectorParamIndex++
 	}
 
-	// LicenseExpiry
 	if collector.LicenseExpiry != nil {
 		collectorSet = append(collectorSet, fmt.Sprintf("license_expiry = $%d", collectorParamIndex))
 		collectorParams = append(collectorParams, collector.LicenseExpiry.Time)
 		collectorParamIndex++
 	}
 
-	// Execute collectors update if any fields are set
 	if len(collectorSet) > 0 {
 		collectorQuery := fmt.Sprintf(
 			"UPDATE collectors SET %s WHERE user_id = $%d",
@@ -197,7 +184,6 @@ func (p *Postgres) UpdateProfile(userID int64, collector types.CollectorUpdate) 
 		}
 	}
 
-	// Commit transaction
 	if err := tx.Commit(); err != nil {
 		return 0, fmt.Errorf("failed to commit transaction: %w", err)
 	}
