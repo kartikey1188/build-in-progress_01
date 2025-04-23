@@ -3,6 +3,8 @@ package databaseone
 import (
 	"fmt"
 	"strconv"
+
+	"github.com/kartikey1188/build-in-progress_01/internal/types"
 )
 
 // VerifyUser sets the user's is_verified status to true
@@ -105,4 +107,34 @@ func (p *Postgres) UnflagUser(userID string) error {
 	}
 
 	return nil
+}
+
+// AddServiceCategory inserts a new waste service category and returns its ID.
+func (p *Postgres) AddServiceCategory(sc types.ServiceCategory) (int64, error) {
+	var id int64
+	err := p.Db.QueryRow(
+		`INSERT INTO service_categories (waste_type)
+		 VALUES ($1)
+		 RETURNING category_id`,
+		sc.WasteType,
+	).Scan(&id)
+	if err != nil {
+		return 0, fmt.Errorf("failed to insert service category: %w", err)
+	}
+	return id, nil
+}
+
+// AddVehicle inserts a new vehicle and returns its ID.
+func (p *Postgres) AddVehicle(v types.Vehicle) (int64, error) {
+	var id int64
+	err := p.Db.QueryRow(
+		`INSERT INTO vehicles (vehicle_type, capacity)
+		 VALUES ($1, $2)
+		 RETURNING vehicle_id`,
+		v.VehicleType, v.Capacity,
+	).Scan(&id)
+	if err != nil {
+		return 0, fmt.Errorf("failed to insert vehicle: %w", err)
+	}
+	return id, nil
 }

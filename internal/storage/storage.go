@@ -5,12 +5,7 @@ import "github.com/kartikey1188/build-in-progress_01/internal/types"
 type Storage interface {
 	LoginAndRegister
 	AdminControls
-	CollectorOperations
-	ServiceCategoryOperations
-	VehicleOperations
-	DriverOperations
-	// PickupRequestOperations
-	CollectorDetailOperations
+	CollectorControls
 }
 
 type LoginAndRegister interface {
@@ -28,45 +23,30 @@ type AdminControls interface {
 	UnflagUser(userID string) error
 	VerifyUser(userID string) error
 	UnverifyUser(userID string) error
+	AddVehicle(v types.Vehicle) (int64, error)
+	AddServiceCategory(sc types.ServiceCategory) (int64, error)
 }
 
-type CollectorOperations interface {
-	GetCollector(id string) (types.Collector, error)
+type CollectorControls interface {
 	GetCollectors() ([]types.Collector, error)
-	UpdateProfile(userId int64, collector types.CollectorUpdate) (int64, error)
-}
+	GetCollectorByID(id int64) (types.Collector, error)
 
-type ServiceCategoryOperations interface {
-	CreateServiceCategory(csc types.CollectorServiceCategory) (int64, error)
-	UpdateServiceCategory(id string, csc types.CollectorServiceCategory) error
-	DeleteServiceCategory(id string) error
-}
+	UpdateProfile(userID int64, input types.CollectorUpdate) (int64, error)
 
-type VehicleOperations interface {
-	AddVehicle(v types.CollectorVehicle) (int64, error)
-	UpdateVehicle(id string, v types.CollectorVehicle) error
-	ActivateVehicle(id string) error
-	DeactivateVehicle(id string) error
-}
+	AddCollectorServiceCategory(input types.CollectorServiceCategory) (int64, error)
+	UpdateCollectorServiceCategory(id int64, collectorID int64, input types.CollectorServiceCategory) error
+	DeleteCollectorServiceCategory(id int64, collectorID int64) error
 
-type DriverOperations interface {
-	RegisterDriver(d types.CollectorDriver) (int64, error)
-	UpdateDriver(id string, d types.CollectorDriver) error
-	AssignVehicleToDriver(driverID string, vehicleID int64) error
-	UpdateDriverLocation(input types.CollectorDriverLocation) error
-	GetDriverTrips(driverID int64) ([]types.PickupRequest, error)
-}
+	AddCollectorVehicle(input types.CollectorVehicle) (int64, error)
+	UpdateCollectorVehicle(id int64, collectorID int64, input types.CollectorVehicle) error
+	ActivateCollectorVehicle(id int64, collectorID int64) error
+	DeactivateCollectorVehicle(id int64, collectorID int64) error
 
-// type PickupRequestOperations interface {
-// 	GetPickupRequests() ([]types.PickupRequest, error)
-// 	GetPickupRequestDetail(id string) (types.PickupRequest, error)
-// 	AssignPickup(requestID string, driverID int64, vehicleID int64) error
-// 	UpdateTripStatus(tripID string, status string) error
-// }
+	AddCollectorDriver(input types.CollectorDriver) (int64, error)
+	UpdateCollectorDriver(id int64, collectorID int64, input types.CollectorDriver) error
+	AssignVehicleToDriver(driverID int64, vehicleID int64, collectorID int64) error
 
-type CollectorDetailOperations interface {
-	GetCollectorServiceCategories(id string) ([]types.CollectorServiceCategory, error)
-	GetCollectorVehicles(id string) ([]types.CollectorVehicle, error)
-	GetCollectorDrivers(id string) ([]types.CollectorDriver, error)
-	GetCollectorDetails(id string) (types.Collector, error)
+	GetCollectorServiceCategories(collectorID int64) ([]types.CollectorServiceCategory, error)
+	GetCollectorVehicles(collectorID int64) ([]types.CollectorVehicle, error)
+	GetCollectorDrivers(collectorID int64) ([]types.CollectorDriver, error)
 }

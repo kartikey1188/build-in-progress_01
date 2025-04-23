@@ -15,6 +15,7 @@ type CollectorServiceCategory struct {
 }
 
 type Vehicle struct {
+	VehicleID   int64   `json:"vehicle_id"`   // Primary key
 	VehicleType string  `json:"vehicle_type"` // Type of vehicle
 	Capacity    float64 `json:"capacity"`     // Vehicle capacity in kg
 }
@@ -39,6 +40,7 @@ type CollectorDriver struct {
 	LicenseNumber     string  `json:"license_number"`      // Driver's license number
 	LicenseExpiry     Date    `json:"license_expiry"`      // License expiration date
 	AssignedVehicleID int64   `json:"assigned_vehicle_id"` // Currently assigned vehicle
+	IsEmployed        int64   `json:"is_employed"`         // Whether driver is currently employed
 	IsActive          bool    `json:"is_active"`           // Whether driver is available for trips
 	Rating            float64 `json:"rating"`              // Driver's performance rating
 	JoiningDate       Date    `json:"joining_date"`        // Date when driver joined
