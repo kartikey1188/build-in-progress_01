@@ -640,13 +640,6 @@ paths:
         - Collector
       description: |
         Updates an existing service category offered by the collector.
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: Service category ID
       requestBody:
         required: true
         content:
@@ -697,15 +690,18 @@ paths:
         - Collector
       description: |
         Deletes an existing service category offered by the collector.
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: Service category ID
       security:
         - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category_id:
+                  type: integer
+                  example: 1
       responses:
         "200":
           description: Service category deleted successfully

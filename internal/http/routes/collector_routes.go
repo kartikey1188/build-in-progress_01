@@ -15,8 +15,8 @@ func CollectorRoutes(router *gin.Engine, storage storage.Storage) {
 
 	// Service Categories
 	collector.POST("/service-categories", collectorcontrols.OfferServiceCategory(storage))
-	collector.PUT("/service-categories/:id", collectorcontrols.UpdateOfferedServiceCategory(storage))
-	collector.DELETE("/service-categories/:id", collectorcontrols.DeleteOfferedServiceCategory(storage))
+	collector.PUT("/service-categories", collectorcontrols.UpdateOfferedServiceCategory(storage))
+	collector.DELETE("/service-categories", collectorcontrols.DeleteOfferedServiceCategory(storage))
 
 	// Vehicles
 	collector.POST("/vehicles", collectorcontrols.AppendVehicle(storage))

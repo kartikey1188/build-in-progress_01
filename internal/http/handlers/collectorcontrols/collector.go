@@ -111,25 +111,33 @@ func UpdateOfferedServiceCategory(storage storage.Storage) gin.HandlerFunc {
 // DeleteOfferedServiceCategory deletes a service category offered by a collector
 func DeleteOfferedServiceCategory(storage storage.Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		collectorID, exists := c.Get("collectorID")
-		if !exists {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		uidAny, ok := c.Get("user_id")
+		if !ok {
+			c.JSON(http.StatusUnauthorized, response.GeneralError(fmt.Errorf("user id missing")))
+			return
+		}
+		userID := uidAny.(uint64)
+
+		type CategoryIdStruct struct {
+			CategoryID int64 `json:"category_id"`
+		}
+
+		var req CategoryIdStruct
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, response.GeneralError(err))
 			return
 		}
 
-		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid service category ID"})
-			return
-		}
-
-		err = storage.DeleteCollectorServiceCategory(id, collectorID.(int64))
+		err := storage.DeleteCollectorServiceCategory(req.CategoryID, userID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{"status": "OK", "Deleted Service Category ID": id})
+		c.JSON(http.StatusOK, gin.H{
+			"status":                      "OK",
+			"Deleted Service Category ID": req.CategoryID,
+		})
 	}
 }
 

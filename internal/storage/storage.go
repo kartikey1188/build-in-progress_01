@@ -35,7 +35,7 @@ type CollectorControls interface {
 
 	AddCollectorServiceCategory(input types.CollectorServiceCategory, userID uint64) (int64, error)
 	UpdateCollectorServiceCategory(id int64, collectorID int64, input types.CollectorServiceCategory) error
-	DeleteCollectorServiceCategory(id int64, collectorID int64) error
+	DeleteCollectorServiceCategory(category_id int64, collectorID uint64) error
 
 	AddCollectorVehicle(input types.CollectorVehicle) (int64, error)
 	UpdateCollectorVehicle(id int64, collectorID int64, input types.CollectorVehicle) error

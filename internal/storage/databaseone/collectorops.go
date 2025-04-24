@@ -224,14 +224,21 @@ func (p *Postgres) UpdateCollectorServiceCategory(id int64, collectorID int64, i
 	return nil
 }
 
-func (p *Postgres) DeleteCollectorServiceCategory(id int64, collectorID int64) error {
+func (p *Postgres) DeleteCollectorServiceCategory(category_id int64, collectorID uint64) error {
 	query := `
         DELETE FROM collector_service_categories
-        WHERE id = $1 AND collector_id = $2
+        WHERE category_id = $1 AND collector_id = $2
     `
-	_, err := p.Db.Exec(query, id, collectorID)
+	res, err := p.Db.Exec(query, category_id, collectorID)
 	if err != nil {
 		return fmt.Errorf("failed to delete collector service category: %w", err)
+	}
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
+	if rowsAffected == 0 {
+		return fmt.Errorf("This collector does not offer this category_id")
 	}
 	return nil
 }
