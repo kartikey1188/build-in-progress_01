@@ -64,6 +64,11 @@ func DriverOnly() gin.HandlerFunc {
 			return
 		}
 
+		// adding user_id to Gin context
+		if uid, ok := claims["user_id"].(float64); ok {
+			c.Set("user_id", uint64(uid))
+		}
+
 		c.Next()
 	}
 }

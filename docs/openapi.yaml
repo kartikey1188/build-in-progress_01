@@ -592,6 +592,7 @@ paths:
         - Collector
       description: |
         Allows a collector to offer a new service category by selecting a predefined category and providing additional details.
+
       security:
         - bearerAuth: []
       requestBody:
@@ -603,10 +604,7 @@ paths:
               properties:
                 category_id:
                   type: integer
-                  example: 789
-                waste_type:
-                  type: string
-                  example: "Plastic"
+                  example: 1
                 price_per_kg:
                   type: number
                   example: 5.0
@@ -636,8 +634,6 @@ paths:
           description: Unauthorized
         "500":
           description: Internal server error
-
-  /collector/service-categories/{id}:
     put:
       summary: Update an offered service category
       tags:
@@ -656,7 +652,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CollectorServiceCategory"
+              type: object
+              properties:
+                category_id:
+                  type: integer
+                  example: 789
+                price_per_kg:
+                  type: number
+                  example: 5.0
+                maximum_capacity:
+                  type: number
+                  example: 1000.0
+                handling_requirements:
+                  type: string
+                  example: "Requires protective gear"
       security:
         - bearerAuth: []
       responses:

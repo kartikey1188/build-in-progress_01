@@ -185,17 +185,16 @@ func (p *Postgres) UpdateProfile(userID int64, collector types.CollectorUpdate) 
 	return userID, nil
 }
 
-func (p *Postgres) AddCollectorServiceCategory(input types.CollectorServiceCategory) (int64, error) {
+func (p *Postgres) AddCollectorServiceCategory(input types.CollectorServiceCategory, userID uint64) (int64, error) {
 	query := `
-        INSERT INTO collector_service_categories (category_id, collector_id, waste_type, price_per_kg, maximum_capacity, handling_requirements)
-        VALUES ($1, $2, $3, $4, $5, $6)
-        RETURNING id
+        INSERT INTO collector_service_categories (category_id, collector_id, price_per_kg, maximum_capacity, handling_requirements)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING category_id
     `
 	var id int64
 	err := p.Db.QueryRow(query,
 		input.CategoryID,
-		input.CollectorID,
-		input.WasteType,
+		userID,
 		input.PricePerKg,
 		input.MaximumCapacity,
 		input.HandlingRequirements,
@@ -209,16 +208,14 @@ func (p *Postgres) AddCollectorServiceCategory(input types.CollectorServiceCateg
 func (p *Postgres) UpdateCollectorServiceCategory(id int64, collectorID int64, input types.CollectorServiceCategory) error {
 	query := `
         UPDATE collector_service_categories
-        SET category_id = $1, waste_type = $2, price_per_kg = $3, maximum_capacity = $4, handling_requirements = $5
-        WHERE id = $6 AND collector_id = $7
+        SET price_per_kg = $1, maximum_capacity = $2, handling_requirements = $3
+        WHERE category_id = $4 AND collector_id = $5
     `
 	_, err := p.Db.Exec(query,
-		input.CategoryID,
-		input.WasteType,
 		input.PricePerKg,
 		input.MaximumCapacity,
 		input.HandlingRequirements,
-		id,
+		input.CategoryID,
 		collectorID,
 	)
 	if err != nil {
@@ -396,7 +393,7 @@ func (p *Postgres) AssignVehicleToDriver(driverID int64, vehicleID int64, collec
 
 func (p *Postgres) GetCollectorServiceCategories(collectorID int64) ([]types.CollectorServiceCategory, error) {
 	query := `
-        SELECT category_id, collector_id, waste_type, price_per_kg, maximum_capacity, handling_requirements
+        SELECT category_id, collector_id, price_per_kg, maximum_capacity, handling_requirements
         FROM collector_service_categories
         WHERE collector_id = $1
     `
@@ -412,7 +409,6 @@ func (p *Postgres) GetCollectorServiceCategories(collectorID int64) ([]types.Col
 		err := rows.Scan(
 			&c.CategoryID,
 			&c.CollectorID,
-			&c.WasteType,
 			&c.PricePerKg,
 			&c.MaximumCapacity,
 			&c.HandlingRequirements,

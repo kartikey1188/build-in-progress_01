@@ -8,7 +8,6 @@ type ServiceCategory struct {
 type CollectorServiceCategory struct {
 	CategoryID           int64   `json:"category_id"`                         // Foreign key to ServiceCategory
 	CollectorID          int64   `json:"collector_id"`                        // Foreign key to Collector
-	WasteType            string  `json:"waste_type"`                          // Type of waste accepted
 	PricePerKg           float64 `json:"price_per_kg" binding:"required"`     // Cost per kg for this waste type
 	MaximumCapacity      float64 `json:"maximum_capacity" binding:"required"` // Max capacity for this waste type
 	HandlingRequirements string  `json:"handling_requirements,omitempty"`     // Special handling instructions

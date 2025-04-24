@@ -33,7 +33,7 @@ type CollectorControls interface {
 
 	UpdateProfile(userID int64, input types.CollectorUpdate) (int64, error)
 
-	AddCollectorServiceCategory(input types.CollectorServiceCategory) (int64, error)
+	AddCollectorServiceCategory(input types.CollectorServiceCategory, userID uint64) (int64, error)
 	UpdateCollectorServiceCategory(id int64, collectorID int64, input types.CollectorServiceCategory) error
 	DeleteCollectorServiceCategory(id int64, collectorID int64) error
 

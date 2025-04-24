@@ -1,6 +1,7 @@
 package collectorcontrols
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -53,11 +54,12 @@ func UpdateProfile(storage storage.Storage) gin.HandlerFunc {
 // OfferServiceCategory allows a collector to offer a new service category
 func OfferServiceCategory(storage storage.Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		collectorID, exists := c.Get("collectorID")
-		if !exists {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		uidAny, ok := c.Get("user_id")
+		if !ok {
+			c.JSON(http.StatusUnauthorized, response.GeneralError(fmt.Errorf("user id missing")))
 			return
 		}
+		userID := uidAny.(uint64)
 
 		var input types.CollectorServiceCategory
 		if err := c.ShouldBindJSON(&input); err != nil {
@@ -65,9 +67,7 @@ func OfferServiceCategory(storage storage.Storage) gin.HandlerFunc {
 			return
 		}
 
-		input.CollectorID = collectorID.(int64)
-
-		id, err := storage.AddCollectorServiceCategory(input)
+		id, err := storage.AddCollectorServiceCategory(input, userID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
 			return
