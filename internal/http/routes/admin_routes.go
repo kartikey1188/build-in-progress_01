@@ -16,6 +16,6 @@ func Admin(router *gin.Engine, storage storage.Storage) {
 	admin.PUT("/flag/:id", admincontrols.FlagUser(storage))
 	admin.PUT("/unflag/:id", admincontrols.UnflagUser(storage))
 
-	admin.POST("/add/driver", admincontrols.AddServiceCategory(storage))
+	admin.POST("/add/service-category", admincontrols.AddServiceCategory(storage))
 	admin.POST("/add/vehicle", admincontrols.AddVehicle(storage))
 }

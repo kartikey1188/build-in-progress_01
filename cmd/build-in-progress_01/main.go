@@ -12,6 +12,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/kartikey1188/build-in-progress_01/internal/config"
 	"github.com/kartikey1188/build-in-progress_01/internal/http/routes"
@@ -35,6 +36,16 @@ func main() {
 	// setting up router and routes
 
 	router := gin.Default()
+
+	// CORS
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	routes.SetupRoutes(router, storage)
 

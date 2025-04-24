@@ -1,37 +1,37 @@
 package types
 
 type ServiceCategory struct {
-	CategoryID int64  `json:"category_id"` // Primary key
-	WasteType  string `json:"waste_type"`  // Type of waste accepted
+	CategoryID int64  `json:"category_id"`                   // Primary key
+	WasteType  string `json:"waste_type" binding:"required"` // Type of waste accepted
 }
 
 type CollectorServiceCategory struct {
-	CategoryID           int64   `json:"category_id"`                     // Foreign key to ServiceCategory
-	CollectorID          int64   `json:"collector_id"`                    // Foreign key to Collector
-	WasteType            string  `json:"waste_type"`                      // Type of waste accepted
-	PricePerKg           float64 `json:"price_per_kg"`                    // Cost per kg for this waste type
-	MaximumCapacity      float64 `json:"maximum_capacity"`                // Max capacity for this waste type
-	HandlingRequirements string  `json:"handling_requirements,omitempty"` // Special handling instructions
+	CategoryID           int64   `json:"category_id"`                         // Foreign key to ServiceCategory
+	CollectorID          int64   `json:"collector_id"`                        // Foreign key to Collector
+	WasteType            string  `json:"waste_type"`                          // Type of waste accepted
+	PricePerKg           float64 `json:"price_per_kg" binding:"required"`     // Cost per kg for this waste type
+	MaximumCapacity      float64 `json:"maximum_capacity" binding:"required"` // Max capacity for this waste type
+	HandlingRequirements string  `json:"handling_requirements,omitempty"`     // Special handling instructions
 }
 
 type Vehicle struct {
-	VehicleID   int64   `json:"vehicle_id"`   // Primary key
-	VehicleType string  `json:"vehicle_type"` // Type of vehicle
-	Capacity    float64 `json:"capacity"`     // Vehicle capacity in kg
+	VehicleID   int64   `json:"vehicle_id"`                      // Primary key
+	VehicleType string  `json:"vehicle_type" binding:"required"` // Type of vehicle
+	Capacity    float64 `json:"capacity" binding:"required"`     // Vehicle capacity in kg
 }
 
 type CollectorVehicle struct {
-	VehicleID            int64   `json:"vehicle_id"`            // Foreign key to Vehicle
-	CollectorID          int64   `json:"collector_id"`          // Foreign key to Collector
-	VehicleType          string  `json:"vehicle_type"`          // Type of vehicle
-	Capacity             float64 `json:"capacity"`              // Vehicle capacity in kg
-	VehicleNumber        string  `json:"vehicle_number"`        // Vehicle registration number
-	MaintenanceDate      Date    `json:"maintenance_date"`      // Last maintenance date
-	IsActive             bool    `json:"is_active"`             // Whether vehicle is in service
-	GPSTrackingID        string  `json:"gps_tracking_id"`       // GPS tracking device ID
-	AssignedDriverID     int64   `json:"assigned_driver_id"`    // Currently assigned driver
-	RegistrationDocument string  `json:"registration_document"` // Path to registration document
-	RegistrationExpiry   Date    `json:"registration_expiry"`   // Registration expiration date
+	VehicleID            int64   `json:"vehicle_id"`                        // Foreign key to Vehicle
+	CollectorID          int64   `json:"collector_id"`                      // Foreign key to Collector
+	VehicleType          string  `json:"vehicle_type"`                      // Type of vehicle
+	Capacity             float64 `json:"capacity"`                          // Vehicle capacity in kg
+	VehicleNumber        string  `json:"vehicle_number" binding:"required"` // Vehicle registration number
+	MaintenanceDate      Date    `json:"maintenance_date"`                  // Last maintenance date
+	IsActive             bool    `json:"is_active"`                         // Whether vehicle is in service
+	GPSTrackingID        string  `json:"gps_tracking_id"`                   // GPS tracking device ID
+	AssignedDriverID     int64   `json:"assigned_driver_id"`                // Currently assigned driver
+	RegistrationDocument string  `json:"registration_document"`             // Path to registration document
+	RegistrationExpiry   Date    `json:"registration_expiry"`               // Registration expiration date
 }
 
 type CollectorDriver struct {

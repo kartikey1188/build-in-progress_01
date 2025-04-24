@@ -21,6 +21,9 @@ Packages Installed:
 7) swagger UI handler
     go get -u github.com/swaggo/http-swagger
 
+8) cors
+    go get github.com/gin-contrib/cors
+
 
 
 

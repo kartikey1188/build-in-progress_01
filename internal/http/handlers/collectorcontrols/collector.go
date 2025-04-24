@@ -60,7 +60,7 @@ func OfferServiceCategory(storage storage.Storage) gin.HandlerFunc {
 		}
 
 		var input types.CollectorServiceCategory
-		if err := c.BindJSON(&input); err != nil {
+		if err := c.ShouldBindJSON(&input); err != nil {
 			c.JSON(http.StatusBadRequest, response.GeneralError(err))
 			return
 		}
@@ -143,7 +143,7 @@ func AppendVehicle(storage storage.Storage) gin.HandlerFunc {
 		}
 
 		var input types.CollectorVehicle
-		if err := c.BindJSON(&input); err != nil {
+		if err := c.ShouldBindJSON(&input); err != nil {
 			c.JSON(http.StatusBadRequest, response.GeneralError(err))
 			return
 		}
@@ -251,7 +251,7 @@ func RegisterDriver(storage storage.Storage) gin.HandlerFunc {
 		}
 
 		var input types.CollectorDriver
-		if err := c.BindJSON(&input); err != nil {
+		if err := c.ShouldBindJSON(&input); err != nil {
 			c.JSON(http.StatusBadRequest, response.GeneralError(err))
 			return
 		}

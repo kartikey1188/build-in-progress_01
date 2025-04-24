@@ -450,7 +450,7 @@ paths:
         "500":
           description: Internal server error
 
-  /admin/service-categories:
+  /admin/add/service-category:
     post:
       summary: Add a new service category
       tags:
@@ -493,7 +493,7 @@ paths:
         "500":
           description: Internal server error
 
-  /admin/vehicles:
+  /admin/add/vehicle:
     post:
       summary: Add a new vehicle type
       tags:
