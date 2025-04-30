@@ -1,143 +1,16 @@
-package databaseone
+package postgres
 
 import (
 	"database/sql"
 	"fmt"
 	"time"
 
-	_ "github.com/jackc/pgx/v5/stdlib"
-	"golang.org/x/crypto/bcrypt"
-
-	"github.com/kartikey1188/build-in-progress_01/internal/config"
 	"github.com/kartikey1188/build-in-progress_01/internal/types"
 )
 
-type Postgres struct {
-	Db *sql.DB
-}
-
-func New(cfg *config.Config) (*Postgres, error) {
-	db, err := sql.Open("pgx", cfg.StoragePath)
-	if err != nil {
-		return nil, fmt.Errorf("failed to open database: %w", err)
-	}
-
-	if err := db.Ping(); err != nil {
-		return nil, fmt.Errorf("failed to connect to database: %w", err)
-	}
-
-	if err := createTables(db); err != nil {
-		return nil, err
-	}
-
-	return &Postgres{Db: db}, nil
-}
-
-func createTables(db *sql.DB) error {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
-	if err != nil {
-		return fmt.Errorf("failed to hash admin password: %w", err)
-	}
-
-	insertAdminQuery := fmt.Sprintf("INSERT INTO users (email, password_hash, full_name, role, is_active, is_verified, is_flagged, registration_date, last_login, phone_number, address, profile_image) VALUES ('admin@gmail.com', '%s', 'Application Admin', 'Admin', TRUE, TRUE, FALSE, CURRENT_DATE, CURRENT_TIMESTAMP, '10000000', 'N/A', 'default.jpg') ON CONFLICT (email) DO NOTHING", string(hashedPassword))
-
-	tables := []string{
-		`CREATE TABLE IF NOT EXISTS users (
-			user_id SERIAL PRIMARY KEY,
-			email TEXT UNIQUE NOT NULL,
-			password_hash TEXT NOT NULL,
-			full_name TEXT NOT NULL,
-			phone_number TEXT,
-			address TEXT,
-			registration_date DATE,
-			role TEXT NOT NULL,
-			is_active BOOLEAN,
-			profile_image TEXT,
-			last_login TIMESTAMP,
-			is_verified BOOLEAN,
-			is_flagged BOOLEAN
-		)`,
-		insertAdminQuery,
-		`CREATE TABLE IF NOT EXISTS businesses (
-			user_id INTEGER PRIMARY KEY REFERENCES users(user_id),
-			business_name TEXT NOT NULL,
-			business_type TEXT NOT NULL,
-			registration_number TEXT NOT NULL,
-			gst_id TEXT NOT NULL,
-			business_address TEXT NOT NULL
-		)`,
-		`CREATE TABLE IF NOT EXISTS collectors (
-			user_id INTEGER PRIMARY KEY REFERENCES users(user_id),
-			company_name TEXT NOT NULL,
-			license_number TEXT NOT NULL,
-			capacity BIGINT NOT NULL,
-			license_expiry DATE NOT NULL
-		)`,
-		`CREATE TABLE IF NOT EXISTS service_categories (
-			category_id SERIAL PRIMARY KEY,
-			waste_type TEXT NOT NULL UNIQUE
-		)`,
-		`CREATE TABLE IF NOT EXISTS collector_service_categories (
-			category_id INTEGER REFERENCES service_categories(category_id),
-			collector_id INTEGER REFERENCES collectors(user_id),
-			price_per_kg DECIMAL NOT NULL,
-			maximum_capacity DECIMAL NOT NULL,
-			handling_requirements TEXT,
-			PRIMARY KEY (category_id, collector_id)
-		)`,
-		`CREATE TABLE IF NOT EXISTS vehicles (
-			vehicle_id SERIAL PRIMARY KEY,
-			vehicle_type TEXT NOT NULL UNIQUE,
-			capacity DECIMAL NOT NULL
-		)`,
-		`CREATE TABLE IF NOT EXISTS collector_drivers (
-			driver_id SERIAL PRIMARY KEY,
-			collector_id INTEGER REFERENCES collectors(user_id),
-			license_number TEXT NOT NULL UNIQUE,
-			license_expiry DATE NOT NULL,
-			is_employed BOOLEAN NOT NULL DEFAULT true,
-			is_active BOOLEAN NOT NULL DEFAULT true,
-			rating DECIMAL DEFAULT 0.0,
-			joining_date DATE NOT NULL
-		)`,
-		`CREATE TABLE IF NOT EXISTS collector_vehicles (
-			collector_vehicle_id SERIAL PRIMARY KEY,
-			vehicle_id INTEGER NOT NULL REFERENCES vehicles(vehicle_id),
-			collector_id INTEGER NOT NULL REFERENCES collectors(user_id),
-			vehicle_number TEXT NOT NULL UNIQUE,
-			maintenance_date DATE NOT NULL,
-			is_active BOOLEAN NOT NULL DEFAULT true,
-			gps_tracking_id TEXT,
-			assigned_driver_id INTEGER REFERENCES collector_drivers(driver_id),
-			registration_document TEXT NOT NULL,
-			registration_expiry DATE NOT NULL
-		)`,
-		`ALTER TABLE collector_drivers ADD COLUMN IF NOT EXISTS 
-			assigned_vehicle_id INTEGER REFERENCES collector_vehicles(collector_vehicle_id)`,
-		`CREATE TABLE IF NOT EXISTS collector_driver_locations (
-			location_id SERIAL PRIMARY KEY,
-			driver_id INTEGER REFERENCES collector_drivers(driver_id),
-			latitude DECIMAL NOT NULL,
-			longitude DECIMAL NOT NULL,
-			timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-			is_active BOOLEAN NOT NULL DEFAULT true,
-			trip_id INTEGER,
-			vehicle_id INTEGER REFERENCES collector_vehicles(collector_vehicle_id)
-		)`,
-	}
-
-	for _, query := range tables {
-		if _, err := db.Exec(query); err != nil {
-			return fmt.Errorf("failed to execute query %q: %w", query, err)
-		}
-	}
-
-	return nil
-}
-
 func (p *Postgres) CreateUser(user types.User) (int64, error) {
 	var lastID int64
-	err := p.Db.QueryRow(`
+	err := p.SqlDB.QueryRow(`
 		INSERT INTO users (
 			email, password_hash, full_name, phone_number, address,
 			registration_date, role, is_active, profile_image,
@@ -161,7 +34,7 @@ func (p *Postgres) GetUserByEmail(email string) (types.User, error) {
 	var user types.User
 	var registration, lastLogin time.Time
 
-	err := p.Db.QueryRow(`
+	err := p.SqlDB.QueryRow(`
 		SELECT user_id, email, password_hash, full_name, phone_number,
 			address, registration_date, role, is_active, profile_image,
 			last_login, is_verified, is_flagged
@@ -186,7 +59,7 @@ func (p *Postgres) GetUserByEmail(email string) (types.User, error) {
 }
 
 func (p *Postgres) UpdateLastLogin(userID int64, lastLogin types.DateTime) error {
-	_, err := p.Db.Exec(`UPDATE users SET last_login = $1 WHERE user_id = $2`, lastLogin.Time, userID)
+	_, err := p.SqlDB.Exec(`UPDATE users SET last_login = $1 WHERE user_id = $2`, lastLogin.Time, userID)
 	if err != nil {
 		return fmt.Errorf("failed to update last login: %w", err)
 	}
@@ -198,7 +71,7 @@ func (p *Postgres) CreateCollectorUser(user types.Collector) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	_, err = p.Db.Exec(`
+	_, err = p.SqlDB.Exec(`
 		INSERT INTO collectors (
 			user_id, company_name, license_number, capacity, license_expiry
 		) VALUES ($1, $2, $3, $4, $5)`,
@@ -214,7 +87,7 @@ func (p *Postgres) CreateBusinessUser(user types.Business) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	_, err = p.Db.Exec(`
+	_, err = p.SqlDB.Exec(`
 		INSERT INTO businesses (
 			user_id, business_name, business_type, registration_number, gst_id, business_address
 		) VALUES ($1, $2, $3, $4, $5, $6)`,
@@ -241,7 +114,7 @@ func (p *Postgres) GetCollectorByEmail(email string) (types.Collector, error) {
         WHERE u.email = $1
         LIMIT 1
     `
-	err := p.Db.QueryRow(query, email).Scan(
+	err := p.SqlDB.QueryRow(query, email).Scan(
 		&user.UserID, &user.Email, &user.PasswordHash, &user.FullName, &user.PhoneNumber,
 		&user.Address, &registration, &user.Role, &user.IsActive, &user.ProfileImage,
 		&lastLogin, &user.IsVerified, &user.IsFlagged,
@@ -279,7 +152,7 @@ func (p *Postgres) GetBusinessByEmail(email string) (types.Business, error) {
         WHERE u.email = $1
         LIMIT 1
     `
-	err := p.Db.QueryRow(query, email).Scan(
+	err := p.SqlDB.QueryRow(query, email).Scan(
 		&user.UserID, &user.Email, &user.PasswordHash, &user.FullName, &user.PhoneNumber,
 		&user.Address, &registration, &user.Role, &user.IsActive, &user.ProfileImage,
 		&lastLogin, &user.IsVerified, &user.IsFlagged,
@@ -304,7 +177,7 @@ func (p *Postgres) GetUserById(userID int64) (types.User, error) {
 	var user types.User
 	var registration, lastLogin time.Time
 
-	err := p.Db.QueryRow(`
+	err := p.SqlDB.QueryRow(`
 		SELECT user_id, email, password_hash, full_name, phone_number,
 			address, registration_date, role, is_active, profile_image,
 			last_login, is_verified, is_flagged

@@ -1,4 +1,4 @@
-package admincontrols
+package admin
 
 import (
 	"net/http"

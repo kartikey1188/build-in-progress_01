@@ -4,8 +4,8 @@ import "github.com/kartikey1188/build-in-progress_01/internal/types"
 
 type Storage interface {
 	LoginAndRegister
-	AdminControls
-	CollectorControls
+	admin
+	collectors
 }
 
 type LoginAndRegister interface {
@@ -18,7 +18,7 @@ type LoginAndRegister interface {
 	GetUserById(userID int64) (types.User, error)
 }
 
-type AdminControls interface {
+type admin interface {
 	FlagUser(userID string) error
 	UnflagUser(userID string) error
 	VerifyUser(userID string) error
@@ -27,7 +27,7 @@ type AdminControls interface {
 	AddServiceCategory(sc types.ServiceCategory) (int64, error)
 }
 
-type CollectorControls interface {
+type collectors interface {
 	GetCollectors() ([]types.Collector, error)
 	GetCollectorByID(id int64) (types.Collector, error)
 
@@ -37,7 +37,7 @@ type CollectorControls interface {
 	UpdateCollectorServiceCategory(id int64, collectorID int64, input types.CollectorServiceCategory) error
 	DeleteCollectorServiceCategory(category_id int64, collectorID uint64) error
 
-	AddCollectorVehicle(input types.CollectorVehicle) (int64, error)
+	AddCollectorVehicle(input types.CollectorVehicle, userID uint64) (int64, error)
 	UpdateCollectorVehicle(id int64, collectorID int64, input types.CollectorVehicle) error
 	ActivateCollectorVehicle(id int64, collectorID int64) error
 	DeactivateCollectorVehicle(id int64, collectorID int64) error

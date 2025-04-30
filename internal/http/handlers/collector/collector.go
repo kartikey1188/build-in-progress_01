@@ -1,4 +1,4 @@
-package collectorcontrols
+package collector
 
 import (
 	"fmt"
@@ -144,11 +144,12 @@ func DeleteOfferedServiceCategory(storage storage.Storage) gin.HandlerFunc {
 // AppendVehicle allows a collector to append a new vehicle
 func AppendVehicle(storage storage.Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		collectorID, exists := c.Get("collectorID")
-		if !exists {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		uidAny, ok := c.Get("user_id")
+		if !ok {
+			c.JSON(http.StatusUnauthorized, response.GeneralError(fmt.Errorf("user id missing")))
 			return
 		}
+		userID := uidAny.(uint64)
 
 		var input types.CollectorVehicle
 		if err := c.ShouldBindJSON(&input); err != nil {
@@ -156,9 +157,7 @@ func AppendVehicle(storage storage.Storage) gin.HandlerFunc {
 			return
 		}
 
-		input.CollectorID = collectorID.(int64)
-
-		id, err := storage.AddCollectorVehicle(input)
+		id, err := storage.AddCollectorVehicle(input, userID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
 			return

@@ -2,20 +2,20 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kartikey1188/build-in-progress_01/internal/http/handlers/admincontrols"
+	"github.com/kartikey1188/build-in-progress_01/internal/http/handlers/admin"
 	"github.com/kartikey1188/build-in-progress_01/internal/http/middleware"
 	"github.com/kartikey1188/build-in-progress_01/internal/storage"
 )
 
 func Admin(router *gin.Engine, storage storage.Storage) {
-	admin := router.Group("/admin")
-	admin.Use(middleware.AdminOnly())
+	admin_routes := router.Group("/admin")
+	admin_routes.Use(middleware.AdminOnly())
 
-	admin.PUT("/verify/:id", admincontrols.VerifyUser(storage))
-	admin.PUT("/unverify/:id", admincontrols.UnverifyUser(storage))
-	admin.PUT("/flag/:id", admincontrols.FlagUser(storage))
-	admin.PUT("/unflag/:id", admincontrols.UnflagUser(storage))
+	admin_routes.PUT("/verify/:id", admin.VerifyUser(storage))
+	admin_routes.PUT("/unverify/:id", admin.UnverifyUser(storage))
+	admin_routes.PUT("/flag/:id", admin.FlagUser(storage))
+	admin_routes.PUT("/unflag/:id", admin.UnflagUser(storage))
 
-	admin.POST("/add/service-category", admincontrols.AddServiceCategory(storage))
-	admin.POST("/add/vehicle", admincontrols.AddVehicle(storage))
+	admin_routes.POST("/add/service-category", admin.AddServiceCategory(storage))
+	admin_routes.POST("/add/vehicle", admin.AddVehicle(storage))
 }

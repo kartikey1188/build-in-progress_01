@@ -2,37 +2,37 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kartikey1188/build-in-progress_01/internal/http/handlers/collectorcontrols"
+	"github.com/kartikey1188/build-in-progress_01/internal/http/handlers/collector"
 	"github.com/kartikey1188/build-in-progress_01/internal/http/middleware"
 	"github.com/kartikey1188/build-in-progress_01/internal/storage"
 )
 
 func CollectorRoutes(router *gin.Engine, storage storage.Storage) {
-	collector := router.Group("/collector")
-	collector.Use(middleware.CollectorOnly())
+	collector_routes := router.Group("/collector")
+	collector_routes.Use(middleware.CollectorOnly())
 
-	collector.PUT("/profile/:id", collectorcontrols.UpdateProfile(storage))
+	collector_routes.PATCH("/profile/:id", collector.UpdateProfile(storage))
 
 	// Service Categories
-	collector.POST("/service-categories", collectorcontrols.OfferServiceCategory(storage))
-	collector.PUT("/service-categories", collectorcontrols.UpdateOfferedServiceCategory(storage))
-	collector.DELETE("/service-categories", collectorcontrols.DeleteOfferedServiceCategory(storage))
+	collector_routes.POST("/service-categories", collector.OfferServiceCategory(storage))
+	collector_routes.PATCH("/service-categories", collector.UpdateOfferedServiceCategory(storage))
+	collector_routes.DELETE("/service-categories", collector.DeleteOfferedServiceCategory(storage))
 
 	// Vehicles
-	collector.POST("/vehicles", collectorcontrols.AppendVehicle(storage))
-	collector.PUT("/vehicles/:id", collectorcontrols.UpdateVehicle(storage))
-	collector.PUT("/vehicles/:id/activate", collectorcontrols.ActivateVehicle(storage))
-	collector.PUT("/vehicles/:id/deactivate", collectorcontrols.DeactivateVehicle(storage))
+	collector_routes.POST("/vehicles", collector.AppendVehicle(storage))
+	collector_routes.PATCH("/vehicles/:id", collector.UpdateVehicle(storage))
+	collector_routes.PUT("/vehicles/:id/activate", collector.ActivateVehicle(storage))
+	collector_routes.PUT("/vehicles/:id/deactivate", collector.DeactivateVehicle(storage))
 
 	// Drivers
-	collector.POST("/drivers", collectorcontrols.RegisterDriver(storage))
-	collector.PUT("/drivers/:id", collectorcontrols.UpdateDriver(storage))
-	collector.PUT("/drivers/:id/assign-vehicle", collectorcontrols.AssignVehicleToDriver(storage))
+	collector_routes.POST("/drivers", collector.RegisterDriver(storage))
+	collector_routes.PATCH("/drivers/:id", collector.UpdateDriver(storage))
+	collector_routes.PUT("/drivers/:id/assign-vehicle", collector.AssignVehicleToDriver(storage))
 
 	// Open-access by ID
-	router.GET("/collectors", collectorcontrols.ListCollectors(storage))
-	router.GET("/collectors/:id", collectorcontrols.GetCollectorDetails(storage))
-	router.GET("/collectors/:id/service-categories", collectorcontrols.GetServiceCategories(storage))
-	router.GET("/collectors/:id/vehicles", collectorcontrols.GetCollectorVehicles(storage))
-	router.GET("/collectors/:id/drivers", collectorcontrols.GetCollectorDrivers(storage))
+	router.GET("/collector", collector.ListCollectors(storage))
+	router.GET("/collector/:id", collector.GetCollectorDetails(storage))
+	router.GET("/collector/:id/service-categories", collector.GetServiceCategories(storage))
+	router.GET("/collector/:id/vehicles", collector.GetCollectorVehicles(storage))
+	router.GET("/collector/:id/drivers", collector.GetCollectorDrivers(storage))
 }

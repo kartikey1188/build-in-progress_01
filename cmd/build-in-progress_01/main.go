@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strconv"
 	"syscall"
 	"time"
 
@@ -16,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kartikey1188/build-in-progress_01/internal/config"
 	"github.com/kartikey1188/build-in-progress_01/internal/http/routes"
-	"github.com/kartikey1188/build-in-progress_01/internal/storage/databaseone"
+	"github.com/kartikey1188/build-in-progress_01/internal/storage/postgres"
 )
 
 func main() {
@@ -26,7 +25,7 @@ func main() {
 
 	// setting up database
 
-	storage, err := databaseone.New(cfg)
+	storage, err := postgres.New(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -51,17 +50,12 @@ func main() {
 
 	//setting up server (with graceful shutdown)
 
-	port, err := strconv.Atoi(cfg.Port)
-	if err != nil {
-		log.Fatal("Invalid PORT value")
-	}
-
-	server := http.Server{
-		Addr:    fmt.Sprintf("localhost:%d", port),
+	server := &http.Server{
+		Addr:    fmt.Sprintf("0.0.0.0:%s", cfg.Port),
 		Handler: router,
 	}
 
-	slog.Info("server started", slog.String("address", fmt.Sprintf("localhost:%d", port)))
+	slog.Info("server started", slog.String("address", fmt.Sprintf("localhost:%s", cfg.Port)))
 
 	done := make(chan os.Signal, 1)
 

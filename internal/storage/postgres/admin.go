@@ -1,4 +1,4 @@
-package databaseone
+package postgres
 
 import (
 	"fmt"
@@ -14,7 +14,7 @@ func (p *Postgres) VerifyUser(userID string) error {
 		return fmt.Errorf("invalid user ID: %w", err)
 	}
 
-	result, err := p.Db.Exec("UPDATE users SET is_verified = true WHERE user_id = $1", id)
+	result, err := p.SqlDB.Exec("UPDATE users SET is_verified = true WHERE user_id = $1", id)
 	if err != nil {
 		return fmt.Errorf("failed to verify user: %w", err)
 	}
@@ -38,7 +38,7 @@ func (p *Postgres) UnverifyUser(userID string) error {
 		return fmt.Errorf("invalid user ID: %w", err)
 	}
 
-	result, err := p.Db.Exec("UPDATE users SET is_verified = false WHERE user_id = $1", id)
+	result, err := p.SqlDB.Exec("UPDATE users SET is_verified = false WHERE user_id = $1", id)
 	if err != nil {
 		return fmt.Errorf("failed to unverify user: %w", err)
 	}
@@ -62,7 +62,7 @@ func (p *Postgres) FlagUser(userID string) error {
 		return fmt.Errorf("invalid user ID: %w", err)
 	}
 
-	result, err := p.Db.Exec(
+	result, err := p.SqlDB.Exec(
 		"UPDATE users SET is_flagged = true, is_active = false WHERE user_id = $1",
 		id,
 	)
@@ -89,7 +89,7 @@ func (p *Postgres) UnflagUser(userID string) error {
 		return fmt.Errorf("invalid user ID: %w", err)
 	}
 
-	result, err := p.Db.Exec(
+	result, err := p.SqlDB.Exec(
 		"UPDATE users SET is_flagged = false, is_active = true WHERE user_id = $1",
 		id,
 	)
@@ -112,7 +112,7 @@ func (p *Postgres) UnflagUser(userID string) error {
 // AddServiceCategory inserts a new waste service category and returns its ID.
 func (p *Postgres) AddServiceCategory(sc types.ServiceCategory) (int64, error) {
 	var id int64
-	err := p.Db.QueryRow(
+	err := p.SqlDB.QueryRow(
 		`INSERT INTO service_categories (waste_type)
 		 VALUES ($1)
 		 RETURNING category_id`,
@@ -127,7 +127,7 @@ func (p *Postgres) AddServiceCategory(sc types.ServiceCategory) (int64, error) {
 // AddVehicle inserts a new vehicle and returns its ID.
 func (p *Postgres) AddVehicle(v types.Vehicle) (int64, error) {
 	var id int64
-	err := p.Db.QueryRow(
+	err := p.SqlDB.QueryRow(
 		`INSERT INTO vehicles (vehicle_type, capacity)
 		 VALUES ($1, $2)
 		 RETURNING vehicle_id`,
