@@ -11,7 +11,7 @@ type User struct {
 	FullName     string    `gorm:"column:full_name;not null"`
 	PhoneNumber  string    `gorm:"column:phone_number;size:20"`
 	Address      string    `gorm:"column:address;type:text"`
-	Registration time.Time `gorm:"column:registration;not null"`
+	Registration time.Time `gorm:"column:registration_date;not null"`
 	Role         string    `gorm:"column:role;not null;check:role IN ('Business','Collector','Admin','Government','Driver')"`
 	IsActive     bool      `gorm:"column:is_active;not null;default:true"`
 	ProfileImage string    `gorm:"column:profile_image;type:text"`

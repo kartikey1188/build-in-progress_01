@@ -1216,10 +1216,6 @@ components:
     User:
       type: object
       properties:
-        user_id:
-          type: integer
-          format: int64
-          description: Unique identifier for the user
         email:
           type: string
           format: email
@@ -1236,10 +1232,6 @@ components:
         address:
           type: string
           description: User's address
-        registration_date:
-          type: string
-          format: date
-          description: Date of registration (YYYY-MM-DD)
         role:
           type: string
           enum:
@@ -1249,22 +1241,9 @@ components:
             - Government
             - Driver
           description: Role of the user
-        is_active:
-          type: boolean
-          description: Whether the user account is active
         profile_image:
           type: string
           description: URL or path to the user's profile image
-        last_login:
-          type: string
-          format: date-time
-          description: Last login timestamp (YYYY-MM-DD HH:MM:SS)
-        is_verified:
-          type: boolean
-          description: Whether the user is verified
-        is_flagged:
-          type: boolean
-          description: Whether the user is flagged
       required:
         - email
         - password_hash

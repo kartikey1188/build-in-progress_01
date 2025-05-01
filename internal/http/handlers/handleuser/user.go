@@ -137,6 +137,13 @@ func Login(storage storage.Storage) gin.HandlerFunc {
 				return
 			}
 
+			timestamp, err := UpdateLoginTimestamp(storage, user)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, err)
+				return
+			}
+			business.LastLogin = timestamp
+
 		case "Collector":
 			collector, err = storage.GetCollectorByEmail(loginData.Email)
 			if err != nil {
@@ -144,16 +151,25 @@ func Login(storage storage.Storage) gin.HandlerFunc {
 				return
 			}
 
+			timestamp, err := UpdateLoginTimestamp(storage, user)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, err)
+				return
+			}
+			collector.LastLogin = timestamp
+
 		case "Admin":
 			admin, err = storage.GetUserByEmail(loginData.Email)
 			if err != nil {
 				c.JSON(http.StatusUnauthorized, err)
 			}
+			timestamp, err := UpdateLoginTimestamp(storage, user)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, err)
+				return
+			}
+			admin.LastLogin = timestamp
 		}
-
-		// Updating last login timestamp
-		user.LastLogin = types.DateTime{Time: time.Now()}
-		storage.UpdateLastLogin(user.UserID, user.LastLogin)
 
 		// Generating JWT token
 
@@ -199,4 +215,12 @@ func Login(storage storage.Storage) gin.HandlerFunc {
 			})
 		}
 	}
+}
+
+func UpdateLoginTimestamp(storage storage.Storage, user types.User) (types.DateTime, error) {
+	user.LastLogin = types.DateTime{Time: time.Now()}
+	if err := storage.UpdateLastLogin(user.UserID, user.LastLogin); err != nil {
+		return types.DateTime{}, err
+	}
+	return user.LastLogin, nil
 }
