@@ -26,21 +26,24 @@ type CollectorVehicle struct {
 	MaintenanceDate      Date   `json:"maintenance_date"`                  // Last maintenance date
 	IsActive             bool   `json:"is_active"`                         // Whether vehicle is in service
 	GPSTrackingID        string `json:"gps_tracking_id"`                   // GPS tracking device ID
-	AssignedDriverID     int64  `json:"assigned_driver_id"`                // Currently assigned driver
 	RegistrationDocument string `json:"registration_document"`             // Path to registration document
 	RegistrationExpiry   Date   `json:"registration_expiry"`               // Registration expiration date
 }
 
 type CollectorDriver struct {
-	DriverID          int64   `json:"driver_id"`           // Primary key
-	CollectorID       int64   `json:"collector_id"`        // Foreign key to Collector
-	LicenseNumber     string  `json:"license_number"`      // Driver's license number
-	LicenseExpiry     Date    `json:"license_expiry"`      // License expiration date
-	AssignedVehicleID int64   `json:"assigned_vehicle_id"` // Currently assigned vehicle
-	IsEmployed        bool    `json:"is_employed"`         // Whether driver is currently employed
-	IsActive          bool    `json:"is_active"`           // Whether driver is available for trips
-	Rating            float64 `json:"rating"`              // Driver's performance rating
-	JoiningDate       Date    `json:"joining_date"`        // Date when driver joined
+	DriverID      int64   `json:"driver_id"`      // Primary key
+	CollectorID   int64   `json:"collector_id"`   // Foreign key to Collector
+	LicenseNumber string  `json:"license_number"` // Driver's license number
+	LicenseExpiry Date    `json:"license_expiry"` // License expiration date
+	IsEmployed    bool    `json:"is_employed"`    // Whether driver is currently employed
+	IsActive      bool    `json:"is_active"`      // Whether driver is available for trips
+	Rating        float64 `json:"rating"`         // Driver's performance rating
+	JoiningDate   Date    `json:"joining_date"`   // Date when driver joined
+}
+
+type VehicleDriver struct {
+	DriverID  int64 `json:"driver_id"`
+	VehicleID int64 `json:"vehicle_id"`
 }
 
 type CollectorDriverLocation struct {

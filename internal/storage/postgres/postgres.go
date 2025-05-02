@@ -51,6 +51,7 @@ func autoMigrateTables(db *gorm.DB) error {
 		&models.Vehicle{},
 		&models.CollectorDriver{},
 		&models.CollectorVehicle{},
+		&models.VehicleDriver{},
 		&models.CollectorDriverLocation{},
 	)
 }

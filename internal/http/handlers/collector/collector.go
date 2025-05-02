@@ -148,14 +148,15 @@ func DeleteOfferedServiceCategory(storage storage.Storage) gin.HandlerFunc {
 }
 
 // AppendVehicle allows a collector to append a new vehicle
-func AppendVehicle(storage storage.Storage) gin.HandlerFunc {
+func AppendCollectorVehicle(storage storage.Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		uidAny, ok := c.Get("user_id")
-		if !ok {
-			c.JSON(http.StatusUnauthorized, response.GeneralError(fmt.Errorf("user id missing")))
+		uidStr := c.Param("id")
+
+		userID, err := strconv.ParseUint(uidStr, 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 			return
 		}
-		userID := uidAny.(uint64)
 
 		var input types.CollectorVehicle
 		if err := c.ShouldBindJSON(&input); err != nil {
@@ -174,83 +175,67 @@ func AppendVehicle(storage storage.Storage) gin.HandlerFunc {
 }
 
 // UpdateVehicle updates an existing vehicle for a collector
-func UpdateVehicle(storage storage.Storage) gin.HandlerFunc {
+func UpdateCollectorVehicle(storage storage.Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		collectorID, exists := c.Get("collectorID")
-		if !exists {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-			return
-		}
-
-		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+		userID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid vehicle ID"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 			return
 		}
 
-		var input types.CollectorVehicle
+		var input types.UpdateCollectorVehicle
 		if err := c.BindJSON(&input); err != nil {
 			c.JSON(http.StatusBadRequest, response.GeneralError(err))
 			return
 		}
 
-		err = storage.UpdateCollectorVehicle(id, collectorID.(int64), input)
+		if input.VehicleID == 0 {
+			c.JSON(http.StatusBadRequest, response.GeneralError(fmt.Errorf("vehicle_id is required")))
+			return
+		}
+
+		err = storage.UpdateCollectorVehicle(input, userID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{"status": "OK", "Updated Vehicle ID": id})
+		c.JSON(http.StatusOK, gin.H{"status": "OK", "Updated Vehicle ID": userID})
 	}
 }
 
-// ActivateVehicle activates a collector's vehicle
-func ActivateVehicle(storage storage.Storage) gin.HandlerFunc {
+func RemoveCollectorVehicle(storage storage.Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		collectorID, exists := c.Get("collectorID")
-		if !exists {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		userID, err1 := strconv.ParseUint(c.Param("id"), 10, 64)
+		if err1 != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 			return
 		}
 
-		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid vehicle ID"})
+		type VehicleIdStruct struct {
+			VehicleID int64 `json:"vehicle_id"`
+		}
+
+		var req VehicleIdStruct
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, response.GeneralError(err))
+			return
+		}
+		if req.VehicleID == 0 {
+			c.JSON(http.StatusBadRequest, response.GeneralError(fmt.Errorf("vehicle_id is required")))
 			return
 		}
 
-		err = storage.ActivateCollectorVehicle(id, collectorID.(int64))
+		err := storage.DeleteCollectorVehicle(req.VehicleID, userID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{"status": "OK", "Activated Vehicle ID": id})
-	}
-}
-
-// DeactivateVehicle deactivates a collector's vehicle
-func DeactivateVehicle(storage storage.Storage) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		collectorID, exists := c.Get("collectorID")
-		if !exists {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-			return
-		}
-
-		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid vehicle ID"})
-			return
-		}
-
-		err = storage.DeactivateCollectorVehicle(id, collectorID.(int64))
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
-			return
-		}
-
-		c.JSON(http.StatusOK, gin.H{"status": "OK", "Deactivated Vehicle ID": id})
+		c.JSON(http.StatusOK, gin.H{
+			"status":             "OK",
+			"Deleted Vehicle ID": req.VehicleID,
+		})
 	}
 }
 

@@ -30,34 +30,6 @@ func (p *Postgres) CreateUser(user types.User) (int64, error) {
 	return lastID, nil
 }
 
-func (p *Postgres) GetUserByEmail(email string) (types.User, error) {
-	var user types.User
-	var registration, lastLogin time.Time
-
-	err := p.SqlDB.QueryRow(`
-		SELECT user_id, email, password_hash, full_name, phone_number,
-			address, registration_date, role, is_active, profile_image,
-			last_login, is_verified, is_flagged
-		FROM users
-		WHERE email = $1
-		LIMIT 1`, email,
-	).Scan(
-		&user.UserID, &user.Email, &user.PasswordHash, &user.FullName, &user.PhoneNumber,
-		&user.Address, &registration, &user.Role, &user.IsActive, &user.ProfileImage,
-		&lastLogin, &user.IsVerified, &user.IsFlagged,
-	)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return types.User{}, fmt.Errorf("user not found")
-		}
-		return types.User{}, fmt.Errorf("query error: %w", err)
-	}
-
-	user.Registration = types.Date{Time: registration}
-	user.LastLogin = types.DateTime{Time: lastLogin}
-	return user, nil
-}
-
 func (p *Postgres) UpdateLastLogin(userID int64, lastLogin types.DateTime) error {
 	_, err := p.SqlDB.Exec(`UPDATE users SET last_login = $1 WHERE user_id = $2`, lastLogin.Time, userID)
 	if err != nil {
@@ -171,32 +143,4 @@ func (p *Postgres) GetBusinessByEmail(email string) (types.Business, error) {
 	business.User = user
 
 	return business, nil
-}
-
-func (p *Postgres) GetUserById(userID int64) (types.User, error) {
-	var user types.User
-	var registration, lastLogin time.Time
-
-	err := p.SqlDB.QueryRow(`
-		SELECT user_id, email, password_hash, full_name, phone_number,
-			address, registration_date, role, is_active, profile_image,
-			last_login, is_verified, is_flagged
-		FROM users
-		WHERE user_id = $1
-		LIMIT 1`, userID,
-	).Scan(
-		&user.UserID, &user.Email, &user.PasswordHash, &user.FullName, &user.PhoneNumber,
-		&user.Address, &registration, &user.Role, &user.IsActive, &user.ProfileImage,
-		&lastLogin, &user.IsVerified, &user.IsFlagged,
-	)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return types.User{}, fmt.Errorf("user not found")
-		}
-		return types.User{}, fmt.Errorf("query error: %w", err)
-	}
-
-	user.Registration = types.Date{Time: registration}
-	user.LastLogin = types.DateTime{Time: lastLogin}
-	return user, nil
 }

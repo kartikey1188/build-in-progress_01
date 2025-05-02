@@ -13,4 +13,6 @@ func General(router *gin.Engine, storage storage.Storage) {
 	general_routes.GET("/category/:id", general.GetServiceCategory(storage))
 	general_routes.GET("/all-vehicles", general.GetAllVehicles(storage))
 	general_routes.GET("/vehicle/:id", general.GetVehicle(storage))
+	general_routes.GET("/user/:id", general.GetUserByID(storage))
+	general_routes.GET("/user/email", general.GetUserByEmail(storage))
 }

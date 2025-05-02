@@ -138,3 +138,41 @@ func (p *Postgres) AddVehicle(v types.Vehicle) (int64, error) {
 	}
 	return id, nil
 }
+
+func (p *Postgres) DeleteServiceCategory(categoryID uint64) error {
+
+	result, err := p.SqlDB.Exec("DELETE FROM service_categories WHERE category_id = $1", categoryID)
+	if err != nil {
+		return fmt.Errorf("failed to delete service category: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to check affected rows: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("service category with ID %d not found", categoryID)
+	}
+
+	return nil
+}
+
+func (p *Postgres) DeleteVehicle(vehicleID uint64) error {
+
+	result, err := p.SqlDB.Exec("DELETE FROM vehicles WHERE vehicle_id = $1", vehicleID)
+	if err != nil {
+		return fmt.Errorf("failed to delete vehicle: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to check affected rows: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("vehicle with ID %d not found", vehicleID)
+	}
+
+	return nil
+}

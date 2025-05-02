@@ -12,11 +12,9 @@ type Storage interface {
 type LoginAndRegister interface {
 	CreateCollectorUser(user types.Collector) (int64, error)
 	CreateBusinessUser(user types.Business) (int64, error)
-	GetUserByEmail(email string) (types.User, error)
 	UpdateLastLogin(userID int64, lastLogin types.DateTime) error
 	GetCollectorByEmail(email string) (types.Collector, error)
 	GetBusinessByEmail(email string) (types.Business, error)
-	GetUserById(userID int64) (types.User, error)
 }
 
 type Admin interface {
@@ -27,6 +25,8 @@ type Admin interface {
 
 	AddVehicle(v types.Vehicle) (int64, error)
 	AddServiceCategory(sc types.ServiceCategory) (int64, error)
+	DeleteVehicle(vehicleID uint64) error
+	DeleteServiceCategory(categoryID uint64) error
 }
 
 type General interface {
@@ -34,6 +34,8 @@ type General interface {
 	GetServiceCategory(categoryID uint64) (types.ServiceCategory, error)
 	GetAllVehicles() ([]types.Vehicle, error)
 	GetVehicle(vehicleID uint64) (types.Vehicle, error)
+	GetUserByID(userID uint64) (types.User, error)
+	GetUserByEmail(email string) (types.User, error)
 }
 
 type Collectors interface {
@@ -47,9 +49,9 @@ type Collectors interface {
 	DeleteCollectorServiceCategory(category_id int64, collectorID uint64) error
 
 	AddCollectorVehicle(input types.CollectorVehicle, userID uint64) (int64, error)
-	UpdateCollectorVehicle(id int64, collectorID int64, input types.CollectorVehicle) error
-	ActivateCollectorVehicle(id int64, collectorID int64) error
-	DeactivateCollectorVehicle(id int64, collectorID int64) error
+	UpdateCollectorVehicle(input types.UpdateCollectorVehicle, userID uint64) error
+	DeleteCollectorVehicle(vehicleID int64, collectorID uint64) error
+	// Activating/Deactivating a vehicle can also be done through UpdateCollectorVehicle only
 
 	AddCollectorDriver(input types.CollectorDriver) (int64, error)
 	UpdateCollectorDriver(id int64, collectorID int64, input types.CollectorDriver) error

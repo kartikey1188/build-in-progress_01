@@ -64,3 +64,42 @@ func GetVehicle(storage storage.Storage) gin.HandlerFunc {
 		c.JSON(http.StatusOK, vehicle)
 	}
 }
+
+func GetUserByID(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user ID"})
+			return
+		}
+
+		user, err := storage.GetUserByID(id)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+		c.JSON(http.StatusOK, user)
+	}
+}
+
+func GetUserByEmail(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		type Email struct {
+			Email string `json:"email" binding:"required,email"`
+		}
+
+		var email Email
+		if err := c.ShouldBindJSON(&email); err != nil {
+			c.JSON(http.StatusBadRequest, response.GeneralError(err))
+			return
+		}
+
+		user, err := storage.GetUserByEmail(email.Email)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+		c.JSON(http.StatusOK, user)
+
+	}
+}

@@ -2,6 +2,7 @@ package admin
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/kartikey1188/build-in-progress_01/internal/storage"
@@ -96,5 +97,39 @@ func AddVehicle(storage storage.Storage) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, gin.H{"status": "OK", "Added Vehicle ID": id})
+	}
+}
+
+func DeleteServiceCategory(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid collector ID"})
+			return
+		}
+
+		if err := storage.DeleteServiceCategory(id); err != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"status": "OK", "Deleted Service Category ID": id})
+	}
+}
+
+func DeleteVehicle(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid collector ID"})
+			return
+		}
+
+		if err := storage.DeleteVehicle(id); err != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"status": "OK", "Deleted Vehicle ID": id})
 	}
 }

@@ -19,10 +19,10 @@ func CollectorRoutes(router *gin.Engine, storage storage.Storage) {
 	collector_routes.DELETE("/service-categories/:id", collector.DeleteOfferedServiceCategory(storage))
 
 	// Vehicles
-	collector_routes.POST("/vehicles/:id", collector.AppendVehicle(storage))
-	collector_routes.PATCH("/vehicles/:id", collector.UpdateVehicle(storage))
-	collector_routes.PUT("/vehicles/:id/activate", collector.ActivateVehicle(storage))
-	collector_routes.PUT("/vehicles/:id/deactivate", collector.DeactivateVehicle(storage))
+	collector_routes.POST("/vehicles/:id", collector.AppendCollectorVehicle(storage))
+	collector_routes.PATCH("/vehicles/:id", collector.UpdateCollectorVehicle(storage))
+	collector_routes.DELETE("/vehicles/:id", collector.RemoveCollectorVehicle(storage))
+	// --> Activating/Deactivating a vehicle can also be done through UpdateVehicle only
 
 	// Drivers
 	collector_routes.POST("/drivers/:id", collector.RegisterDriver(storage))

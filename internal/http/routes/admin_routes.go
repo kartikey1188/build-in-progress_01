@@ -18,4 +18,7 @@ func Admin(router *gin.Engine, storage storage.Storage) {
 
 	admin_routes.POST("/add/service-category", admin.AddServiceCategory(storage))
 	admin_routes.POST("/add/vehicle", admin.AddVehicle(storage))
+
+	admin_routes.DELETE("/delete/service-category/:id", admin.DeleteServiceCategory(storage))
+	admin_routes.DELETE("/delete/vehicle/:id", admin.DeleteVehicle(storage))
 }

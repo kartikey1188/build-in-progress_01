@@ -34,9 +34,20 @@ type CollectorUpdate struct {
 }
 
 type UpdateCollectorServiceCategory struct {
-	CategoryID           int64   `json:"category_id"`           // Foreign key to ServiceCategory
-	CollectorID          int64   `json:"collector_id"`          // Foreign key to Collector
-	PricePerKg           float64 `json:"price_per_kg"`          // Cost per kg for this waste type
-	MaximumCapacity      float64 `json:"maximum_capacity"`      // Max capacity for this waste type
-	HandlingRequirements string  `json:"handling_requirements"` // Special handling instructions
+	CategoryID           int64   `json:"category_id"`
+	CollectorID          int64   `json:"collector_id"`
+	PricePerKg           float64 `json:"price_per_kg"`
+	MaximumCapacity      float64 `json:"maximum_capacity"`
+	HandlingRequirements string  `json:"handling_requirements"`
+}
+
+type UpdateCollectorVehicle struct {
+	VehicleID            int64  `json:"vehicle_id"`
+	VehicleNumber        string `json:"vehicle_number"`
+	MaintenanceDate      Date   `json:"maintenance_date"`
+	IsActive             *bool  `json:"is_active"` // changed from bool to *bool
+	GPSTrackingID        string `json:"gps_tracking_id"`
+	AssignedDriverID     int64  `json:"assigned_driver_id"`
+	RegistrationDocument string `json:"registration_document"`
+	RegistrationExpiry   Date   `json:"registration_expiry"`
 }

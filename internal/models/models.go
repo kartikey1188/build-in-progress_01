@@ -57,27 +57,30 @@ type Vehicle struct {
 }
 
 type CollectorVehicle struct {
-	CollectorID          int64     `gorm:"column:collector_id;not null;index;foreignKey:collector_id;references:Collector;onDelete:CASCADE"`
-	VehicleID            int64     `gorm:"column:vehicle_id;not null;index;foreignKey:vehicle_id;references:Vehicle;onDelete:CASCADE"`
+	CollectorID          int64     `gorm:"primaryKey;column:collector_id;not null;index;foreignKey:collector_id;references:Collector;onDelete:CASCADE"`
+	VehicleID            int64     `gorm:"primaryKey;column:vehicle_id;not null;index;foreignKey:vehicle_id;references:Vehicle;onDelete:CASCADE"`
 	VehicleNumber        string    `gorm:"column:vehicle_number;not null;unique;size:50"`
 	MaintenanceDate      time.Time `gorm:"column:maintenance_date"`
 	IsActive             bool      `gorm:"column:is_active;not null;default:true"`
 	GPSTrackingID        string    `gorm:"column:gps_tracking_id;size:100"`
-	AssignedDriverID     int64     `gorm:"column:assigned_driver_id;index"`
 	RegistrationDocument string    `gorm:"column:registration_document;type:text"`
 	RegistrationExpiry   time.Time `gorm:"column:registration_expiry"`
 }
 
 type CollectorDriver struct {
-	DriverID          int64     `gorm:"primaryKey;autoIncrement;column:driver_id"`
-	CollectorID       int64     `gorm:"column:collector_id;not null;index;foreignKey:collector_id;references:Collector;onDelete:CASCADE"`
-	LicenseNumber     string    `gorm:"column:license_number;not null;unique;size:100"`
-	LicenseExpiry     time.Time `gorm:"column:license_expiry;not null"`
-	AssignedVehicleID int64     `gorm:"column:assigned_vehicle_id;index"`
-	IsEmployed        bool      `gorm:"column:is_employed;not null;default:true"`
-	IsActive          bool      `gorm:"column:is_active;not null;default:true"`
-	Rating            float64   `gorm:"column:rating;type:decimal(3,2)"`
-	JoiningDate       time.Time `gorm:"column:joining_date;not null"`
+	DriverID      int64     `gorm:"primaryKey;autoIncrement;column:driver_id"`
+	CollectorID   int64     `gorm:"primaryKey;column:collector_id;not null;index;foreignKey:collector_id;references:Collector;onDelete:CASCADE"`
+	LicenseNumber string    `gorm:"column:license_number;not null;unique;size:100"`
+	LicenseExpiry time.Time `gorm:"column:license_expiry;not null"`
+	IsEmployed    bool      `gorm:"column:is_employed;not null;default:true"`
+	IsActive      bool      `gorm:"column:is_active;not null;default:true"`
+	Rating        float64   `gorm:"column:rating;type:decimal(3,2)"`
+	JoiningDate   time.Time `gorm:"column:joining_date;not null"`
+}
+
+type VehicleDriver struct {
+	DriverID  int64 `gorm:"column:driver_id;primaryKey;foreignKey:driver_id;references:CollectorDriver;onDelete:CASCADE"`
+	VehicleID int64 `gorm:"column:vehicle_id;primaryKey;foreignKey:vehicle_id;references:CollectorVehicle;onDelete:CASCADE"`
 }
 
 type CollectorDriverLocation struct {

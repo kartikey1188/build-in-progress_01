@@ -61,6 +61,12 @@ func (p *Postgres) GetCollectors() ([]types.Collector, error) {
 }
 
 func (p *Postgres) UpdateProfile(userID int64, update types.CollectorUpdate) (int64, error) {
+
+	_, err1 := p.GetCollectorByID(userID)
+	if err1 != nil {
+		return 0, fmt.Errorf("collector ID not found")
+	}
+
 	err := p.GormDB.Transaction(func(tx *gorm.DB) error {
 		// Updating User fields
 		userUpdates := models.User{
@@ -103,6 +109,11 @@ func (p *Postgres) UpdateProfile(userID int64, update types.CollectorUpdate) (in
 }
 
 func (p *Postgres) AddCollectorServiceCategory(input types.CollectorServiceCategory, userID uint64) (int64, error) {
+	_, err1 := p.GetCollectorByID(int64(userID))
+	if err1 != nil {
+		return 0, fmt.Errorf("collector ID not found")
+	}
+
 	_, err := p.GetServiceCategory(uint64(input.CategoryID))
 	if err != nil {
 		return 0, fmt.Errorf("service category not found")
@@ -123,6 +134,10 @@ func (p *Postgres) AddCollectorServiceCategory(input types.CollectorServiceCateg
 }
 
 func (p *Postgres) UpdateCollectorServiceCategory(input types.UpdateCollectorServiceCategory, userID uint64) error {
+	_, err1 := p.GetCollectorByID(int64(userID))
+	if err1 != nil {
+		return fmt.Errorf("collector ID not found")
+	}
 	_, err := p.GetServiceCategory(uint64(input.CategoryID))
 	if err != nil {
 		return fmt.Errorf("service category not found")
@@ -147,6 +162,10 @@ func (p *Postgres) UpdateCollectorServiceCategory(input types.UpdateCollectorSer
 }
 
 func (p *Postgres) DeleteCollectorServiceCategory(categoryID int64, collectorID uint64) error {
+	_, err1 := p.GetCollectorByID(categoryID)
+	if err1 != nil {
+		return fmt.Errorf("collector ID not found")
+	}
 	_, err := p.GetServiceCategory(uint64(categoryID))
 	if err != nil {
 		return fmt.Errorf("service category not found")
@@ -165,6 +184,14 @@ func (p *Postgres) DeleteCollectorServiceCategory(categoryID int64, collectorID 
 }
 
 func (p *Postgres) AddCollectorVehicle(input types.CollectorVehicle, userID uint64) (int64, error) {
+	_, err1 := p.GetCollectorByID(int64(userID))
+	if err1 != nil {
+		return 0, fmt.Errorf("collector ID not found")
+	}
+	_, err := p.GetVehicle(uint64(input.VehicleID))
+	if err != nil {
+		return 0, fmt.Errorf("vehicle not found")
+	}
 	model := models.CollectorVehicle{
 		VehicleID:            input.VehicleID,
 		CollectorID:          int64(userID),
@@ -172,7 +199,6 @@ func (p *Postgres) AddCollectorVehicle(input types.CollectorVehicle, userID uint
 		MaintenanceDate:      input.MaintenanceDate.Time,
 		IsActive:             input.IsActive,
 		GPSTrackingID:        input.GPSTrackingID,
-		AssignedDriverID:     input.AssignedDriverID,
 		RegistrationDocument: input.RegistrationDocument,
 		RegistrationExpiry:   input.RegistrationExpiry.Time,
 	}
@@ -184,69 +210,85 @@ func (p *Postgres) AddCollectorVehicle(input types.CollectorVehicle, userID uint
 	return model.VehicleID, nil
 }
 
-func (p *Postgres) UpdateCollectorVehicle(id int64, collectorID int64, input types.CollectorVehicle) error {
-	updates := models.CollectorVehicle{
-		VehicleID:            input.VehicleID,
-		VehicleNumber:        input.VehicleNumber,
-		MaintenanceDate:      input.MaintenanceDate.Time,
-		IsActive:             input.IsActive,
-		GPSTrackingID:        input.GPSTrackingID,
-		AssignedDriverID:     input.AssignedDriverID,
-		RegistrationDocument: input.RegistrationDocument,
-		RegistrationExpiry:   input.RegistrationExpiry.Time,
+func (p *Postgres) UpdateCollectorVehicle(input types.UpdateCollectorVehicle, userID uint64) error {
+	_, err1 := p.GetCollectorByID(int64(userID))
+	if err1 != nil {
+		return fmt.Errorf("collector ID not found")
+	}
+	_, err := p.GetVehicle(uint64(input.VehicleID))
+	if err != nil {
+		return fmt.Errorf("vehicle not found")
+	}
+
+	// Using the following method instead of a struct based partial update because of the is_active field (passing "is_active" as false will not update the field, since it is the zero value for bool)
+
+	// Building a map for partial update
+	updates := make(map[string]interface{})
+
+	if input.VehicleNumber != "" {
+		updates["vehicle_number"] = input.VehicleNumber
+	}
+	if !input.MaintenanceDate.Time.IsZero() {
+		updates["maintenance_date"] = input.MaintenanceDate.Time
+	}
+	// For booleans, updating if provided (even if false)
+	if input.IsActive != nil {
+		updates["is_active"] = *input.IsActive
+	}
+	if input.GPSTrackingID != "" {
+		updates["gps_tracking_id"] = input.GPSTrackingID
+	}
+	if input.RegistrationDocument != "" {
+		updates["registration_document"] = input.RegistrationDocument
+	}
+	if !input.RegistrationExpiry.Time.IsZero() {
+		updates["registration_expiry"] = input.RegistrationExpiry.Time
 	}
 
 	result := p.GormDB.Model(&models.CollectorVehicle{}).
-		Where("collector_vehicle_id = ? AND collector_id = ?", id, collectorID).
+		Where("vehicle_id = ? AND collector_id = ?", input.VehicleID, userID).
 		Updates(updates)
 
 	if result.Error != nil {
 		return fmt.Errorf("update failed: %w", result.Error)
 	}
 	if result.RowsAffected == 0 {
-		return fmt.Errorf("no vehicle found with id %d for collector %d", id, collectorID)
+		return fmt.Errorf("no rows affected")
 	}
 	return nil
 }
 
-func (p *Postgres) ActivateCollectorVehicle(id int64, collectorID int64) error {
-	result := p.GormDB.Model(&models.CollectorVehicle{}).
-		Where("collector_vehicle_id = ? AND collector_id = ?", id, collectorID).
-		Update("is_active", true)
+func (p *Postgres) DeleteCollectorVehicle(vehicleID int64, collectorID uint64) error {
+	_, err1 := p.GetCollectorByID(int64(collectorID))
+	if err1 != nil {
+		return fmt.Errorf("collector ID not found")
+	}
+	_, err := p.GetVehicle(uint64(vehicleID))
+	if err != nil {
+		return fmt.Errorf("vehicle not found")
+	}
+	result := p.GormDB.Where("vehicle_id = ? AND collector_id = ?", vehicleID, collectorID).Delete(&models.CollectorVehicle{})
 
 	if result.Error != nil {
-		return fmt.Errorf("activation failed: %w", result.Error)
+		return fmt.Errorf("delete failed: %w", result.Error)
 	}
-	if result.RowsAffected == 0 {
-		return fmt.Errorf("no vehicle found with id %d for collector %d", id, collectorID)
-	}
-	return nil
-}
 
-func (p *Postgres) DeactivateCollectorVehicle(id int64, collectorID int64) error {
-	result := p.GormDB.Model(&models.CollectorVehicle{}).
-		Where("collector_vehicle_id = ? AND collector_id = ?", id, collectorID).
-		Update("is_active", false)
-
-	if result.Error != nil {
-		return fmt.Errorf("deactivation failed: %w", result.Error)
-	}
 	if result.RowsAffected == 0 {
-		return fmt.Errorf("no vehicle found with id %d for collector %d", id, collectorID)
+		return fmt.Errorf("no rows affected")
 	}
+
 	return nil
 }
 
 func (p *Postgres) AddCollectorDriver(input types.CollectorDriver) (int64, error) {
 	model := models.CollectorDriver{
-		CollectorID:       input.CollectorID,
-		LicenseNumber:     input.LicenseNumber,
-		LicenseExpiry:     input.LicenseExpiry.Time,
-		IsEmployed:        input.IsEmployed,
-		IsActive:          input.IsActive,
-		Rating:            input.Rating,
-		JoiningDate:       input.JoiningDate.Time,
-		AssignedVehicleID: input.AssignedVehicleID,
+		CollectorID:   input.CollectorID,
+		LicenseNumber: input.LicenseNumber,
+		LicenseExpiry: input.LicenseExpiry.Time,
+		IsEmployed:    input.IsEmployed,
+		IsActive:      input.IsActive,
+		Rating:        input.Rating,
+		JoiningDate:   input.JoiningDate.Time,
 	}
 
 	if err := p.GormDB.Create(&model).Error; err != nil {
@@ -258,13 +300,12 @@ func (p *Postgres) AddCollectorDriver(input types.CollectorDriver) (int64, error
 
 func (p *Postgres) UpdateCollectorDriver(id int64, collectorID int64, input types.CollectorDriver) error {
 	updates := models.CollectorDriver{
-		LicenseNumber:     input.LicenseNumber,
-		LicenseExpiry:     input.LicenseExpiry.Time,
-		IsEmployed:        input.IsEmployed,
-		IsActive:          input.IsActive,
-		Rating:            input.Rating,
-		JoiningDate:       input.JoiningDate.Time,
-		AssignedVehicleID: input.AssignedVehicleID,
+		LicenseNumber: input.LicenseNumber,
+		LicenseExpiry: input.LicenseExpiry.Time,
+		IsEmployed:    input.IsEmployed,
+		IsActive:      input.IsActive,
+		Rating:        input.Rating,
+		JoiningDate:   input.JoiningDate.Time,
 	}
 
 	result := p.GormDB.Model(&models.CollectorDriver{}).
@@ -338,7 +379,6 @@ func (p *Postgres) GetCollectorVehicles(collectorID int64) ([]types.CollectorVeh
 			MaintenanceDate:      types.Date{Time: m.MaintenanceDate},
 			IsActive:             m.IsActive,
 			GPSTrackingID:        m.GPSTrackingID,
-			AssignedDriverID:     m.AssignedDriverID,
 			RegistrationDocument: m.RegistrationDocument,
 			RegistrationExpiry:   types.Date{Time: m.RegistrationExpiry},
 		}
@@ -357,15 +397,14 @@ func (p *Postgres) GetCollectorDrivers(collectorID int64) ([]types.CollectorDriv
 	drivers := make([]types.CollectorDriver, len(models))
 	for i, m := range models {
 		drivers[i] = types.CollectorDriver{
-			DriverID:          m.DriverID,
-			CollectorID:       m.CollectorID,
-			LicenseNumber:     m.LicenseNumber,
-			LicenseExpiry:     types.Date{Time: m.LicenseExpiry},
-			AssignedVehicleID: m.AssignedVehicleID,
-			IsActive:          m.IsActive,
-			Rating:            m.Rating,
-			JoiningDate:       types.Date{Time: m.JoiningDate},
-			IsEmployed:        m.IsEmployed,
+			DriverID:      m.DriverID,
+			CollectorID:   m.CollectorID,
+			LicenseNumber: m.LicenseNumber,
+			LicenseExpiry: types.Date{Time: m.LicenseExpiry},
+			IsActive:      m.IsActive,
+			Rating:        m.Rating,
+			JoiningDate:   types.Date{Time: m.JoiningDate},
+			IsEmployed:    m.IsEmployed,
 		}
 	}
 
