@@ -103,6 +103,10 @@ func (p *Postgres) UpdateProfile(userID int64, update types.CollectorUpdate) (in
 }
 
 func (p *Postgres) AddCollectorServiceCategory(input types.CollectorServiceCategory, userID uint64) (int64, error) {
+	_, err := p.GetServiceCategory(uint64(input.CategoryID))
+	if err != nil {
+		return 0, fmt.Errorf("service category not found")
+	}
 	model := models.CollectorServiceCategory{
 		CategoryID:           input.CategoryID,
 		CollectorID:          int64(userID),
@@ -118,9 +122,13 @@ func (p *Postgres) AddCollectorServiceCategory(input types.CollectorServiceCateg
 	return model.CategoryID, nil
 }
 
-func (p *Postgres) UpdateCollectorServiceCategory(id int64, collectorID int64, input types.CollectorServiceCategory) error {
+func (p *Postgres) UpdateCollectorServiceCategory(input types.UpdateCollectorServiceCategory, userID uint64) error {
+	_, err := p.GetServiceCategory(uint64(input.CategoryID))
+	if err != nil {
+		return fmt.Errorf("service category not found")
+	}
 	result := p.GormDB.Model(&models.CollectorServiceCategory{}).
-		Where("category_id = ? AND collector_id = ?", id, collectorID).
+		Where("category_id = ? AND collector_id = ?", input.CategoryID, userID).
 		Updates(models.CollectorServiceCategory{
 			PricePerKg:           input.PricePerKg,
 			MaximumCapacity:      input.MaximumCapacity,
@@ -139,6 +147,10 @@ func (p *Postgres) UpdateCollectorServiceCategory(id int64, collectorID int64, i
 }
 
 func (p *Postgres) DeleteCollectorServiceCategory(categoryID int64, collectorID uint64) error {
+	_, err := p.GetServiceCategory(uint64(categoryID))
+	if err != nil {
+		return fmt.Errorf("service category not found")
+	}
 	result := p.GormDB.Where("category_id = ? AND collector_id = ?", categoryID, collectorID).Delete(&models.CollectorServiceCategory{})
 
 	if result.Error != nil {

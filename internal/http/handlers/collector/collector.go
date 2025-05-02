@@ -54,12 +54,13 @@ func UpdateProfile(storage storage.Storage) gin.HandlerFunc {
 // OfferServiceCategory allows a collector to offer a new service category
 func OfferServiceCategory(storage storage.Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		uidAny, ok := c.Get("user_id")
-		if !ok {
-			c.JSON(http.StatusUnauthorized, response.GeneralError(fmt.Errorf("user id missing")))
+		uidStr := c.Param("id")
+
+		userID, err := strconv.ParseUint(uidStr, 10, 64)
+		if err != nil {
+			c.JSON(400, gin.H{"error": "Invalid ID format"})
 			return
 		}
-		userID := uidAny.(uint64)
 
 		var input types.CollectorServiceCategory
 		if err := c.ShouldBindJSON(&input); err != nil {
@@ -80,31 +81,32 @@ func OfferServiceCategory(storage storage.Storage) gin.HandlerFunc {
 // UpdateOfferedServiceCategory updates an existing service category offered by a collector
 func UpdateOfferedServiceCategory(storage storage.Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		collectorID, exists := c.Get("collectorID")
-		if !exists {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-			return
-		}
+		uidStr := c.Param("id")
 
-		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+		userID, err := strconv.ParseUint(uidStr, 10, 64)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid service category ID"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 			return
 		}
 
-		var input types.CollectorServiceCategory
+		var input types.UpdateCollectorServiceCategory
 		if err := c.BindJSON(&input); err != nil {
 			c.JSON(http.StatusBadRequest, response.GeneralError(err))
 			return
 		}
 
-		err = storage.UpdateCollectorServiceCategory(id, collectorID.(int64), input)
+		if input.CategoryID == 0 {
+			c.JSON(http.StatusBadRequest, response.GeneralError(fmt.Errorf("category_id is required")))
+			return
+		}
+
+		err = storage.UpdateCollectorServiceCategory(input, userID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{"status": "OK", "Updated Service Category ID": id})
+		c.JSON(http.StatusOK, gin.H{"status": "OK", "Updated Service Category ID": userID})
 	}
 }
 
@@ -125,6 +127,10 @@ func DeleteOfferedServiceCategory(storage storage.Storage) gin.HandlerFunc {
 		var req CategoryIdStruct
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, response.GeneralError(err))
+			return
+		}
+		if req.CategoryID == 0 {
+			c.JSON(http.StatusBadRequest, response.GeneralError(fmt.Errorf("category_id is required")))
 			return
 		}
 
@@ -359,7 +365,7 @@ func GetCollectorDetails(storage storage.Storage) gin.HandlerFunc {
 }
 
 // GetServiceCategories retrieves service categories offered by a collector
-func GetServiceCategories(storage storage.Storage) gin.HandlerFunc {
+func GetCollectorServiceCategories(storage storage.Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 		if err != nil {

@@ -16,3 +16,10 @@ func GeneralError(err error) Response {
 		Error:  err.Error(),
 	}
 }
+
+func GeneralErrorTypeTwo(err string) Response {
+	return Response{
+		Status: StatusError,
+		Error:  err,
+	}
+}

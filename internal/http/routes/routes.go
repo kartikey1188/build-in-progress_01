@@ -9,4 +9,5 @@ func SetupRoutes(router *gin.Engine, storage storage.Storage) {
 	SetupAuth(router, storage)
 	Admin(router, storage)
 	CollectorRoutes(router, storage)
+	General(router, storage)
 }

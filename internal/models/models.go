@@ -43,8 +43,8 @@ type ServiceCategory struct {
 }
 
 type CollectorServiceCategory struct {
-	CollectorID          int64   `gorm:"column:collector_id;not null;index;foreignKey:collector_id;references:Collector;onDelete:CASCADE"`
-	CategoryID           int64   `gorm:"column:category_id;not null;index;foreignKey:category_id;references:ServiceCategory;onDelete:CASCADE"`
+	CollectorID          int64   `gorm:"primaryKey;column:collector_id;not null;index;foreignKey:collector_id;references:Collector;onDelete:CASCADE"`
+	CategoryID           int64   `gorm:"primaryKey;column:category_id;not null;index;foreignKey:category_id;references:ServiceCategory;onDelete:CASCADE"`
 	PricePerKg           float64 `gorm:"column:price_per_kg;not null;type:decimal(10,2)"`
 	MaximumCapacity      float64 `gorm:"column:maximum_capacity;not null;type:decimal(10,2)"`
 	HandlingRequirements string  `gorm:"column:handling_requirements;type:text"`
@@ -52,8 +52,8 @@ type CollectorServiceCategory struct {
 
 type Vehicle struct {
 	VehicleID   int64   `gorm:"primaryKey;autoIncrement;column:vehicle_id"`
-	VehicleType string  `gorm:"column:vehicle_type;not null;size:50"`
-	Capacity    float64 `gorm:"column:capacity;not null;type:decimal(10,2)"`
+	VehicleType string  `gorm:"column:vehicle_type;not null;size:50;uniqueIndex:idx_type_capacity"`
+	Capacity    float64 `gorm:"column:capacity;not null;type:decimal(10,2);uniqueIndex:idx_type_capacity"`
 }
 
 type CollectorVehicle struct {
