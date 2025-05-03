@@ -22,17 +22,21 @@ func CollectorRoutes(router *gin.Engine, storage storage.Storage) {
 	collector_routes.POST("/:id/vehicles", collector.AppendCollectorVehicle(storage))
 	collector_routes.PATCH("/:id/vehicles", collector.UpdateCollectorVehicle(storage))
 	collector_routes.DELETE("/:id/vehicles", collector.RemoveCollectorVehicle(storage))
+	collector_routes.GET("/:id/vehicles/:vid", collector.GetCollectorVehicle(storage))
 	// --> Activating/Deactivating a vehicle can also be done through UpdateVehicle only
 
 	// Drivers
-	collector_routes.POST("/:id/drivers", collector.RegisterDriver(storage))
-	collector_routes.PATCH("/:id/drivers", collector.UpdateDriver(storage))
+	collector_routes.GET("/:id/drivers", collector.GetCollectorDrivers(storage))
+	collector_routes.GET("/:id/drivers/:did", collector.GetCollectorDriver(storage))
+	collector_routes.POST("/:id/drivers", collector.AddCollectorDriver(storage))
+	collector_routes.PATCH("/:id/drivers", collector.UpdateCollectorDriver(storage))
+	collector_routes.DELETE("/:id/drivers", collector.DeleteCollectorDriver(storage))
 	collector_routes.PUT("/:id/drivers/assign-vehicle", collector.AssignVehicleToDriver(storage))
+	collector_routes.DELETE("/:id/drivers/unassign-vehicle", collector.UnassignVehicleFromDriver(storage))
 
 	// Open-access by ID
 	router.GET("/collector", collector.ListCollectors(storage))
 	router.GET("/collector/:id", collector.GetCollectorDetails(storage))
 	router.GET("/collector/:id/service-categories", collector.GetCollectorServiceCategories(storage))
 	router.GET("/collector/:id/vehicles", collector.GetCollectorVehicles(storage))
-	router.GET("/collector/:id/drivers", collector.GetCollectorDrivers(storage))
 }

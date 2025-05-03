@@ -34,6 +34,7 @@ type CollectorDriver struct {
 	DriverID      int64   `json:"driver_id"`      // Primary key
 	CollectorID   int64   `json:"collector_id"`   // Foreign key to Collector
 	LicenseNumber string  `json:"license_number"` // Driver's license number
+	DriverName    string  `json:"driver_name"`    // Driver's name
 	LicenseExpiry Date    `json:"license_expiry"` // License expiration date
 	IsEmployed    bool    `json:"is_employed"`    // Whether driver is currently employed
 	IsActive      bool    `json:"is_active"`      // Whether driver is available for trips

@@ -69,8 +69,9 @@ type CollectorVehicle struct {
 
 type CollectorDriver struct {
 	DriverID      int64     `gorm:"primaryKey;autoIncrement;column:driver_id"`
-	CollectorID   int64     `gorm:"primaryKey;column:collector_id;not null;index;foreignKey:collector_id;references:Collector;onDelete:CASCADE"`
+	CollectorID   int64     `gorm:"column:collector_id;not null;index;foreignKey:collector_id;references:Collector;onDelete:CASCADE"`
 	LicenseNumber string    `gorm:"column:license_number;not null;unique;size:100"`
+	DriverName    string    `gorm:"column:driver_name;not null;size:100"`
 	LicenseExpiry time.Time `gorm:"column:license_expiry;not null"`
 	IsEmployed    bool      `gorm:"column:is_employed;not null;default:true"`
 	IsActive      bool      `gorm:"column:is_active;not null;default:true"`

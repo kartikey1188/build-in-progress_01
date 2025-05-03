@@ -41,7 +41,7 @@ func UpdateProfile(storage storage.Storage) gin.HandlerFunc {
 		}
 
 		// Pass the URL parameter ID to the storage layer
-		id, err := storage.UpdateProfile(userID, input)
+		id, err := storage.UpdateCollectorProfile(userID, input)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
 			return
@@ -239,97 +239,6 @@ func RemoveCollectorVehicle(storage storage.Storage) gin.HandlerFunc {
 	}
 }
 
-// RegisterDriver registers a new driver for a collector
-func RegisterDriver(storage storage.Storage) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		collectorID, exists := c.Get("collectorID")
-		if !exists {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-			return
-		}
-
-		var input types.CollectorDriver
-		if err := c.ShouldBindJSON(&input); err != nil {
-			c.JSON(http.StatusBadRequest, response.GeneralError(err))
-			return
-		}
-
-		input.CollectorID = collectorID.(int64)
-
-		id, err := storage.AddCollectorDriver(input)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
-			return
-		}
-
-		c.JSON(http.StatusOK, gin.H{"status": "OK", "Added Driver ID": id})
-	}
-}
-
-// UpdateDriver updates an existing driver for a collector
-func UpdateDriver(storage storage.Storage) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		collectorID, exists := c.Get("collectorID")
-		if !exists {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-			return
-		}
-
-		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid driver ID"})
-			return
-		}
-
-		var input types.CollectorDriver
-		if err := c.BindJSON(&input); err != nil {
-			c.JSON(http.StatusBadRequest, response.GeneralError(err))
-			return
-		}
-
-		err = storage.UpdateCollectorDriver(id, collectorID.(int64), input)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
-			return
-		}
-
-		c.JSON(http.StatusOK, gin.H{"status": "OK", "Updated Driver ID": id})
-	}
-}
-
-// AssignVehicleToDriver assigns a vehicle to a driver
-func AssignVehicleToDriver(storage storage.Storage) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		collectorID, exists := c.Get("collectorID")
-		if !exists {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-			return
-		}
-
-		driverID, err := strconv.ParseInt(c.Param("id"), 10, 64)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid driver ID"})
-			return
-		}
-
-		var input struct {
-			VehicleID int64 `json:"vehicle_id"`
-		}
-		if err := c.BindJSON(&input); err != nil {
-			c.JSON(http.StatusBadRequest, response.GeneralError(err))
-			return
-		}
-
-		err = storage.AssignVehicleToDriver(driverID, input.VehicleID, collectorID.(int64))
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
-			return
-		}
-
-		c.JSON(http.StatusOK, gin.H{"status": "OK", "Assigned Vehicle ID": input.VehicleID, "to Driver ID": driverID})
-	}
-}
-
 // GetCollectorDetails retrieves details of a specific collector
 func GetCollectorDetails(storage storage.Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -387,21 +296,190 @@ func GetCollectorVehicles(storage storage.Storage) gin.HandlerFunc {
 	}
 }
 
-// GetCollectorDrivers retrieves drivers registered by a collector
-func GetCollectorDrivers(storage storage.Storage) gin.HandlerFunc {
+func GetCollectorVehicle(storage storage.Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+		collectorID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid collector ID"})
 			return
 		}
-
-		drivers, err := storage.GetCollectorDrivers(id)
+		vehicleID, err := strconv.ParseInt(c.Param("vid"), 10, 64)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid vehicle ID"})
 			return
 		}
+		vehicle, err := storage.GetCollectorVehicle(collectorID, vehicleID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, vehicle)
+	}
+}
 
+// GetCollectorDrivers lists all drivers for a collector.
+func GetCollectorDrivers(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		collectorID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid collector ID"})
+			return
+		}
+		drivers, err := storage.GetCollectorDrivers(collectorID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusOK, drivers)
+	}
+}
+
+// GetCollectorDriver retrieves a single driver by driver ID.
+func GetCollectorDriver(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		collectorID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid collector ID"})
+			return
+		}
+		driverID, err := strconv.ParseInt(c.Param("did"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid driver ID"})
+			return
+		}
+		driver, err := storage.GetCollectorDriver(collectorID, driverID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, driver)
+	}
+}
+
+// AddCollectorDriver adds a new driver for a collector.
+func AddCollectorDriver(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		collectorID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid collector ID"})
+			return
+		}
+		var input types.CollectorDriver
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		id, err := storage.AddCollectorDriver(input, collectorID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"status": "OK", "Added Collector Driver ID": id})
+	}
+}
+
+// UpdateCollectorDriver updates an existing driver for a collector.
+func UpdateCollectorDriver(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		collectorID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid collector ID"})
+			return
+		}
+		var input types.UpdateCollectorDriver
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		if input.DriverID == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "driver_id is required"})
+			return
+		}
+		err = storage.UpdateCollectorDriver(input, collectorID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"status": "OK", "Updated Driver ID": input.DriverID})
+	}
+}
+
+// DeleteCollectorDriver deletes a driver from a collector.
+func DeleteCollectorDriver(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		collectorID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid collector ID"})
+			return
+		}
+		type DriverIDStruct struct {
+			DriverID int64 `json:"driver_id"`
+		}
+		var req DriverIDStruct
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		if req.DriverID == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "driver_id is required"})
+			return
+		}
+		err = storage.DeleteCollectorDriver(req.DriverID, collectorID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"status": "OK", "Deleted Driver ID": req.DriverID})
+	}
+}
+
+// AssignVehicleToDriver assigns a vehicle to a driver.
+func AssignVehicleToDriver(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		collectorID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid collector ID"})
+			return
+		}
+		type Assignment struct {
+			DriverID  int64 `json:"driver_id" binding:"required"`
+			VehicleID int64 `json:"vehicle_id" binding:"required"`
+		}
+		var assign Assignment
+		if err := c.ShouldBindJSON(&assign); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		err = storage.AssignVehicleToDriver(assign.DriverID, assign.VehicleID, collectorID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"status": "OK", "vehicle_id": assign.VehicleID, "driver_id": assign.DriverID, "message": "vehicle assigned successfully"})
+	}
+}
+
+func UnassignVehicleFromDriver(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		collectorID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid collector ID"})
+			return
+		}
+		type Assignment struct {
+			DriverID  int64 `json:"driver_id" binding:"required"`
+			VehicleID int64 `json:"vehicle_id" binding:"required"`
+		}
+		var assign Assignment
+		if err := c.ShouldBindJSON(&assign); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		err = storage.UnassignVehicleFromDriver(assign.DriverID, assign.VehicleID, collectorID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"status": "OK", "vehicle_id": assign.VehicleID, "driver_id": assign.DriverID, "message": "vehicle unassigned successfully"})
 	}
 }

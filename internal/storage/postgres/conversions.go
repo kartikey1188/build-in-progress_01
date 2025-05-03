@@ -30,27 +30,28 @@ func convertCollectorModelToType(collector models.Collector, user models.User) t
 	}
 }
 
-// convertCollectorTypeToModel transforms types.Collector into models.Collector and models.User
-func convertCollectorTypeToModel(collector types.Collector) (models.Collector, models.User) {
-	return models.Collector{
-			UserID:        collector.User.UserID,
-			CompanyName:   collector.Company_name,
-			LicenseNumber: collector.License_number,
-			Capacity:      collector.Capacity,
-			LicenseExpiry: collector.License_expiry.Time,
-		}, models.User{
-			UserID:       collector.User.UserID,
-			Email:        collector.User.Email,
-			PasswordHash: collector.User.PasswordHash,
-			FullName:     collector.User.FullName,
-			PhoneNumber:  collector.User.PhoneNumber,
-			Address:      collector.User.Address,
-			Registration: collector.User.Registration.Time,
-			Role:         collector.User.Role,
-			IsActive:     collector.User.IsActive,
-			ProfileImage: collector.User.ProfileImage,
-			LastLogin:    collector.User.LastLogin.Time,
-			IsVerified:   collector.User.IsVerified,
-			IsFlagged:    collector.User.IsFlagged,
-		}
+// convertBusinessModelToType converts a Business model and its User model to types.Business
+func convertBusinessModelToType(b models.Business, u models.User) types.Business {
+	return types.Business{
+		User: types.User{
+			UserID:       u.UserID,
+			Email:        u.Email,
+			PasswordHash: u.PasswordHash,
+			FullName:     u.FullName,
+			PhoneNumber:  u.PhoneNumber,
+			Address:      u.Address,
+			Registration: types.Date{Time: u.Registration},
+			Role:         u.Role,
+			IsActive:     u.IsActive,
+			ProfileImage: u.ProfileImage,
+			LastLogin:    types.DateTime{Time: u.LastLogin},
+			IsVerified:   u.IsVerified,
+			IsFlagged:    u.IsFlagged,
+		},
+		Business_name:       b.BusinessName,
+		Business_type:       b.BusinessType,
+		Registration_number: b.RegistrationNumber,
+		Gst_id:              b.GstID,
+		Business_address:    b.BusinessAddress,
+	}
 }

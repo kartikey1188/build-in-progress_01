@@ -5,8 +5,9 @@ import "github.com/kartikey1188/build-in-progress_01/internal/types"
 type Storage interface {
 	LoginAndRegister
 	Admin
-	Collectors
+	Collector
 	General
+	Business
 }
 
 type LoginAndRegister interface {
@@ -38,11 +39,11 @@ type General interface {
 	GetUserByEmail(email string) (types.User, error)
 }
 
-type Collectors interface {
+type Collector interface {
 	GetCollectors() ([]types.Collector, error)
 	GetCollectorByID(id int64) (types.Collector, error)
 
-	UpdateProfile(userID int64, input types.CollectorUpdate) (int64, error)
+	UpdateCollectorProfile(userID int64, input types.CollectorUpdate) (int64, error)
 
 	AddCollectorServiceCategory(input types.CollectorServiceCategory, userID uint64) (int64, error)
 	UpdateCollectorServiceCategory(input types.UpdateCollectorServiceCategory, userID uint64) error
@@ -51,13 +52,23 @@ type Collectors interface {
 	AddCollectorVehicle(input types.CollectorVehicle, userID uint64) (int64, error)
 	UpdateCollectorVehicle(input types.UpdateCollectorVehicle, userID uint64) error
 	DeleteCollectorVehicle(vehicleID int64, collectorID uint64) error
+	GetCollectorVehicle(collectorID int64, vehicleID int64) (types.CollectorVehicle, error)
 	// Activating/Deactivating a vehicle can also be done through UpdateCollectorVehicle only
 
-	AddCollectorDriver(input types.CollectorDriver) (int64, error)
-	UpdateCollectorDriver(id int64, collectorID int64, input types.CollectorDriver) error
-	AssignVehicleToDriver(driverID int64, vehicleID int64, collectorID int64) error
+	AddCollectorDriver(input types.CollectorDriver, collectorID uint64) (int64, error)
+	UpdateCollectorDriver(input types.UpdateCollectorDriver, collectorID uint64) error
+	AssignVehicleToDriver(driverID int64, vehicleID int64, collectorID uint64) error
+	UnassignVehicleFromDriver(driverID int64, vehicleID int64, collectorID uint64) error
+	GetCollectorDriver(collectorID int64, driverID int64) (types.CollectorDriver, error)
+	DeleteCollectorDriver(driverID int64, collectorID uint64) error
+	GetCollectorDrivers(collectorID int64) ([]types.CollectorDriver, error)
 
 	GetCollectorServiceCategories(collectorID int64) ([]types.CollectorServiceCategory, error)
 	GetCollectorVehicles(collectorID int64) ([]types.CollectorVehicle, error)
-	GetCollectorDrivers(collectorID int64) ([]types.CollectorDriver, error)
+}
+
+type Business interface {
+	GetBusinessByID(id int64) (types.Business, error)
+	GetBusinessByEmail(email string) (types.Business, error)
+	UpdateBusinessProfile(userID int64, input types.BusinessUpdate) (int64, error)
 }

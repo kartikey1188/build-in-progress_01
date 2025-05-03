@@ -51,3 +51,15 @@ type UpdateCollectorVehicle struct {
 	RegistrationDocument string `json:"registration_document"`
 	RegistrationExpiry   Date   `json:"registration_expiry"`
 }
+
+type UpdateCollectorDriver struct {
+	DriverID      int64   `json:"driver_id"`
+	CollectorID   int64   `json:"collector_id"`
+	LicenseNumber string  `json:"license_number"`
+	DriverName    string  `json:"driver_name"`
+	LicenseExpiry Date    `json:"license_expiry"`
+	IsEmployed    *bool   `json:"is_employed"`
+	IsActive      *bool   `json:"is_active"`
+	Rating        float64 `json:"rating"`
+	JoiningDate   Date    `json:"joining_date"`
+}
