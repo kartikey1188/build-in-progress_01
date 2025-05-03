@@ -30,7 +30,15 @@ func GetBusinessByID(storage storage.Storage) gin.HandlerFunc {
 // GetBusinessByEmail retrieves a business by its email.
 func GetBusinessByEmail(storage storage.Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		email := c.Param("email")
+		type Email struct {
+			Email string `json:"email" binding:"required,email"`
+		}
+		var emailInput Email
+		if err := c.ShouldBindJSON(&emailInput); err != nil {
+			c.JSON(http.StatusBadRequest, response.GeneralError(err))
+			return
+		}
+		email := emailInput.Email
 		business, err := storage.GetBusinessByEmail(email)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, response.GeneralError(err))

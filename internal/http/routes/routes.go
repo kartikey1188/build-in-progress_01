@@ -10,4 +10,5 @@ func SetupRoutes(router *gin.Engine, storage storage.Storage) {
 	Admin(router, storage)
 	CollectorRoutes(router, storage)
 	General(router, storage)
+	BusinessRoutes(router, storage)
 }

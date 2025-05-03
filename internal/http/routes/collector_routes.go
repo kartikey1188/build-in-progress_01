@@ -12,6 +12,7 @@ func CollectorRoutes(router *gin.Engine, storage storage.Storage) {
 	collector_routes.Use(middleware.CollectorOnly())
 
 	collector_routes.PATCH("/profile/:id", collector.UpdateProfile(storage))
+	collector_routes.GET("", collector.GetCollectorByEmail(storage))
 
 	// Service Categories
 	collector_routes.POST("/:id/service-categories", collector.OfferServiceCategory(storage))
@@ -34,8 +35,8 @@ func CollectorRoutes(router *gin.Engine, storage storage.Storage) {
 	collector_routes.PUT("/:id/drivers/assign-vehicle", collector.AssignVehicleToDriver(storage))
 	collector_routes.DELETE("/:id/drivers/unassign-vehicle", collector.UnassignVehicleFromDriver(storage))
 
-	// Open-access by ID
-	router.GET("/collector", collector.ListCollectors(storage))
+	// Open-access
+	router.GET("/collectors", collector.ListCollectors(storage))
 	router.GET("/collector/:id", collector.GetCollectorDetails(storage))
 	router.GET("/collector/:id/service-categories", collector.GetCollectorServiceCategories(storage))
 	router.GET("/collector/:id/vehicles", collector.GetCollectorVehicles(storage))

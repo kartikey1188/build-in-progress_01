@@ -3,6 +3,8 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/kartikey1188/build-in-progress_01/internal/http/handlers/admin"
+	"github.com/kartikey1188/build-in-progress_01/internal/http/handlers/business"
+	"github.com/kartikey1188/build-in-progress_01/internal/http/handlers/collector"
 	"github.com/kartikey1188/build-in-progress_01/internal/http/middleware"
 	"github.com/kartikey1188/build-in-progress_01/internal/storage"
 )
@@ -21,4 +23,10 @@ func Admin(router *gin.Engine, storage storage.Storage) {
 
 	admin_routes.DELETE("/delete/service-category/:id", admin.DeleteServiceCategory(storage))
 	admin_routes.DELETE("/delete/vehicle/:id", admin.DeleteVehicle(storage))
+
+	admin_routes.GET("/all/collectors", admin.GetAllCollectors(storage))
+	admin_routes.GET("/all/businesses", admin.GetAllBusinesses(storage))
+	admin_routes.GET("/all/users", admin.GetAllUsers(storage))
+	admin_routes.GET("/collector/:id", collector.GetCollectorByID(storage))
+	admin_routes.GET("/business/:id", business.GetBusinessByID(storage))
 }

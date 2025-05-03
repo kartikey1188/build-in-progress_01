@@ -133,3 +133,36 @@ func DeleteVehicle(storage storage.Storage) gin.HandlerFunc {
 		c.JSON(http.StatusOK, gin.H{"status": "OK", "Deleted Vehicle ID": id})
 	}
 }
+
+func GetAllCollectors(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		collectors, err := storage.GetAllCollectors()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+		c.JSON(http.StatusOK, collectors)
+	}
+}
+
+func GetAllBusinesses(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		businesses, err := storage.GetAllBusinesses()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+		c.JSON(http.StatusOK, businesses)
+	}
+}
+
+func GetAllUsers(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		users, err := storage.GetAllUsers()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+		c.JSON(http.StatusOK, users)
+	}
+}

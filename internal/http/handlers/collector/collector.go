@@ -483,3 +483,40 @@ func UnassignVehicleFromDriver(storage storage.Storage) gin.HandlerFunc {
 		c.JSON(http.StatusOK, gin.H{"status": "OK", "vehicle_id": assign.VehicleID, "driver_id": assign.DriverID, "message": "vehicle unassigned successfully"})
 	}
 }
+
+func GetCollectorByID(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid collector ID"})
+			return
+		}
+
+		collector, err := storage.GetCollectorByID(id)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+		c.JSON(http.StatusOK, collector)
+	}
+}
+
+func GetCollectorByEmail(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		type Email struct {
+			Email string `json:"email" binding:"required,email"`
+		}
+		var emailInput Email
+		if err := c.ShouldBindJSON(&emailInput); err != nil {
+			c.JSON(http.StatusBadRequest, response.GeneralError(err))
+			return
+		}
+		email := emailInput.Email
+		collector, err := storage.GetCollectorByEmail(email)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+		c.JSON(http.StatusOK, collector)
+	}
+}

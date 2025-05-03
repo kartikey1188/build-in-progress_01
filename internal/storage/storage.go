@@ -28,6 +28,9 @@ type Admin interface {
 	AddServiceCategory(sc types.ServiceCategory) (int64, error)
 	DeleteVehicle(vehicleID uint64) error
 	DeleteServiceCategory(categoryID uint64) error
+	GetAllCollectors() ([]types.Collector, error)
+	GetAllBusinesses() ([]types.Business, error)
+	GetAllUsers() ([]types.User, error)
 }
 
 type General interface {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/kartikey1188/build-in-progress_01/internal/models"
 	"github.com/kartikey1188/build-in-progress_01/internal/types"
 )
 
@@ -175,4 +176,67 @@ func (p *Postgres) DeleteVehicle(vehicleID uint64) error {
 	}
 
 	return nil
+}
+
+func (p *Postgres) GetAllCollectors() ([]types.Collector, error) {
+	type collectorJoin struct {
+		models.Collector
+		models.User
+	}
+	var joins []collectorJoin
+	if err := p.GormDB.Table("collectors").
+		Joins("INNER JOIN users ON users.user_id = collectors.user_id").
+		Scan(&joins).Error; err != nil {
+		return nil, fmt.Errorf("failed to fetch collectors: %w", err)
+	}
+	collectors := make([]types.Collector, 0, len(joins))
+	for _, join := range joins {
+		collectors = append(collectors, convertCollectorModelToType(join.Collector, join.User))
+	}
+	return collectors, nil
+}
+
+func (p *Postgres) GetAllBusinesses() ([]types.Business, error) {
+	type businessJoin struct {
+		models.Business
+		models.User
+	}
+	var joins []businessJoin
+	if err := p.GormDB.Table("businesses").
+		Joins("INNER JOIN users ON users.user_id = businesses.user_id").
+		Scan(&joins).Error; err != nil {
+		return nil, fmt.Errorf("failed to fetch businesses: %w", err)
+	}
+	businesses := make([]types.Business, 0, len(joins))
+	for _, join := range joins {
+		businesses = append(businesses, convertBusinessModelToType(join.Business, join.User))
+	}
+	return businesses, nil
+}
+
+func (p *Postgres) GetAllUsers() ([]types.User, error) {
+	var userModels []models.User
+	if err := p.GormDB.Find(&userModels).Error; err != nil {
+		return nil, fmt.Errorf("failed to fetch users: %w", err)
+	}
+
+	users := make([]types.User, 0, len(userModels))
+	for _, u := range userModels {
+		users = append(users, types.User{
+			UserID:       u.UserID,
+			Email:        u.Email,
+			PasswordHash: u.PasswordHash,
+			FullName:     u.FullName,
+			PhoneNumber:  u.PhoneNumber,
+			Address:      u.Address,
+			Registration: types.Date{Time: u.Registration},
+			Role:         u.Role,
+			IsActive:     u.IsActive,
+			ProfileImage: u.ProfileImage,
+			LastLogin:    types.DateTime{Time: u.LastLogin},
+			IsVerified:   u.IsVerified,
+			IsFlagged:    u.IsFlagged,
+		})
+	}
+	return users, nil
 }
