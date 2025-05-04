@@ -240,7 +240,7 @@ func RemoveCollectorVehicle(storage storage.Storage) gin.HandlerFunc {
 }
 
 // GetCollectorDetails retrieves details of a specific collector
-func GetCollectorDetails(storage storage.Storage) gin.HandlerFunc {
+func GetCollectorByID(storage storage.Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 		if err != nil {
@@ -481,23 +481,6 @@ func UnassignVehicleFromDriver(storage storage.Storage) gin.HandlerFunc {
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"status": "OK", "vehicle_id": assign.VehicleID, "driver_id": assign.DriverID, "message": "vehicle unassigned successfully"})
-	}
-}
-
-func GetCollectorByID(storage storage.Storage) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid collector ID"})
-			return
-		}
-
-		collector, err := storage.GetCollectorByID(id)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
-			return
-		}
-		c.JSON(http.StatusOK, collector)
 	}
 }
 

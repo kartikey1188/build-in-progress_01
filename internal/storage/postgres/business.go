@@ -49,11 +49,7 @@ func (p *Postgres) UpdateBusinessProfile(userID int64, update types.BusinessUpda
 			FullName:     update.FullName,
 			PhoneNumber:  update.PhoneNumber,
 			Address:      update.Address,
-			IsActive:     update.IsActive,
 			ProfileImage: update.ProfileImage,
-			LastLogin:    update.LastLogin.Time,
-			IsVerified:   update.IsVerified,
-			IsFlagged:    update.IsFlagged,
 		}
 		if err := tx.Model(&models.User{}).Where("user_id = ?", userID).Updates(userUpdates).Error; err != nil {
 			return err

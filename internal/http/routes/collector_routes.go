@@ -13,6 +13,7 @@ func CollectorRoutes(router *gin.Engine, storage storage.Storage) {
 
 	collector_routes.PATCH("/profile/:id", collector.UpdateProfile(storage))
 	collector_routes.GET("", collector.GetCollectorByEmail(storage))
+	collector_routes.GET("/:id", collector.GetCollectorByID(storage))
 
 	// Service Categories
 	collector_routes.POST("/:id/service-categories", collector.OfferServiceCategory(storage))
@@ -37,7 +38,6 @@ func CollectorRoutes(router *gin.Engine, storage storage.Storage) {
 
 	// Open-access
 	router.GET("/collectors", collector.ListCollectors(storage))
-	router.GET("/collector/:id", collector.GetCollectorDetails(storage))
 	router.GET("/collector/:id/service-categories", collector.GetCollectorServiceCategories(storage))
 	router.GET("/collector/:id/vehicles", collector.GetCollectorVehicles(storage))
 }
