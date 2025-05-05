@@ -42,18 +42,34 @@ func New(cfg *config.Config) (*Postgres, error) {
 }
 
 func autoMigrateTables(db *gorm.DB) error {
-	return db.AutoMigrate(
+	// First creating tables with no foreign key dependencies
+	if err := db.AutoMigrate(
 		&models.User{},
+		&models.ServiceCategory{},
+		&models.Vehicle{},
+	); err != nil {
+		return err
+	}
+
+	// Then creating tables that depend on User
+	if err := db.AutoMigrate(
 		&models.Business{},
 		&models.Collector{},
-		&models.ServiceCategory{},
+	); err != nil {
+		return err
+	}
+
+	// Finally creating tables with dependencies on multiple tables
+	if err := db.AutoMigrate(
 		&models.CollectorServiceCategory{},
-		&models.Vehicle{},
 		&models.CollectorDriver{},
 		&models.CollectorVehicle{},
 		&models.VehicleDriver{},
-		&models.CollectorDriverLocation{},
-	)
+	); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func createAdminUser(db *gorm.DB) error {
