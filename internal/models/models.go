@@ -30,8 +30,6 @@ type Business struct {
 	RegistrationNumber string `gorm:"column:registration_number;not null;unique;size:100"`
 	GstID              string `gorm:"column:gst_id;not null;unique;size:50"`
 	BusinessAddress    string `gorm:"column:business_address;not null;type:text"`
-
-	// User *User `gorm:"foreignKey:UserID;references:UserID;constraint:OnDelete:CASCADE"`
 }
 
 type Collector struct {
@@ -41,7 +39,6 @@ type Collector struct {
 	Capacity      int64     `gorm:"column:capacity;not null"`
 	LicenseExpiry time.Time `gorm:"column:license_expiry;not null"`
 
-	// User                       *User                       `gorm:"foreignKey:UserID;references:UserID;constraint:OnDelete:CASCADE"`
 	CollectorServiceCategories []*CollectorServiceCategory `gorm:"foreignKey:CollectorID;references:UserID;constraint:OnDelete:CASCADE"`
 	CollectorVehicles          []*CollectorVehicle         `gorm:"foreignKey:CollectorID;references:UserID;constraint:OnDelete:CASCADE"`
 	CollectorDrivers           []*CollectorDriver          `gorm:"foreignKey:CollectorID;references:UserID;constraint:OnDelete:CASCADE"`
@@ -60,9 +57,6 @@ type CollectorServiceCategory struct {
 	PricePerKg           float64 `gorm:"column:price_per_kg;not null;type:decimal(10,2)"`
 	MaximumCapacity      float64 `gorm:"column:maximum_capacity;not null;type:decimal(10,2)"`
 	HandlingRequirements string  `gorm:"column:handling_requirements;type:text"`
-
-	// Collector       *Collector       `gorm:"foreignKey:CollectorID;references:UserID;constraint:OnDelete:CASCADE"`
-	// ServiceCategory *ServiceCategory `gorm:"foreignKey:CategoryID;references:CategoryID;constraint:OnDelete:CASCADE"`
 }
 
 type Vehicle struct {
@@ -83,9 +77,6 @@ type CollectorVehicle struct {
 	GPSTrackingID        string    `gorm:"column:gps_tracking_id;size:100"`
 	RegistrationDocument string    `gorm:"column:registration_document;type:text"`
 	RegistrationExpiry   time.Time `gorm:"column:registration_expiry"`
-
-	// Collector *Collector `gorm:"foreignKey:CollectorID;references:UserID;constraint:OnDelete:CASCADE"`
-	// Vehicle   *Vehicle   `gorm:"foreignKey:VehicleID;references:VehicleID;constraint:OnDelete:CASCADE"`
 }
 
 type CollectorDriver struct {
@@ -99,7 +90,6 @@ type CollectorDriver struct {
 	Rating        float64   `gorm:"column:rating;type:decimal(3,2)"`
 	JoiningDate   time.Time `gorm:"column:joining_date;not null"`
 
-	// Collector *Collector `gorm:"foreignKey:CollectorID;references:UserID;constraint:OnDelete:CASCADE"`
 	VehicleDriver *VehicleDriver `gorm:"foreignKey:DriverID;references:DriverID;constraint:OnDelete:CASCADE"`
 }
 
@@ -107,9 +97,6 @@ type VehicleDriver struct {
 	DriverID    int64 `gorm:"column:driver_id;primaryKey"`
 	CollectorID int64 `gorm:"column:collector_id"`
 	VehicleID   int64 `gorm:"column:vehicle_id"`
-
-	// Driver           *CollectorDriver  `gorm:"foreignKey:DriverID;references:DriverID;constraint:OnDelete:CASCADE"`
-	// CollectorVehicle *CollectorVehicle `gorm:"foreignKey:CollectorID,VehicleID;references:CollectorID,VehicleID;constraint:OnDelete:CASCADE"`
 }
 
 // type CollectorDriverLocation struct {
