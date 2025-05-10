@@ -63,3 +63,14 @@ type UpdateCollectorDriver struct {
 	Rating        float64 `json:"rating"`
 	JoiningDate   Date    `json:"joining_date"`
 }
+
+type UpdatePickupRequest struct {
+	WasteType            string   `json:"waste_type"`
+	Quantity             float64  `json:"quantity"`
+	PickupDate           DateTime `json:"pickup_date"`
+	Status               string   `json:"status" binding:"required,oneof=Pending Assigned Completed Cancelled"`
+	HandlingRequirements string   `json:"handling_requirements"`
+	AssignedDriver       int64    `json:"assigned_driver,omitempty"`
+	AssignedVehicle      int64    `json:"assigned_vehicle,omitempty"`
+	CreatedAt            DateTime `json:"created_at"`
+}

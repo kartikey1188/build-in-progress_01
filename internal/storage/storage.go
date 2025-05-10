@@ -31,6 +31,8 @@ type Admin interface {
 	GetAllCollectors() ([]types.Collector, error)
 	GetAllBusinesses() ([]types.Business, error)
 	GetAllUsers() ([]types.User, error)
+
+	GetAllPickupRequests() ([]types.PickupRequest, error)
 }
 
 type General interface {
@@ -74,4 +76,9 @@ type Business interface {
 	GetBusinessByID(id int64) (types.Business, error)
 	GetBusinessByEmail(email string) (types.Business, error)
 	UpdateBusinessProfile(userID int64, input types.BusinessUpdate) (int64, error)
+
+	GetPickupRequestByID(requestID int64) (types.PickupRequest, error)
+	CreatePickupRequest(request types.PickupRequest) (int64, error)
+	GetAllPickupRequestsForBusiness(businessID int64) ([]types.PickupRequest, error)
+	UpdatePickupRequest(requestID int64, input types.UpdatePickupRequest) error
 }

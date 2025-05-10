@@ -1,0 +1,131 @@
+{
+	"info": {
+		"_postman_id": "bb284786-39f4-457b-8b80-844f4604d81d",
+		"name": "business",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42929397",
+		"_collection_link": "https://waste-collector-application.postman.co/workspace/Waste-Collector-Application-Wo~9303995a-4969-4747-9ee8-9ac091518561/collection/42929397-bb284786-39f4-457b-8b80-844f4604d81d?action=share&source=collection_link&creator=42929397"
+	},
+	"item": [
+		{
+			"name": "GetBusinessByID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIzNDM0M0BleGFtcGxlLmNvbSIsImV4cCI6MTc0NjM5NzYzNCwiaWF0IjoxNzQ2MzExMjM0LCJyb2xlIjoiQnVzaW5lc3MiLCJ1c2VyX2lkIjozfQ.BVGbVz3VGdUhCxa0o9099JsQ41dnjOK0J25sj4zmgNI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/business/3",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"business",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetBusinessByEmail",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIzNDM0M0BleGFtcGxlLmNvbSIsImV4cCI6MTc0NjM5NzYzNCwiaWF0IjoxNzQ2MzExMjM0LCJyb2xlIjoiQnVzaW5lc3MiLCJ1c2VyX2lkIjozfQ.BVGbVz3VGdUhCxa0o9099JsQ41dnjOK0J25sj4zmgNI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"user34343@example.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/business",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"business"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateBusinessProfile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIzNDM0M0BleGFtcGxlLmNvbSIsImV4cCI6MTc0NjM5NzYzNCwiaWF0IjoxNzQ2MzExMjM0LCJyb2xlIjoiQnVzaW5lc3MiLCJ1c2VyX2lkIjozfQ.BVGbVz3VGdUhCxa0o9099JsQ41dnjOK0J25sj4zmgNI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"email\": \"user34ddddddddddd343@example.com\",\r\n\"password_hash\": \"mySecurePassword123!\",\r\n\"full_name\": \"John Doe\",\r\n\"phone_number\": \"+1234567890\",\r\n\"address\": \"123 Main Street, Springfield\",\r\n\"profile_image\": \"https://cdn.example.com/image.jpg\",\r\n\"business_name\": \"John's Business\",\r\n\"business_type\": \"Retail\",\r\n\"registration_number\": \"1234567890\",\r\n\"gst_id\": \"GSTIN1234567\",\r\n\"business_address\": \"123 Main Street, Springfield\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/business/profile/3",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"business",
+						"profile",
+						"3"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

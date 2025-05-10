@@ -58,14 +58,15 @@ type CollectorDriverLocation struct {
 }
 
 type PickupRequest struct {
-	RequestID       int64    `json:"request_id"`
-	BusinessID      int64    `json:"business_id"`
-	CollectorID     int64    `json:"collector_id"`
-	WasteType       string   `json:"waste_type"`
-	Quantity        float64  `json:"quantity"`
-	PickupDate      DateTime `json:"pickup_date"`
-	Status          string   `json:"status"` // e.g., "pending", "assigned", "completed"
-	AssignedDriver  int64    `json:"assigned_driver,omitempty"`
-	AssignedVehicle int64    `json:"assigned_vehicle,omitempty"`
-	CreatedAt       DateTime `json:"created_at"`
+	RequestID            int64    `json:"request_id"`
+	BusinessID           int64    `json:"business_id" binding:"required"`
+	CollectorID          int64    `json:"collector_id" binding:"required"`
+	WasteType            string   `json:"waste_type"`
+	Quantity             float64  `json:"quantity" binding:"required"`
+	PickupDate           DateTime `json:"pickup_date"`
+	Status               string   `json:"status" binding:"required,oneof=Pending Assigned Completed Cancelled"`
+	HandlingRequirements string   `json:"handling_requirements"`
+	AssignedDriver       int64    `json:"assigned_driver,omitempty"`
+	AssignedVehicle      int64    `json:"assigned_vehicle,omitempty"`
+	CreatedAt            DateTime `json:"created_at"`
 }

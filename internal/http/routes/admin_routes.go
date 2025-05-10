@@ -29,4 +29,6 @@ func Admin(router *gin.Engine, storage storage.Storage) {
 	admin_routes.GET("/all/users", admin.GetAllUsers(storage))
 	admin_routes.GET("/collector/:id", collector.GetCollectorByID(storage))
 	admin_routes.GET("/business/:id", business.GetBusinessByID(storage))
+
+	admin_routes.GET("/all/pickup-requests", admin.GetAllPickupRequests(storage))
 }

@@ -75,3 +75,97 @@ func (p *Postgres) UpdateBusinessProfile(userID int64, update types.BusinessUpda
 
 	return userID, nil
 }
+
+func (p *Postgres) CreatePickupRequest(request types.PickupRequest) (int64, error) {
+	_, err := p.GetBusinessByID(request.BusinessID)
+	if err != nil {
+		return 0, fmt.Errorf("business ID not found: %w", err)
+	}
+
+	_, err = p.GetCollectorByID(request.CollectorID)
+	if err != nil {
+		return 0, fmt.Errorf("collector ID not found: %w", err)
+	}
+
+	model := models.PickupRequest{
+		BusinessID:           request.BusinessID,
+		CollectorID:          request.CollectorID,
+		WasteType:            request.WasteType,
+		Quantity:             request.Quantity,
+		PickupDate:           request.PickupDate.Time,
+		Status:               request.Status,
+		HandlingRequirements: request.HandlingRequirements,
+		AssignedDriver:       request.AssignedDriver,
+		AssignedVehicle:      request.AssignedVehicle,
+		CreatedAt:            request.CreatedAt.Time,
+	}
+
+	if err := p.GormDB.Create(&model).Error; err != nil {
+		return 0, fmt.Errorf("failed to create pickup request: %w", err)
+	}
+
+	return model.RequestID, nil
+}
+
+func (p *Postgres) GetPickupRequestByID(id int64) (types.PickupRequest, error) {
+	var model models.PickupRequest
+	err := p.GormDB.First(&model, "request_id = ?", id).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return types.PickupRequest{}, fmt.Errorf("pickup request not found")
+		}
+		return types.PickupRequest{}, fmt.Errorf("database error: %w", err)
+	}
+
+	return convertPickupRequestModelToType(model), nil
+}
+
+func (p *Postgres) GetAllPickupRequestsForBusiness(businessID int64) ([]types.PickupRequest, error) {
+	var models []models.PickupRequest
+	err := p.GormDB.Where("business_id = ?", businessID).Find(&models).Error
+	if err != nil {
+		return nil, fmt.Errorf("database error: %w", err)
+	}
+
+	var requests []types.PickupRequest
+	for _, model := range models {
+		requests = append(requests, convertPickupRequestModelToType(model))
+	}
+
+	return requests, nil
+}
+
+func (p *Postgres) UpdatePickupRequest(requestID int64, input types.UpdatePickupRequest) error {
+	// Check if the pickup request exists
+	var existing models.PickupRequest
+	err := p.GormDB.First(&existing, "request_id = ?", requestID).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return fmt.Errorf("pickup request not found")
+		}
+		return fmt.Errorf("database error: %w", err)
+	}
+
+	updates := models.PickupRequest{
+		WasteType:            input.WasteType,
+		Quantity:             input.Quantity,
+		PickupDate:           input.PickupDate.Time,
+		Status:               input.Status,
+		HandlingRequirements: input.HandlingRequirements,
+		AssignedDriver:       input.AssignedDriver,
+		AssignedVehicle:      input.AssignedVehicle,
+		CreatedAt:            input.CreatedAt.Time,
+	}
+
+	result := p.GormDB.Model(&models.PickupRequest{}).
+		Where("request_id = ?", requestID).
+		Updates(updates)
+
+	if result.Error != nil {
+		return fmt.Errorf("update failed: %w", result.Error)
+	}
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("no rows affected")
+	}
+	return nil
+}

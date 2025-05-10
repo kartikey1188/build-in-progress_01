@@ -166,3 +166,14 @@ func GetAllUsers(storage storage.Storage) gin.HandlerFunc {
 		c.JSON(http.StatusOK, users)
 	}
 }
+
+func GetAllPickupRequests(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		pickupRequests, err := storage.GetAllPickupRequests()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+		c.JSON(http.StatusOK, pickupRequests)
+	}
+}

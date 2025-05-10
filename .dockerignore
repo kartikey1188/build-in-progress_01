@@ -1,0 +1,30 @@
+# Ignore the Go binary
+/bin/
+
+# Ignore build artifacts and temporary files
+*.out
+*.exe
+*.test
+*.tmp
+*.log
+
+# Ignore Go modules cache
+/vendor/
+
+# Ignore the Go build cache
+/.build/
+
+# Ignore IDE and editor config files
+.vscode/
+.idea/
+*.swp
+
+# Ignore operating system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore test coverage and debug files
+coverage.out
+debug.log
+
+

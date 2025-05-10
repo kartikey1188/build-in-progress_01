@@ -240,3 +240,18 @@ func (p *Postgres) GetAllUsers() ([]types.User, error) {
 	}
 	return users, nil
 }
+
+func (p *Postgres) GetAllPickupRequests() ([]types.PickupRequest, error) {
+	var models []models.PickupRequest
+	err := p.GormDB.Find(&models).Error
+	if err != nil {
+		return nil, fmt.Errorf("database error: %w", err)
+	}
+
+	var requests []types.PickupRequest
+	for _, model := range models {
+		requests = append(requests, convertPickupRequestModelToType(model))
+	}
+
+	return requests, nil
+}

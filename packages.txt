@@ -32,6 +32,10 @@ Packages Installed:
 
 11) go get github.com/lib/pq
 
+12) kafka-go
+    go get github.com/segmentio/kafka-go
+
+
 
 
 

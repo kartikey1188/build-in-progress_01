@@ -1,0 +1,597 @@
+{
+	"info": {
+		"_postman_id": "df21d3af-6d19-4ea1-9e32-ea2e94cda65b",
+		"name": "admin",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42929397",
+		"_collection_link": "https://waste-collector-application.postman.co/workspace/Waste-Collector-Application-Wo~9303995a-4969-4747-9ee8-9ac091518561/collection/42929397-df21d3af-6d19-4ea1-9e32-ea2e94cda65b?action=share&source=collection_link&creator=42929397"
+	},
+	"item": [
+		{
+			"name": "Unverify",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjE1MjMyMiwiaWF0IjoxNzQ2MDY1OTIyLCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.ovg7467TOiVuEr-V90Y6lOh0_YLmubXAUNKq2vM5H9k",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjE1MjMyMiwiaWF0IjoxNzQ2MDY1OTIyLCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.ovg7467TOiVuEr-V90Y6lOh0_YLmubXAUNKq2vM5H9k",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8080/admin/unverify/6",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"unverify",
+						"6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjE1MjMyMiwiaWF0IjoxNzQ2MDY1OTIyLCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.ovg7467TOiVuEr-V90Y6lOh0_YLmubXAUNKq2vM5H9k",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjE1MjMyMiwiaWF0IjoxNzQ2MDY1OTIyLCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.ovg7467TOiVuEr-V90Y6lOh0_YLmubXAUNKq2vM5H9k",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8080/admin/verify/6",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"verify",
+						"6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Flag",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjE1MjMyMiwiaWF0IjoxNzQ2MDY1OTIyLCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.ovg7467TOiVuEr-V90Y6lOh0_YLmubXAUNKq2vM5H9k",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjE1MjMyMiwiaWF0IjoxNzQ2MDY1OTIyLCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.ovg7467TOiVuEr-V90Y6lOh0_YLmubXAUNKq2vM5H9k",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8080/admin/verify/6",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"verify",
+						"6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Unflag",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjE1MjMyMiwiaWF0IjoxNzQ2MDY1OTIyLCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.ovg7467TOiVuEr-V90Y6lOh0_YLmubXAUNKq2vM5H9k",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjE1MjMyMiwiaWF0IjoxNzQ2MDY1OTIyLCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.ovg7467TOiVuEr-V90Y6lOh0_YLmubXAUNKq2vM5H9k",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8080/admin/verify/6",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"verify",
+						"6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllCollectors",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjQ5NDg0NiwiaWF0IjoxNzQ2NDA4NDQ2LCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.zW245oJIzBmj11BAgyiJkaAA9kObQ3H1z5RxMe169kk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjE1MjMyMiwiaWF0IjoxNzQ2MDY1OTIyLCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.ovg7467TOiVuEr-V90Y6lOh0_YLmubXAUNKq2vM5H9k",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8080/admin/all/collectors",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"all",
+						"collectors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCollectorByID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjM4NjEwOSwiaWF0IjoxNzQ2Mjk5NzA5LCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.g8iYfHAO1916oEd1waha5GZ3NKAszHd7vDU8x6oS8Wc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjE1MjMyMiwiaWF0IjoxNzQ2MDY1OTIyLCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.ovg7467TOiVuEr-V90Y6lOh0_YLmubXAUNKq2vM5H9k",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8080/admin/collector/2",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"collector",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetBusinessByID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjM4NjEwOSwiaWF0IjoxNzQ2Mjk5NzA5LCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.g8iYfHAO1916oEd1waha5GZ3NKAszHd7vDU8x6oS8Wc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjE1MjMyMiwiaWF0IjoxNzQ2MDY1OTIyLCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.ovg7467TOiVuEr-V90Y6lOh0_YLmubXAUNKq2vM5H9k",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8080/admin/business/3",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"business",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllBusinesses",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjM4NjEwOSwiaWF0IjoxNzQ2Mjk5NzA5LCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.g8iYfHAO1916oEd1waha5GZ3NKAszHd7vDU8x6oS8Wc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjE1MjMyMiwiaWF0IjoxNzQ2MDY1OTIyLCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.ovg7467TOiVuEr-V90Y6lOh0_YLmubXAUNKq2vM5H9k",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8080/admin/all/businesses",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"all",
+						"businesses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetBusinessByID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjM4NjEwOSwiaWF0IjoxNzQ2Mjk5NzA5LCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.g8iYfHAO1916oEd1waha5GZ3NKAszHd7vDU8x6oS8Wc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjE1MjMyMiwiaWF0IjoxNzQ2MDY1OTIyLCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.ovg7467TOiVuEr-V90Y6lOh0_YLmubXAUNKq2vM5H9k",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8080/admin/businesses/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"businesses",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllUsers",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjM4NjEwOSwiaWF0IjoxNzQ2Mjk5NzA5LCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.g8iYfHAO1916oEd1waha5GZ3NKAszHd7vDU8x6oS8Wc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjE1MjMyMiwiaWF0IjoxNzQ2MDY1OTIyLCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.ovg7467TOiVuEr-V90Y6lOh0_YLmubXAUNKq2vM5H9k",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8080/admin/all/users",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"all",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Service Category",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjE1MjMyMiwiaWF0IjoxNzQ2MDY1OTIyLCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.ovg7467TOiVuEr-V90Y6lOh0_YLmubXAUNKq2vM5H9k",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjE1MjMyMiwiaWF0IjoxNzQ2MDY1OTIyLCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.ovg7467TOiVuEr-V90Y6lOh0_YLmubXAUNKq2vM5H9k",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"waste_type\":\"plastic\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/admin/add/service-category",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"add",
+						"service-category"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Service Category",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjI4MTEwMSwiaWF0IjoxNzQ2MTk0NzAxLCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.QI1EfqUrwYadS9xfeN_PbT2mm5gybrhbz2P-nZ0HdT8",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Bearer",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjE1MjMyMiwiaWF0IjoxNzQ2MDY1OTIyLCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.ovg7467TOiVuEr-V90Y6lOh0_YLmubXAUNKq2vM5H9k",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"waste_type\":\"plastic\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/admin/delete/service-category/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"delete",
+						"service-category",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Vehicle",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjQ5NDg0NiwiaWF0IjoxNzQ2NDA4NDQ2LCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.zW245oJIzBmj11BAgyiJkaAA9kObQ3H1z5RxMe169kk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"vehicle_type\":\"bus\",\r\n    \"capacity\":500\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/admin/add/vehicle",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"add",
+						"vehicle"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Vehicle",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImV4cCI6MTc0NjQ5NDg0NiwiaWF0IjoxNzQ2NDA4NDQ2LCJyb2xlIjoiQWRtaW4iLCJ1c2VyX2lkIjoxfQ.zW245oJIzBmj11BAgyiJkaAA9kObQ3H1z5RxMe169kk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"vehicle_type\":\"bus\",\r\n    \"capacity\":500\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/admin/delete/vehicle/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"delete",
+						"vehicle",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

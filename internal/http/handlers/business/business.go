@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kartikey1188/build-in-progress_01/internal/kafka"
 	"github.com/kartikey1188/build-in-progress_01/internal/storage"
 	"github.com/kartikey1188/build-in-progress_01/internal/types"
 	"github.com/kartikey1188/build-in-progress_01/internal/utils/response"
@@ -69,3 +70,142 @@ func UpdateBusinessProfile(storage storage.Storage) gin.HandlerFunc {
 		c.JSON(http.StatusOK, gin.H{"status": "OK", "Updated Business ID": updatedID})
 	}
 }
+
+func CreatePickupRequest(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var input types.PickupRequest
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, response.GeneralError(err))
+			return
+		}
+
+		_, err := storage.GetBusinessByID(input.BusinessID)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "business ID not found"})
+			return
+		}
+		_, err = storage.GetCollectorByID(input.CollectorID)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "collector ID not found"})
+			return
+		}
+
+		id, err1 := kafka.CreatePickupRequest(storage, input)
+		if err1 != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err1))
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"status": "OK", "message": "Pickup request created successfully", "pickup_request_id": id})
+	}
+}
+
+func GetPickupRequestByID(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid pickup request ID"})
+			return
+		}
+		pickupRequest, err := storage.GetPickupRequestByID(id)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+		c.JSON(http.StatusOK, pickupRequest)
+	}
+}
+
+func GetAllPickupRequestsForBusiness(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		businessID, err := strconv.ParseInt(c.Param("business_id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid business ID"})
+			return
+		}
+		pickupRequests, err := storage.GetAllPickupRequestsForBusiness(businessID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+		c.JSON(http.StatusOK, pickupRequests)
+	}
+}
+
+func UpdatePickupRequest(storage storage.Storage) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid pickup request ID"})
+			return
+		}
+
+		_, err = storage.GetPickupRequestByID(id)
+		if err != nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "pickup request ID not found"})
+			return
+		}
+
+		var input types.UpdatePickupRequest
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, response.GeneralError(err))
+			return
+		}
+		err = storage.UpdatePickupRequest(id, input)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"status": "OK", "message": "Pickup request updated successfully"})
+	}
+}
+
+// func CancelPickupRequest(storage storage.Storage) gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+// 		if err != nil {
+// 			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid pickup request ID"})
+// 			return
+// 		}
+
+// 		_, err = storage.GetPickupRequestByID(id)
+// 		if err != nil {
+// 			c.JSON(http.StatusNotFound, gin.H{"error": "pickup request ID not found"})
+// 			return
+// 		}
+
+// 		err = kafka.CancelPickupRequest(id)
+// 		if err != nil {
+// 			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+// 			return
+// 		}
+// 		c.JSON(http.StatusOK, gin.H{"status": "OK", "message": "Pickup request cancelled successfully"})
+// 	}
+// }
+
+// func UpdatePickupRequest(storage storage.Storage) gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+// 		if err != nil {
+// 			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid pickup request ID"})
+// 			return
+// 		}
+
+// 		_, err = storage.GetPickupRequestByID(id)
+// 		if err != nil {
+// 			c.JSON(http.StatusNotFound, gin.H{"error": "pickup request ID not found"})
+// 			return
+// 		}
+
+// 		var input types.UpdatePickupRequest
+// 		if err := c.ShouldBindJSON(&input); err != nil {
+// 			c.JSON(http.StatusBadRequest, response.GeneralError(err))
+// 			return
+// 		}
+// 		err = kafka.UpdatePickupRequest(id, input)
+// 		if err != nil {
+// 			c.JSON(http.StatusInternalServerError, response.GeneralError(err))
+// 			return
+// 		}
+// 		c.JSON(http.StatusOK, gin.H{"status": "OK", "message": "Pickup request updated successfully"})
+// 	}
+// }

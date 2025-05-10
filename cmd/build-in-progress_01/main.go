@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
@@ -15,10 +16,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kartikey1188/build-in-progress_01/internal/config"
 	"github.com/kartikey1188/build-in-progress_01/internal/http/routes"
+	"github.com/kartikey1188/build-in-progress_01/internal/kafka"
 	"github.com/kartikey1188/build-in-progress_01/internal/storage/postgres"
 )
 
 func main() {
+	// Disabling [GIN-debug] logs for route registration
+	gin.SetMode(gin.ReleaseMode)
+
 	// loading config
 
 	cfg := config.MustLoad()
@@ -31,6 +36,16 @@ func main() {
 	}
 
 	slog.Info("storage initialized", slog.String("env", cfg.Env), slog.String("version", "1.0.0"))
+
+	// creating a context with cancellation
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	// creating a WaitGroup
+	var wg sync.WaitGroup
+
+	// starting kafka listeners
+	kafka.StartKafkaListeners(ctx, &wg, cfg, storage)
 
 	// setting up router and routes
 
@@ -72,7 +87,13 @@ func main() {
 
 	slog.Info("shutting down the server")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	// cancelling the context to signal the listener goroutines to stop
+	cancel()
+
+	// waiting for all goroutines to finish
+	wg.Wait()
+
+	ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	if err := server.Shutdown(ctx); err != nil {

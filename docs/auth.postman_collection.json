@@ -1,0 +1,149 @@
+{
+	"info": {
+		"_postman_id": "1af11f95-ccaa-4dc6-8300-dada199e8a84",
+		"name": "auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42929397",
+		"_collection_link": "https://waste-collector-application.postman.co/workspace/Waste-Collector-Application-Wo~9303995a-4969-4747-9ee8-9ac091518561/collection/42929397-1af11f95-ccaa-4dc6-8300-dada199e8a84?action=share&source=collection_link&creator=42929397"
+	},
+	"item": [
+		{
+			"name": "Business Registration",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"email\": \"user33@example.com\",\r\n\"password_hash\": \"mySecurePassword123!\",\r\n\"full_name\": \"John Doe\",\r\n\"phone_number\": \"+1234567890\",\r\n\"role\": \"Business\",\r\n\"address\": \"123 Main Street, Springfield\",\r\n\"profile_image\": \"https://cdn.example.com/image.jpg\",\r\n\"business_name\": \"John's Business\",\r\n\"business_type\": \"Retail\",\r\n\"registration_number\": \"1234567890\",\r\n\"gst_id\": \"GSTIN1234567\",\r\n\"business_address\": \"123 Main Street, Springfield\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/auth/register/business",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"register",
+						"business"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Collector Registration",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"user33@example.com\",\r\n  \"password_hash\": \"mySecurePassword123!\",\r\n  \"full_name\": \"John Doe\",\r\n  \"phone_number\": \"+1234567890\",\r\n  \"role\": \"Collector\",\r\n  \"company_name\": \"John's Collectors\",\r\n  \"license_number\": \"LIC123456\",\r\n  \"capacity\": 100,\r\n  \"license_expiry\": \"2025-12-31\",\r\n  \"address\": \"123 Main Street, Springfield\",\r\n  \"profile_image\": \"https://cdn.example.com/image.jpg\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/auth/register/collector",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"register",
+						"collector"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"user33@example.com\",\r\n  \"password\": \"mySecurePassword123!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/auth/login",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Admin Login",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"admin@gmail.com\",\r\n  \"password\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/auth/login",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"_postman_previewlanguage": "",
+					"header": [],
+					"cookie": [
+						{
+							"expires": "Invalid Date"
+						}
+					],
+					"body": ""
+				}
+			]
+		}
+	]
+}

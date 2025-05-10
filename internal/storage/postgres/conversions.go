@@ -55,3 +55,19 @@ func convertBusinessModelToType(b models.Business, u models.User) types.Business
 		Business_address:    b.BusinessAddress,
 	}
 }
+
+func convertPickupRequestModelToType(model models.PickupRequest) types.PickupRequest {
+	return types.PickupRequest{
+		RequestID:            model.RequestID,
+		BusinessID:           model.BusinessID,
+		CollectorID:          model.CollectorID,
+		WasteType:            model.WasteType,
+		Quantity:             model.Quantity,
+		PickupDate:           types.DateTime{Time: model.PickupDate},
+		Status:               model.Status,
+		HandlingRequirements: model.HandlingRequirements,
+		AssignedDriver:       model.AssignedDriver,
+		AssignedVehicle:      model.AssignedVehicle,
+		CreatedAt:            types.DateTime{Time: model.CreatedAt},
+	}
+}

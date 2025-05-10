@@ -30,6 +30,8 @@ type Business struct {
 	RegistrationNumber string `gorm:"column:registration_number;not null;unique;size:100"`
 	GstID              string `gorm:"column:gst_id;not null;unique;size:50"`
 	BusinessAddress    string `gorm:"column:business_address;not null;type:text"`
+
+	PickupRequests []*PickupRequest `gorm:"foreignKey:BusinessID;references:UserID;constraint:OnDelete:CASCADE"`
 }
 
 type Collector struct {
@@ -42,6 +44,7 @@ type Collector struct {
 	CollectorServiceCategories []*CollectorServiceCategory `gorm:"foreignKey:CollectorID;references:UserID;constraint:OnDelete:CASCADE"`
 	CollectorVehicles          []*CollectorVehicle         `gorm:"foreignKey:CollectorID;references:UserID;constraint:OnDelete:CASCADE"`
 	CollectorDrivers           []*CollectorDriver          `gorm:"foreignKey:CollectorID;references:UserID;constraint:OnDelete:CASCADE"`
+	PickupRequests             []*PickupRequest            `gorm:"foreignKey:CollectorID;references:UserID;constraint:OnDelete:CASCADE"`
 }
 
 type ServiceCategory struct {
@@ -110,15 +113,16 @@ type VehicleDriver struct {
 // 	VehicleID int64     `gorm:"column:vehicle_id;index"`
 // }
 
-// type PickupRequest struct {
-// 	RequestID       int64     `gorm:"primaryKey;autoIncrement;column:request_id"`
-// 	BusinessID      int64     `gorm:"column:business_id;not null;index;foreignKey:business_id;references:Business;onDelete:CASCADE"`
-// 	CollectorID     int64     `gorm:"column:collector_id;not null;index;foreignKey:collector_id;references:Collector;onDelete:CASCADE"`
-// 	WasteType       string    `gorm:"column:waste_type;not null;size:100"`
-// 	Quantity        float64   `gorm:"column:quantity;not null;type:decimal(10,2)"`
-// 	PickupDate      time.Time `gorm:"column:pickup_date;not null"`
-// 	Status          string    `gorm:"column:status;not null;size:50;check:status IN ('pending','assigned','completed')"`
-// 	AssignedDriver  int64     `gorm:"column:assigned_driver;index"`
-// 	AssignedVehicle int64     `gorm:"column:assigned_vehicle;index"`
-// 	CreatedAt       time.Time `gorm:"column:created_at;not null;default:CURRENT_TIMESTAMP"`
-// }
+type PickupRequest struct {
+	RequestID            int64     `gorm:"primaryKey;autoIncrement;column:request_id"`
+	BusinessID           int64     `gorm:"column:business_id;not null;index;foreignKey:business_id;references:Business;onDelete:CASCADE"`
+	CollectorID          int64     `gorm:"column:collector_id;not null;index;foreignKey:collector_id;references:Collector;onDelete:CASCADE"`
+	WasteType            string    `gorm:"column:waste_type;not null;size:100"`
+	Quantity             float64   `gorm:"column:quantity;not null;type:decimal(10,2)"`
+	PickupDate           time.Time `gorm:"column:pickup_date;not null"`
+	Status               string    `gorm:"column:status;not null;size:50;check:status IN ('Pending','Assigned','Completed', 'Cancelled'); default:'Pending'"`
+	HandlingRequirements string    `gorm:"column:handling_requirements;type:text"`
+	AssignedDriver       int64     `gorm:"column:assigned_driver;unique"`
+	AssignedVehicle      int64     `gorm:"column:assigned_vehicle;unqiue"`
+	CreatedAt            time.Time `gorm:"column:created_at;not null;default:CURRENT_TIMESTAMP"`
+}

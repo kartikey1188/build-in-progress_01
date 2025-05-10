@@ -1,0 +1,875 @@
+{
+	"info": {
+		"_postman_id": "3cfa9697-6e04-43d5-a254-e99f55390a48",
+		"name": "collector",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42929397",
+		"_collection_link": "https://waste-collector-application.postman.co/workspace/Waste-Collector-Application-Wo~9303995a-4969-4747-9ee8-9ac091518561/collection/42929397-3cfa9697-6e04-43d5-a254-e99f55390a48?action=share&source=collection_link&creator=42929397"
+	},
+	"item": [
+		{
+			"name": "GetCollectorByEmail",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzNUBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjQwMTg2MiwiaWF0IjoxNzQ2MzE1NDYyLCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6Mn0.S_0FXs7xHfoJIOLeLajGVZbhzvc5Ty6lvm44QKDm6Xk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"us5@example.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCollectorByID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzNUBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjQwMTg2MiwiaWF0IjoxNzQ2MzE1NDYyLCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6Mn0.S_0FXs7xHfoJIOLeLajGVZbhzvc5Ty6lvm44QKDm6Xk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector/2",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ListCollectors",
+			"request": {
+				"auth": {
+					"type": "edgegrid"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/collectors",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collectors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateCollectorProfile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzNUBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjE1NjU3NCwiaWF0IjoxNzQ2MDcwMTc0LCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6MTB9.jiPwLTzytNwGuf3hhpb7gPwFqjvKwah3BrJp3FIKDDI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"us5@example.com\",\r\n  \"password_hash\": \"mySecurePassword123!\",\r\n  \"full_name\": \"John Doe\",\r\n  \"phone_number\": \"+1234567890\",\r\n  \"role\": \"Collector\",\r\n  \"company_name\": \"brcok\",\r\n  \"license_number\": \"LIC1234777856\",\r\n  \"capacity\": 100,\r\n  \"license_expiry\": \"2025-12-31\",\r\n  \"address\": \"123 Main Street, Springfield\",\r\n  \"profile_image\": \"https://cdn.example.com/image.jpg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector/profile/3",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector",
+						"profile",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OfferServiceCategory",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzNUBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjMwMTU0MSwiaWF0IjoxNzQ2MjE1MTQxLCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6Mn0.sh80zdH41os4sUpyyX8J_V2supqVs9MzUnoeD4VS9D4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"category_id\":1,\r\n  \"price_per_kg\":10,\r\n  \"maximum_capacity\":10504,\r\n  \"handling_requirements\":\"frgervvf\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector/10/service-categories",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector",
+						"10",
+						"service-categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCollectorServiceCategories",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzNUBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjI3ODA1NSwiaWF0IjoxNzQ2MTkxNjU1LCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6Mn0.UBnjomjwDd6LXt8bhf7qSQSlUgJX0pgHE-VLLGrcq14",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector/2/service-categories",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector",
+						"2",
+						"service-categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateOfferedServiceCategory",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzNUBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjE1NjU3NCwiaWF0IjoxNzQ2MDcwMTc0LCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6MTB9.jiPwLTzytNwGuf3hhpb7gPwFqjvKwah3BrJp3FIKDDI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"category_id\":4,\r\n\"price_per_kg\":1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector/10/service-categories",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector",
+						"10",
+						"service-categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteOfferedServiceCategory",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzNUBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjE1NjU3NCwiaWF0IjoxNzQ2MDcwMTc0LCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6MTB9.jiPwLTzytNwGuf3hhpb7gPwFqjvKwah3BrJp3FIKDDI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"category_id\":1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector/10/service-categories",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector",
+						"10",
+						"service-categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AppendCollectorVehicle",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzNUBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjMwMTU0MSwiaWF0IjoxNzQ2MjE1MTQxLCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6Mn0.sh80zdH41os4sUpyyX8J_V2supqVs9MzUnoeD4VS9D4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"vehicle_id\":1,\r\n \"vehicle_number\":\"3453ref\",\r\n \"maintenance_date\":\"2001-02-01\",\r\n \"gps_tracking_id\":\"34wrf\",\r\n \"registration_document\":\"r4gwrw\",\r\n \"registration_expiry\":\"2004-05-05\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector/2/vehicles",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector",
+						"2",
+						"vehicles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCollectorVehicles",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzNUBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjMwMTU0MSwiaWF0IjoxNzQ2MjE1MTQxLCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6Mn0.sh80zdH41os4sUpyyX8J_V2supqVs9MzUnoeD4VS9D4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"vehicle_id\":2,\r\n \"vehicle_number\":\"3453ref\",\r\n \"maintenance_date\":\"2001-02-01\",\r\n \"gps_tracking_id\":\"34wrf\",\r\n \"registration_document\":\"r4gwrw\",\r\n \"registration_expiry\":\"2004-05-05\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector/2/vehicles",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector",
+						"2",
+						"vehicles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCollectorVehicle",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzNUBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjMwMTU0MSwiaWF0IjoxNzQ2MjE1MTQxLCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6Mn0.sh80zdH41os4sUpyyX8J_V2supqVs9MzUnoeD4VS9D4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"vehicle_id\":2,\r\n \"vehicle_number\":\"3453ref\",\r\n \"maintenance_date\":\"2001-02-01\",\r\n \"gps_tracking_id\":\"34wrf\",\r\n \"registration_document\":\"r4gwrw\",\r\n \"registration_expiry\":\"2004-05-05\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector/2/vehicles/2",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector",
+						"2",
+						"vehicles",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateCollectorVehicle",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzNUBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjMwMTU0MSwiaWF0IjoxNzQ2MjE1MTQxLCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6Mn0.sh80zdH41os4sUpyyX8J_V2supqVs9MzUnoeD4VS9D4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"vehicle_id\":2,\r\n \"is_active\":true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector/2/vehicles",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector",
+						"2",
+						"vehicles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteCollectorVehicle",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIzM0BleGFtcGxlLmNvbSIsImV4cCI6MTc0NjQ5NDkxNSwiaWF0IjoxNzQ2NDA4NTE1LCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6Mn0.PKVMBEWVQ49xwagjTJB2tsLcuC-397c4lOs20ev_WWU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"vehicle_id\":1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector/2/vehicles",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector",
+						"2",
+						"vehicles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RegisterDriver",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIzM0BleGFtcGxlLmNvbSIsImV4cCI6MTc0NjQ5NDkxNSwiaWF0IjoxNzQ2NDA4NTE1LCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6Mn0.PKVMBEWVQ49xwagjTJB2tsLcuC-397c4lOs20ev_WWU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"license_number\":\"r3f4rgeergevgwervgwevv\",\r\n \"driver_name\":\"brock\",\r\n \"license_expiry\":\"2029-08-08\",\r\n \"rating\":0,\r\n \"joining_date\":\"2024-03-02\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector/2/drivers",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector",
+						"2",
+						"drivers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCollectorDrivers",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzNUBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjMwMTU0MSwiaWF0IjoxNzQ2MjE1MTQxLCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6Mn0.sh80zdH41os4sUpyyX8J_V2supqVs9MzUnoeD4VS9D4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector/2/drivers",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector",
+						"2",
+						"drivers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCollectorDriver",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzNUBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjMwMTU0MSwiaWF0IjoxNzQ2MjE1MTQxLCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6Mn0.sh80zdH41os4sUpyyX8J_V2supqVs9MzUnoeD4VS9D4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector/2/drivers/4",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector",
+						"2",
+						"drivers",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateDriver",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzNUBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjMwMTU0MSwiaWF0IjoxNzQ2MjE1MTQxLCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6Mn0.sh80zdH41os4sUpyyX8J_V2supqVs9MzUnoeD4VS9D4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"driver_id\":1,\r\n \"is_employed\":true,\r\n \"is_active\":false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector/2/drivers",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector",
+						"2",
+						"drivers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteDriver",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzNUBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjMwMTU0MSwiaWF0IjoxNzQ2MjE1MTQxLCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6Mn0.sh80zdH41os4sUpyyX8J_V2supqVs9MzUnoeD4VS9D4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"driver_id\":344\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector/2/drivers",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector",
+						"2",
+						"drivers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AssignVehicleToDriver",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIzM0BleGFtcGxlLmNvbSIsImV4cCI6MTc0NjQ5NDkxNSwiaWF0IjoxNzQ2NDA4NTE1LCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6Mn0.PKVMBEWVQ49xwagjTJB2tsLcuC-397c4lOs20ev_WWU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"driver_id\":1,\r\n \"vehicle_id\":1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector/2/drivers/assign-vehicle",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector",
+						"2",
+						"drivers",
+						"assign-vehicle"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UnassignVehicleFromDriver",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzNUBleGFtcGxlLmNvbSIsImV4cCI6MTc0NjMwMTU0MSwiaWF0IjoxNzQ2MjE1MTQxLCJyb2xlIjoiQ29sbGVjdG9yIiwidXNlcl9pZCI6Mn0.sh80zdH41os4sUpyyX8J_V2supqVs9MzUnoeD4VS9D4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"driver_id\":1,\r\n \"vehicle_id\":2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/collector/2/drivers/unassign-vehicle",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"collector",
+						"2",
+						"drivers",
+						"unassign-vehicle"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
