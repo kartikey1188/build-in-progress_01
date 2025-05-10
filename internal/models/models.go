@@ -122,7 +122,7 @@ type PickupRequest struct {
 	PickupDate           time.Time `gorm:"column:pickup_date;not null"`
 	Status               string    `gorm:"column:status;not null;size:50;check:status IN ('Pending','Assigned','Completed', 'Cancelled'); default:'Pending'"`
 	HandlingRequirements string    `gorm:"column:handling_requirements;type:text"`
-	AssignedDriver       int64     `gorm:"column:assigned_driver;unique"`
-	AssignedVehicle      int64     `gorm:"column:assigned_vehicle;unqiue"`
+	AssignedDriver       int64     `gorm:"column:assigned_driver"`
+	AssignedVehicle      int64     `gorm:"column:assigned_vehicle"`
 	CreatedAt            time.Time `gorm:"column:created_at;not null;default:CURRENT_TIMESTAMP"`
 }
