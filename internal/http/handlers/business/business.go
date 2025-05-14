@@ -4,8 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"cloud.google.com/go/pubsub"
 	"github.com/gin-gonic/gin"
-	"github.com/kartikey1188/build-in-progress_01/internal/kafka"
+	"github.com/kartikey1188/build-in-progress_01/internal/pub_sub"
 	"github.com/kartikey1188/build-in-progress_01/internal/storage"
 	"github.com/kartikey1188/build-in-progress_01/internal/types"
 	"github.com/kartikey1188/build-in-progress_01/internal/utils/response"
@@ -71,7 +72,7 @@ func UpdateBusinessProfile(storage storage.Storage) gin.HandlerFunc {
 	}
 }
 
-func CreatePickupRequest(storage storage.Storage) gin.HandlerFunc {
+func CreatePickupRequest(storage storage.Storage, pubsubClient *pubsub.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var input types.PickupRequest
 		if err := c.ShouldBindJSON(&input); err != nil {
@@ -90,7 +91,7 @@ func CreatePickupRequest(storage storage.Storage) gin.HandlerFunc {
 			return
 		}
 
-		id, err1 := kafka.CreatePickupRequest(storage, input)
+		id, err1 := pub_sub.CreatePickupRequest(storage, pubsubClient, input)
 		if err1 != nil {
 			c.JSON(http.StatusInternalServerError, response.GeneralError(err1))
 			return

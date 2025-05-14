@@ -10,9 +10,12 @@ import (
 )
 
 type Config struct {
-	Env         string `yaml:"env" env:"ENV" env-required:"true"`
-	StoragePath string `env:"DATABASE_URL" env-required:"true"`
-	Port        string `env:"PORT" env-required:"true"`
+	Env          string `yaml:"env" env:"ENV" env-required:"true"`
+	StoragePath  string `env:"DATABASE_URL" env-required:"true"`
+	Port         string `env:"PORT" env-required:"true"`
+	GCPProjectID string `env:"GCP_PROJECT_ID" env-required:"true"`
+
+	PickupRequestSubscriptionID string `yaml:"pickup_request_subscription_id" env:"PICKUP_REQUEST_SUBSCRIPTION_ID" env-required:"true"`
 }
 
 func MustLoad() *Config {
