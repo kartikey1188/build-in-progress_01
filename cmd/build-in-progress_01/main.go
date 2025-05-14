@@ -57,13 +57,15 @@ func main() {
 	}
 	slog.Info("Pub/Sub subscriptions initialized")
 
-	// starting listeners
+	// starting listeners in a separate goroutine
 
-	err = pub_sub.StartListeners(context.Background(), pubsubClient, cfg, storage)
-	if err != nil {
-		log.Fatalf("Failed to start listeners: %v", err)
-	}
-	slog.Info("Pub/Sub listeners started")
+	go func() {
+		err = pub_sub.StartListeners(context.Background(), pubsubClient, cfg, storage)
+		if err != nil {
+			log.Fatalf("Failed to start listeners: %v", err)
+		}
+		slog.Info("Pub/Sub listeners started")
+	}()
 
 	// setting up router and routes
 

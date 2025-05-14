@@ -35,6 +35,9 @@ Packages Installed:
 12) kafka-go
     go get github.com/segmentio/kafka-go
 
+13) google pub/sub
+    go get cloud.google.com/go/pubsub   
+
 
 
 
