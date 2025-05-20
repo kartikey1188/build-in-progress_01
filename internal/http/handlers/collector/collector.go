@@ -357,9 +357,9 @@ func GetCollectorDriver(storage storage.Storage) gin.HandlerFunc {
 }
 
 // AddCollectorDriver adds a new driver for a collector.
-func AddCollectorDriver(storage storage.Storage) gin.HandlerFunc {
+func CreateCollectorDriver(storage storage.Storage) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		collectorID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+		collectorID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid collector ID"})
 			return
@@ -369,7 +369,7 @@ func AddCollectorDriver(storage storage.Storage) gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		id, err := storage.AddCollectorDriver(input, collectorID)
+		id, err := storage.CreateCollectorDriver(input, collectorID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return

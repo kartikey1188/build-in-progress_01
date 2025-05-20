@@ -21,6 +21,9 @@ import (
 )
 
 func main() {
+
+	gin.SetMode(gin.ReleaseMode) // to disable debug mode in gin
+
 	// loading config
 
 	cfg := config.MustLoad()
@@ -35,7 +38,7 @@ func main() {
 	slog.Info("storage initialized", slog.String("env", cfg.Env), slog.String("version", "1.0.0"))
 
 	// initializing Pub/Sub client
-	pubsubClient, err := pubsub.NewClient(context.Background(), cfg.GCPProjectID)
+	pubsubClient, err := pubsub.NewClient(context.Background(), cfg.GCPProjectID) // the env variable GOOGLE_APPLICATION_CREDENTIALS is automatically picked up by the client (env variables must be loaded before this)
 	if err != nil {
 		log.Fatalf("Failed to create Pub/Sub client: %v", err)
 	}

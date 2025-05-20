@@ -19,8 +19,9 @@ type User struct {
 	IsVerified   bool      `gorm:"column:is_verified;not null;default:false"`
 	IsFlagged    bool      `gorm:"column:is_flagged;not null;default:false"`
 
-	Business  *Business  `gorm:"foreignKey:UserID;references:UserID;constraint:OnDelete:CASCADE"`
-	Collector *Collector `gorm:"foreignKey:UserID;references:UserID;constraint:OnDelete:CASCADE"`
+	Business  *Business        `gorm:"foreignKey:UserID;references:UserID;constraint:OnDelete:CASCADE"`
+	Collector *Collector       `gorm:"foreignKey:UserID;references:UserID;constraint:OnDelete:CASCADE"`
+	Driver    *CollectorDriver `gorm:"foreignKey:UserID;references:UserID;constraint:OnDelete:CASCADE"`
 }
 
 type Business struct {
@@ -83,7 +84,7 @@ type CollectorVehicle struct {
 }
 
 type CollectorDriver struct {
-	DriverID      int64     `gorm:"primaryKey;autoIncrement;column:driver_id"`
+	UserID        int64     `gorm:"primaryKey;column:driver_id"`
 	CollectorID   int64     `gorm:"column:collector_id"`
 	LicenseNumber string    `gorm:"column:license_number;not null;unique;size:100"`
 	DriverName    string    `gorm:"column:driver_name;not null;size:100"`
@@ -93,7 +94,7 @@ type CollectorDriver struct {
 	Rating        float64   `gorm:"column:rating;type:decimal(3,2)"`
 	JoiningDate   time.Time `gorm:"column:joining_date;not null"`
 
-	VehicleDriver *VehicleDriver `gorm:"foreignKey:DriverID;references:DriverID;constraint:OnDelete:CASCADE"`
+	VehicleDriver *VehicleDriver `gorm:"foreignKey:DriverID;references:UserID;constraint:OnDelete:CASCADE"`
 }
 
 type VehicleDriver struct {

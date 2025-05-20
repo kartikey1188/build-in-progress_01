@@ -71,3 +71,31 @@ func convertPickupRequestModelToType(model models.PickupRequest) types.PickupReq
 		CreatedAt:            types.DateTime{Time: model.CreatedAt},
 	}
 }
+
+func convertCollectorDriverModelToType(driver models.CollectorDriver, user models.User) types.CollectorDriver {
+	return types.CollectorDriver{
+		User: types.User{
+			UserID:       user.UserID,
+			Email:        user.Email,
+			PasswordHash: user.PasswordHash,
+			FullName:     user.FullName,
+			PhoneNumber:  user.PhoneNumber,
+			Address:      user.Address,
+			Registration: types.Date{Time: user.Registration},
+			Role:         user.Role,
+			IsActive:     user.IsActive,
+			ProfileImage: user.ProfileImage,
+			LastLogin:    types.DateTime{Time: user.LastLogin},
+			IsVerified:   user.IsVerified,
+			IsFlagged:    user.IsFlagged,
+		},
+		CollectorID:   driver.CollectorID,
+		LicenseNumber: driver.LicenseNumber,
+		DriverName:    driver.DriverName,
+		LicenseExpiry: types.Date{Time: driver.LicenseExpiry},
+		IsEmployed:    driver.IsEmployed,
+		IsActive:      driver.IsActive,
+		Rating:        driver.Rating,
+		JoiningDate:   types.Date{Time: driver.JoiningDate},
+	}
+}

@@ -22,6 +22,8 @@ func CreatePickupRequest(storage storage.Storage, pubsubClient *pubsub.Client, p
 
 	fmt.Println("Pickup request created successfully in the database")
 
+	pickupRequest.RequestID = id
+
 	// Converting pickupRequest to JSON
 	messageData, err := json.Marshal(pickupRequest)
 	if err != nil {

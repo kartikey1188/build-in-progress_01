@@ -12,19 +12,19 @@ Packages Installed:
 4) gin:
     go get -u github.com/gin-gonic/gin
 
-5) bcrypt
+5) bcrypt:
     go get -u golang.org/x/crypto/bcrypt
 
-6) jwt-go
+6) jwt-go:
     go get -u github.com/golang-jwt/jwt/v5
 
-7) swagger UI handler
+7) swagger UI handler:
     go get -u github.com/swaggo/http-swagger
 
-8) cors
+8) cors:
     go get github.com/gin-contrib/cors
 
-9) gorm
+9) gorm:
     go get gorm.io/gorm
     go get gorm.io/driver/postgres
 
@@ -32,12 +32,23 @@ Packages Installed:
 
 11) go get github.com/lib/pq
 
-12) kafka-go
+12) kafka-go:
     go get github.com/segmentio/kafka-go
 
-13) google pub/sub
+13) google pub/sub:
     go get cloud.google.com/go/pubsub   
 
+14) Gomail:
+    go get github.com/go-mail/mail
+
+15) Google APIs Client Library for Go:
+    google.golang.org/api/option
+
+16) goole maps:
+    go get googlemaps.github.io/maps
+
+17) gorilla websocket:
+    go get github.com/gorilla/websocket
 
 
 

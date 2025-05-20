@@ -2,17 +2,45 @@ package pub_sub
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 
 	"cloud.google.com/go/pubsub"
+	"github.com/kartikey1188/build-in-progress_01/internal/storage"
+	"github.com/kartikey1188/build-in-progress_01/internal/types"
 )
 
-func StartPickupRequestSubscriber(ctx context.Context, client *pubsub.Client, subscriptionID string) error {
+func StartPickupRequestSubscriber(ctx context.Context, storage storage.Storage, client *pubsub.Client, subscriptionID string) error {
 	sub := client.Subscription(subscriptionID)
 
 	err := sub.Receive(ctx, func(ctx context.Context, msg *pubsub.Message) {
-		fmt.Printf("Received message: %s", string(msg.Data))
+		fmt.Printf("Received message: %s\n", string(msg.Data))
+
+		var pr types.PickupRequest
+		if err := json.Unmarshal(msg.Data, &pr); err != nil {
+			log.Printf("Error unmarshalling message: %v", err)
+			log.Println("Nacking message due to unmarshalling failure")
+			msg.Nack()
+			return
+		}
+
+		collector, err := storage.GetCollectorByID(pr.CollectorID)
+		if err != nil {
+			log.Printf("Error fetching collector: %v", err)
+			log.Println("Nacking message due to GetCollectorByID failure")
+			msg.Nack()
+			return
+		}
+
+		if err := sendNotification(collector, pr); err != nil {
+			log.Printf("Error sending email: %v", err)
+			log.Println("Nacking message due to sendNotification failure")
+			msg.Nack()
+			return
+		}
+
+		fmt.Printf("Notification sent to collector: %s\n", collector.Email)
 
 		msg.Ack() // Marking message as successfully handled
 	})

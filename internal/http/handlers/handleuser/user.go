@@ -213,6 +213,12 @@ func Login(storage storage.Storage) gin.HandlerFunc {
 				"token":  signedToken,
 				"user":   admin,
 			})
+		case "Driver":
+			c.JSON(http.StatusOK, gin.H{
+				"status": "OK",
+				"token":  signedToken,
+				"user":   user,
+			})
 		}
 	}
 }

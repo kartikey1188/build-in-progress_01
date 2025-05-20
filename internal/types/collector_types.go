@@ -31,15 +31,15 @@ type CollectorVehicle struct {
 }
 
 type CollectorDriver struct {
-	DriverID      int64   `json:"driver_id"`      // Primary key
-	CollectorID   int64   `json:"collector_id"`   // Foreign key to Collector
-	LicenseNumber string  `json:"license_number"` // Driver's license number
-	DriverName    string  `json:"driver_name"`    // Driver's name
-	LicenseExpiry Date    `json:"license_expiry"` // License expiration date
-	IsEmployed    bool    `json:"is_employed"`    // Whether driver is currently employed
-	IsActive      bool    `json:"is_active"`      // Whether driver is available for trips
-	Rating        float64 `json:"rating"`         // Driver's performance rating
-	JoiningDate   Date    `json:"joining_date"`   // Date when driver joined
+	User
+	CollectorID   int64   `json:"collector_id" binding:"required"` // Foreign key to Collector
+	LicenseNumber string  `json:"license_number"`                  // Driver's license number
+	DriverName    string  `json:"driver_name"`                     // Driver's name
+	LicenseExpiry Date    `json:"license_expiry"`                  // License expiration date
+	IsEmployed    bool    `json:"is_employed"`                     // Whether driver is currently employed
+	IsActive      bool    `json:"is_active"`                       // Whether driver is available for trips
+	Rating        float64 `json:"rating"`                          // Driver's performance rating
+	JoiningDate   Date    `json:"joining_date"`                    // Date when driver joined
 }
 
 type VehicleDriver struct {

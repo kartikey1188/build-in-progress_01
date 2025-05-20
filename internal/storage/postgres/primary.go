@@ -144,3 +144,74 @@ func (p *Postgres) GetBusinessByEmail(email string) (types.Business, error) {
 
 	return business, nil
 }
+
+func (p *Postgres) CreateCollectorDriver(driver types.CollectorDriver, collectorID int64) (int64, error) {
+	userID, err := p.CreateUser(driver.User)
+	if err != nil {
+		return 0, fmt.Errorf("failed to create driver user: %w", err)
+	}
+
+	_, err = p.SqlDB.Exec(`
+        INSERT INTO collector_drivers (
+            user_id, collector_id, license_number, driver_name, 
+            license_expiry, is_employed, is_active, rating, joining_date
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+		userID,
+		collectorID,
+		driver.LicenseNumber,
+		driver.DriverName,
+		driver.LicenseExpiry.Time,
+		driver.IsEmployed,
+		driver.IsActive,
+		driver.Rating,
+		driver.JoiningDate.Time,
+	)
+	if err != nil {
+		return 0, fmt.Errorf("failed to create collector driver: %w", err)
+	}
+
+	return userID, nil
+}
+
+func (p *Postgres) GetCollectorDriverByEmail(email string) (types.CollectorDriver, error) {
+	var driver types.CollectorDriver
+	var user types.User
+	var registration, lastLogin, licenseExpiry, joiningDate time.Time
+
+	query := `
+        SELECT 
+            u.user_id, u.email, u.password_hash, u.full_name, u.phone_number,
+            u.address, u.registration_date, u.role, u.is_active, u.profile_image,
+            u.last_login, u.is_verified, u.is_flagged,
+            cd.collector_id, cd.license_number, cd.driver_name,
+            cd.license_expiry, cd.is_employed, cd.is_active,
+            cd.rating, cd.joining_date
+        FROM users u
+        JOIN collector_drivers cd ON u.user_id = cd.user_id
+        WHERE u.email = $1
+        LIMIT 1`
+
+	err := p.SqlDB.QueryRow(query, email).Scan(
+		&user.UserID, &user.Email, &user.PasswordHash, &user.FullName, &user.PhoneNumber,
+		&user.Address, &registration, &user.Role, &user.IsActive, &user.ProfileImage,
+		&lastLogin, &user.IsVerified, &user.IsFlagged,
+		&driver.CollectorID, &driver.LicenseNumber, &driver.DriverName,
+		&licenseExpiry, &driver.IsEmployed, &driver.IsActive,
+		&driver.Rating, &joiningDate,
+	)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return types.CollectorDriver{}, fmt.Errorf("driver not found")
+		}
+		return types.CollectorDriver{}, fmt.Errorf("failed to get driver: %w", err)
+	}
+
+	user.Registration = types.Date{Time: registration}
+	user.LastLogin = types.DateTime{Time: lastLogin}
+	driver.LicenseExpiry = types.Date{Time: licenseExpiry}
+	driver.JoiningDate = types.Date{Time: joiningDate}
+	driver.User = user
+
+	return driver, nil
+}

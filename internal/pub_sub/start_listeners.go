@@ -13,7 +13,7 @@ import (
 func StartListeners(ctx context.Context, client *pubsub.Client, cfg *config.Config, storage storage.Storage) error {
 	slog.Info("Starting listeners...")
 
-	err := StartPickupRequestSubscriber(ctx, client, cfg.PickupRequestSubscriptionID)
+	err := StartPickupRequestSubscriber(ctx, storage, client, cfg.PickupRequestSubscriptionID)
 	if err != nil {
 		log.Fatalf("Failed to start PickupRequestSubscriber: %v", err)
 		return err

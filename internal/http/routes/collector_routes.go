@@ -30,7 +30,7 @@ func CollectorRoutes(router *gin.Engine, storage storage.Storage) {
 	// Drivers
 	collector_routes.GET("/:id/drivers", collector.GetCollectorDrivers(storage))
 	collector_routes.GET("/:id/drivers/:did", collector.GetCollectorDriver(storage))
-	collector_routes.POST("/:id/drivers", collector.AddCollectorDriver(storage))
+	collector_routes.POST("/:id/drivers", collector.CreateCollectorDriver(storage))
 	collector_routes.PATCH("/:id/drivers", collector.UpdateCollectorDriver(storage))
 	collector_routes.DELETE("/:id/drivers", collector.DeleteCollectorDriver(storage))
 	collector_routes.PUT("/:id/drivers/assign-vehicle", collector.AssignVehicleToDriver(storage))
