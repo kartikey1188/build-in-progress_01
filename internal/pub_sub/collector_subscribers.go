@@ -33,7 +33,10 @@ func StartPickupRequestSubscriber(ctx context.Context, storage storage.Storage, 
 			return
 		}
 
-		if err := sendNotification(collector, pr); err != nil {
+		heading := fmt.Sprintf("New Request Received")
+		message1 := fmt.Sprintf("Dear Collector,\n\nYou have a new pickup request (ID: %d).\nBusiness ID: %d\nWaste Type: %s\nQuantity: %.2f\n\nRegards,\nXphora AI", pr.RequestID, pr.BusinessID, pr.WasteType, pr.Quantity)
+
+		if err := sendNotification(collector, heading, message1); err != nil {
 			log.Printf("Error sending email: %v", err)
 			log.Println("Nacking message due to sendNotification failure")
 			msg.Nack()

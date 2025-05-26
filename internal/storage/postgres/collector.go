@@ -506,3 +506,63 @@ func (p *Postgres) UnassignVehicleFromDriver(driverID int64, vehicleID int64, co
 	}
 	return nil
 }
+
+func (p *Postgres) AcceptPickupRequest(requestID int64) error {
+	// Fetching the pickup request
+	var request models.PickupRequest
+	if err := p.GormDB.First(&request, "request_id = ?", requestID).Error; err != nil {
+		return fmt.Errorf("pickup request not found: %w", err)
+	}
+
+	// Updating the status to accepted
+	request.Status = "accepted"
+	if err := p.GormDB.Save(&request).Error; err != nil {
+		return fmt.Errorf("failed to update pickup request status: %w", err)
+	}
+
+	return nil
+}
+
+func (p *Postgres) RejectPickupRequest(requestID int64) error {
+	// Fetching the pickup request
+	var request models.PickupRequest
+	if err := p.GormDB.First(&request, "request_id = ?", requestID).Error; err != nil {
+		return fmt.Errorf("pickup request not found: %w", err)
+	}
+
+	// Updating the status to rejected
+	request.Status = "rejected"
+	if err := p.GormDB.Save(&request).Error; err != nil {
+		return fmt.Errorf("failed to update pickup request status: %w", err)
+	}
+
+	return nil
+}
+
+func (p *Postgres) AssignTripToDriver(requestID int64, driverID int64) error {
+	// Fetching the pickup request
+	var request models.PickupRequest
+	if err := p.GormDB.First(&request, "request_id = ?", requestID).Error; err != nil {
+		return fmt.Errorf("pickup request not found: %w", err)
+	}
+	// Setting assigned driver
+	request.AssignedDriver = driverID
+	if err := p.GormDB.Save(&request).Error; err != nil {
+		return fmt.Errorf("failed to assign trip to driver: %w", err)
+	}
+	return nil
+}
+
+func (p *Postgres) UnassignTripFromDriver(requestID int64) error {
+	// Fetching the pickup request
+	var request models.PickupRequest
+	if err := p.GormDB.First(&request, "request_id = ?", requestID).Error; err != nil {
+		return fmt.Errorf("pickup request not found: %w", err)
+	}
+	// Unassign the driver by setting to -1
+	request.AssignedDriver = -1
+	if err := p.GormDB.Save(&request).Error; err != nil {
+		return fmt.Errorf("failed to unassign trip from driver: %w", err)
+	}
+	return nil
+}

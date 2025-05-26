@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"cloud.google.com/go/pubsub"
 	"github.com/gin-gonic/gin"
 	"github.com/kartikey1188/build-in-progress_01/internal/http/handlers/admin"
 	"github.com/kartikey1188/build-in-progress_01/internal/http/handlers/business"
@@ -9,7 +10,7 @@ import (
 	"github.com/kartikey1188/build-in-progress_01/internal/storage"
 )
 
-func Admin(router *gin.Engine, storage storage.Storage) {
+func Admin(router *gin.Engine, storage storage.Storage, pubsubClient *pubsub.Client) {
 	admin_routes := router.Group("/admin")
 	admin_routes.Use(middleware.AdminOnly())
 

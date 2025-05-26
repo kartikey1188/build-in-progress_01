@@ -9,6 +9,9 @@ import (
 
 var requiredTopics = []string{
 	"PICKUP-REQUESTS",
+	"DRIVER-LOCATION",
+	"DELIVERY",
+	"ASSIGNMENTS",
 }
 
 func InitTopics(client *pubsub.Client) error {

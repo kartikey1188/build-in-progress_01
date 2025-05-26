@@ -70,6 +70,7 @@ type Vehicle struct {
 
 	CollectorVehicles []*CollectorVehicle `gorm:"foreignKey:VehicleID;references:VehicleID;constraint:OnDelete:CASCADE"`
 	VehicleDrivers    []*VehicleDriver    `gorm:"foreignKey:VehicleID;references:VehicleID;constraint:OnDelete:CASCADE"`
+	Locations         []DriverLocation    `gorm:"foreignKey:VehicleID;references:VehicleID;constraint:OnDelete:CASCADE"`
 }
 
 type CollectorVehicle struct {
@@ -94,7 +95,8 @@ type CollectorDriver struct {
 	Rating        float64   `gorm:"column:rating;type:decimal(3,2)"`
 	JoiningDate   time.Time `gorm:"column:joining_date;not null"`
 
-	VehicleDriver *VehicleDriver `gorm:"foreignKey:DriverID;references:UserID;constraint:OnDelete:CASCADE"`
+	VehicleDriver *VehicleDriver   `gorm:"foreignKey:DriverID;references:UserID;constraint:OnDelete:CASCADE"`
+	Locations     []DriverLocation `gorm:"foreignKey:DriverID;references:UserID;constraint:OnDelete:CASCADE"`
 }
 
 type VehicleDriver struct {
@@ -102,17 +104,6 @@ type VehicleDriver struct {
 	CollectorID int64 `gorm:"column:collector_id"`
 	VehicleID   int64 `gorm:"column:vehicle_id"`
 }
-
-// type CollectorDriverLocation struct {
-// 	ID        int64     `gorm:"primaryKey;autoIncrement;column:id"`
-// 	DriverID  int64     `gorm:"column:driver_id;not null;index;foreignKey:driver_id;references:CollectorDriver;onDelete:CASCADE"`
-// 	Latitude  float64   `gorm:"column:latitude;not null;type:decimal(9,6)"`
-// 	Longitude float64   `gorm:"column:longitude;not null;type:decimal(9,6)"`
-// 	Timestamp time.Time `gorm:"column:timestamp;not null"`
-// 	IsActive  bool      `gorm:"column:is_active;not null;default:true"`
-// 	TripID    int64     `gorm:"column:trip_id;index"`
-// 	VehicleID int64     `gorm:"column:vehicle_id;index"`
-// }
 
 type PickupRequest struct {
 	RequestID            int64     `gorm:"primaryKey;autoIncrement;column:request_id"`
@@ -126,4 +117,22 @@ type PickupRequest struct {
 	AssignedDriver       int64     `gorm:"column:assigned_driver"`
 	AssignedVehicle      int64     `gorm:"column:assigned_vehicle"`
 	CreatedAt            time.Time `gorm:"column:created_at;not null;default:CURRENT_TIMESTAMP"`
+
+	DriverLocations  []DriverLocation `gorm:"foreignKey:DriverID;references:AssignedDriver;constraint:OnDelete:CASCADE"`
+	VehicleLocations []DriverLocation `gorm:"foreignKey:VehicleID;references:AssignedVehicle;constraint:OnDelete:CASCADE"`
+}
+
+type DriverLocation struct {
+	LocationID  int64     `gorm:"primaryKey;autoIncrement;column:location_id"`
+	DriverID    int64     `gorm:"column:driver_id;index;foreignKey:DriverID;references:CollectorDriver.UserID"`
+	CollectorID int64     `gorm:"column:collector_id;index"` // For quick filtering by collector
+	VehicleID   int64     `gorm:"column:vehicle_id;index"`   // Optional: If tracking by vehicle
+	Latitude    float64   `gorm:"column:latitude;type:decimal(10,6);not null"`
+	Longitude   float64   `gorm:"column:longitude;type:decimal(10,6);not null"`
+	Timestamp   time.Time `gorm:"column:timestamp;not null;default:CURRENT_TIMESTAMP"`
+	Accuracy    float32   `gorm:"column:accuracy;type:decimal(5,2)"` // Optional: GPS accuracy in meters
+	Speed       float32   `gorm:"column:speed;type:decimal(6,2)"`    // Optional: Speed in km/h
+	Bearing     float32   `gorm:"column:bearing;type:decimal(5,2)"`  // Optional: Direction in degrees
+	Date        time.Time `gorm:"column:date;not null;default:CURRENT_TIMESTAMP"`
+	Point       string    `gorm:"column:point;not null"` // could be "START" or "END"
 }

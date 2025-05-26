@@ -5,7 +5,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"cloud.google.com/go/pubsub"
 	"github.com/gin-gonic/gin"
+	"github.com/kartikey1188/build-in-progress_01/internal/pub_sub"
 	"github.com/kartikey1188/build-in-progress_01/internal/storage"
 	"github.com/kartikey1188/build-in-progress_01/internal/types"
 	"github.com/kartikey1188/build-in-progress_01/internal/utils/response"
@@ -501,5 +503,99 @@ func GetCollectorByEmail(storage storage.Storage) gin.HandlerFunc {
 			return
 		}
 		c.JSON(http.StatusOK, collector)
+	}
+}
+
+// AcceptPickupRequest accepts a pickup request for a collector.
+func AcceptPickupRequest(storage storage.Storage, pubsubClient *pubsub.Client) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		pickupRequestID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid pickup-request ID"})
+			return
+		}
+
+		err1 := pub_sub.AcceptPickupRequest(storage, pubsubClient, pickupRequestID)
+		if err1 != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err1))
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"status": "OK", "Accepted Request ID": pickupRequestID})
+	}
+}
+
+// RejectPickupRequest rejects a pickup request for a collector.
+func RejectPickupRequest(storage storage.Storage, pubsubClient *pubsub.Client) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		pickupRequestID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid pickup-request ID"})
+			return
+		}
+
+		err1 := pub_sub.RejectPickupRequest(storage, pubsubClient, pickupRequestID)
+		if err1 != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err1))
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"status": "OK", "Rejected Request ID": pickupRequestID})
+	}
+}
+
+func AssignTripToDriver(storage storage.Storage, pubsubClient *pubsub.Client) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		pickupRequestID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid pickup-request ID"})
+			return
+		}
+
+		driverID, err := strconv.ParseInt(c.Param("did"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid pickup-request ID"})
+			return
+		}
+
+		uid, exists := c.Get("user_id")
+		if !exists {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "user ID not found in context"})
+			return
+		}
+
+		collector_id := uid.(int64)
+
+		driver, err := storage.GetCollectorDriver(collector_id, driverID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("failed to get driver: %v", err)})
+			return
+		}
+
+		err1 := pub_sub.AssignTripToDriver(storage, pubsubClient, pickupRequestID, driver)
+		if err1 != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err1))
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"status": "OK", "message": fmt.Sprintf("Assigned Trip for Request ID: %d\nTo Driver with ID: %d", pickupRequestID, driverID)})
+	}
+}
+
+func UnassignTripFromDriver(storage storage.Storage, pubsubClient *pubsub.Client) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		pickupRequestID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid pickup-request ID"})
+			return
+		}
+
+		err1 := pub_sub.UnassignTripFromDriver(storage, pubsubClient, pickupRequestID)
+		if err1 != nil {
+			c.JSON(http.StatusInternalServerError, response.GeneralError(err1))
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"status": "OK", "message": fmt.Sprintf("Unassigned Trip for Request ID: %d", pickupRequestID)})
 	}
 }

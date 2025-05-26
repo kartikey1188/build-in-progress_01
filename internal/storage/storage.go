@@ -1,6 +1,8 @@
 package storage
 
-import "github.com/kartikey1188/build-in-progress_01/internal/types"
+import (
+	"github.com/kartikey1188/build-in-progress_01/internal/types"
+)
 
 type Storage interface {
 	LoginAndRegister
@@ -8,6 +10,7 @@ type Storage interface {
 	Collector
 	General
 	Business
+	Driver
 }
 
 type LoginAndRegister interface {
@@ -71,6 +74,14 @@ type Collector interface {
 
 	GetCollectorServiceCategories(collectorID int64) ([]types.CollectorServiceCategory, error)
 	GetCollectorVehicles(collectorID int64) ([]types.CollectorVehicle, error)
+
+	// StoreDriverLocation(location models.DriverLocation) error
+
+	AcceptPickupRequest(requestID int64) error
+	RejectPickupRequest(requestID int64) error
+
+	AssignTripToDriver(requestID int64, driverID int64) error
+	UnassignTripFromDriver(requestID int64) error
 }
 
 type Business interface {
@@ -82,4 +93,8 @@ type Business interface {
 	CreatePickupRequest(request types.PickupRequest) (int64, error)
 	GetAllPickupRequestsForBusiness(businessID int64) ([]types.PickupRequest, error)
 	UpdatePickupRequest(requestID int64, input types.UpdatePickupRequest) error
+}
+
+type Driver interface {
+	EndDelivery(requestID int64) error
 }

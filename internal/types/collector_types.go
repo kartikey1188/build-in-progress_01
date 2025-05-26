@@ -70,3 +70,18 @@ type PickupRequest struct {
 	AssignedVehicle      int64    `json:"assigned_vehicle,omitempty"`
 	CreatedAt            DateTime `json:"created_at"`
 }
+
+type DriverLocation struct {
+	LocationID  int64    `json:"location_id,omitempty"` // Omitempty for creation requests
+	DriverID    int64    `json:"driver_id" binding:"required"`
+	CollectorID int64    `json:"collector_id,omitempty"` // Often known from context
+	VehicleID   int64    `json:"vehicle_id,omitempty"`   // Optional vehicle context
+	Latitude    float64  `json:"latitude" binding:"required"`
+	Longitude   float64  `json:"longitude" binding:"required"`
+	Timestamp   DateTime `json:"timestamp"`          // Matches your existing DateTime type
+	Accuracy    float32  `json:"accuracy,omitempty"` // Google Maps accuracy data
+	Speed       float32  `json:"speed,omitempty"`    // Optional movement metrics
+	Bearing     float32  `json:"bearing,omitempty"`  // Optional direction
+	IsActive    bool     `json:"is_active"`          // Whether the driver is active
+	TripID      int64    `json:"trip_id,omitempty"`  // Optional trip association
+}

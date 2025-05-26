@@ -15,7 +15,14 @@ type Config struct {
 	Port         string `env:"PORT" env-required:"true"`
 	GCPProjectID string `env:"GCP_PROJECT_ID" env-required:"true"`
 
-	PickupRequestSubscriptionID string `yaml:"pickup_request_subscription_id" env:"PICKUP_REQUEST_SUBSCRIPTION_ID" env-required:"true"`
+	PickupRequestSubscriptionID       string `yaml:"pickup_request_subscription_id" env:"PICKUP_REQUEST_SUBSCRIPTION_ID" env-required:"true"`
+	DriverLocationSubscriptionID      string `yaml:"driver_location_subscription_id" env:"DRIVER_LOCATION_SUBSCRIPTION_ID" env-required:"true"`
+	AcceptPickupRequestSubscriptionID string `yaml:"accept_pickup_request_subscription_id" env:"ACCEPT_PICKUP_REQUEST_SUBSCRIPTION_ID" env-required:"true"`
+	RejectPickupRequestSubscriptionID string `yaml:"reject_pickup_request_subscription_id" env:"REJECT_PICKUP_REQUEST_SUBSCRIPTION_ID" env-required:"true"`
+	StartDeliverySubscriptionID       string `yaml:"start_delivery_subscription_id" env:"START_DELIVERY_SUBSCRIPTION_ID" env-required:"true"`
+	EndDeliverySubscriptionID         string `yaml:"end_delivery_subscription_id" env:"END_DELIVERY_SUBSCRIPTION_ID" env-required:"true"`
+	AssignDriverSubscriptionID        string `yaml:"assign_driver_subscription_id" env:"ASSIGN_DRIVER_SUBSCRIPTION_ID" env-required:"true"`
+	UnassignDriverSubscriptionID      string `yaml:"unassign_driver_subscription_id" env:"UNASSIGN_DRIVER_SUBSCRIPTION_ID" env-required:"true"`
 }
 
 func MustLoad() *Config {

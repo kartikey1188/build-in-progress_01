@@ -17,6 +17,34 @@ var requiredSubscriptions = []SubscriptionConfig{
 		SubscriptionID: "pickup-request-subscription-id",
 		TopicID:        "PICKUP-REQUESTS",
 	},
+	{
+		SubscriptionID: "driver-location-subscription-id",
+		TopicID:        "DRIVER-LOCATION",
+	},
+	{
+		SubscriptionID: "accept-pickup-request-subscription-id",
+		TopicID:        "PICKUP-REQUESTS",
+	},
+	{
+		SubscriptionID: "reject-pickup-request-subscription-id",
+		TopicID:        "PICKUP-REQUESTS",
+	},
+	{
+		SubscriptionID: "start-delivery-subscription-id",
+		TopicID:        "DELIVERY",
+	},
+	{
+		SubscriptionID: "end-delivery-subscription-id",
+		TopicID:        "DELIVERY",
+	},
+	{
+		SubscriptionID: "assig-driver-subscription-id",
+		TopicID:        "ASSIGNMENT",
+	},
+	{
+		SubscriptionID: "unassign-driver-subscription-id",
+		TopicID:        "ASSIGNMENT",
+	},
 }
 
 func InitSubscriptions(client *pubsub.Client) error {

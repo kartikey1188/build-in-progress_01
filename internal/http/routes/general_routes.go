@@ -1,12 +1,13 @@
 package routes
 
 import (
+	"cloud.google.com/go/pubsub"
 	"github.com/gin-gonic/gin"
 	"github.com/kartikey1188/build-in-progress_01/internal/http/handlers/general"
 	"github.com/kartikey1188/build-in-progress_01/internal/storage"
 )
 
-func General(router *gin.Engine, storage storage.Storage) {
+func General(router *gin.Engine, storage storage.Storage, pubsubClient *pubsub.Client) {
 	general_routes := router.Group("/general")
 
 	general_routes.GET("/all-categories", general.GetAllServiceCategories(storage))

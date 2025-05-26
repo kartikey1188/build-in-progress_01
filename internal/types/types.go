@@ -82,3 +82,15 @@ func (dt DateTime) MarshalJSON() ([]byte, error) {
 	formatted := fmt.Sprintf("\"%s\"", dt.Time.Format(dateTimeLayout))
 	return []byte(formatted), nil
 }
+
+type Notifiable interface {
+	GetEmail() string
+}
+
+func (b Business) GetEmail() string {
+	return b.Email
+}
+
+func (c Collector) GetEmail() string {
+	return c.Email
+}
