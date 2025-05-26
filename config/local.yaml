@@ -2,9 +2,9 @@ env: dev
 
 pickup_request_subscription_id: pickup-request-subscription-id
 driver_location_subscription_id: driver-location-subscription-id
-accepted_pickup_request_subscription_id: accept-pickup-request-subscription-id
-rejected_pickup_request_subscription_id: reject-pickup-request-subscription-id
-start_ride_subscription_id: start-delivery-subscription-id
-end_ride_subscription_id: end-delivery-subscription-id
+accept_pickup_request_subscription_id: accept-pickup-request-subscription-id
+reject_pickup_request_subscription_id: reject-pickup-request-subscription-id
+start_delivery_subscription_id: start-delivery-subscription-id
+end_delivery_subscription_id: end-delivery-subscription-id
 assign_driver_subscription_id: assign-driver-subscription-id
 unassign_driver_subscription_id: unassign-driver-subscription-id
