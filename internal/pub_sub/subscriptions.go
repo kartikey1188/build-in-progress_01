@@ -39,11 +39,11 @@ var requiredSubscriptions = []SubscriptionConfig{
 	},
 	{
 		SubscriptionID: "assign-driver-subscription-id",
-		TopicID:        "ASSIGNMENT",
+		TopicID:        "ASSIGNMENTS",
 	},
 	{
 		SubscriptionID: "unassign-driver-subscription-id",
-		TopicID:        "ASSIGNMENT",
+		TopicID:        "ASSIGNMENTS",
 	},
 }
 
