@@ -38,7 +38,7 @@ var requiredSubscriptions = []SubscriptionConfig{
 		TopicID:        "DELIVERY",
 	},
 	{
-		SubscriptionID: "assig-driver-subscription-id",
+		SubscriptionID: "assign-driver-subscription-id",
 		TopicID:        "ASSIGNMENT",
 	},
 	{
