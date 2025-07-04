@@ -85,3 +85,44 @@ type DriverLocation struct {
 	IsActive    bool     `json:"is_active"`          // Whether the driver is active
 	TripID      int64    `json:"trip_id,omitempty"`  // Optional trip association
 }
+
+type Facility struct {
+	FacilityID      int64    `json:"facility_id"`
+	Name            string   `json:"name" binding:"required"`
+	Location        string   `json:"location" binding:"required"`
+	Status          string   `json:"status" binding:"required,oneof=operational near-capacity maintenance closed"`
+	Capacity        float64  `json:"capacity" binding:"required,min=0,max=100"`
+	ComplianceScore int      `json:"compliance_score" binding:"required,min=0,max=100"`
+	DailyVolume     float64  `json:"daily_volume" binding:"required,min=0"`
+	Permit          string   `json:"permit" binding:"required"`
+	WasteTypes      []string `json:"waste_types" binding:"required"`
+	Collectors      int      `json:"collectors"`
+	CreatedAt       DateTime `json:"created_at"`
+	UpdatedAt       DateTime `json:"updated_at"`
+	IsActive        bool     `json:"is_active"`
+}
+
+type CollectorFacility struct {
+	CollectorID          int64    `json:"collector_id"`
+	FacilityID           int64    `json:"facility_id"`
+	AssignmentDate       DateTime `json:"assignment_date"`
+	LastProcessingDate   DateTime `json:"last_processing_date,omitempty"`
+	ProcessingVolume     float64  `json:"processing_volume"`
+	HandlingRequirements string   `json:"handling_requirements,omitempty"`
+	IsActive             bool     `json:"is_active"`
+}
+
+type Zone struct {
+	ZoneID          int64    `json:"zone_id"`
+	Name            string   `json:"name" binding:"required"`
+	Type            string   `json:"type" binding:"required,oneof=environmental cultural commercial security"`
+	Status          string   `json:"status" binding:"required,oneof=permanent time-based"`
+	Description     string   `json:"description,omitempty"`
+	Area            string   `json:"area" binding:"required"` // JSON string containing boundaries
+	ViolationsCount int      `json:"violations_count"`
+	Authority       string   `json:"authority" binding:"required"` // JSON string containing authority info
+	Restrictions    []string `json:"restrictions,omitempty"`
+	CreatedAt       DateTime `json:"created_at"`
+	UpdatedAt       DateTime `json:"updated_at"`
+	IsActive        bool     `json:"is_active"`
+}

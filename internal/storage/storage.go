@@ -38,6 +38,27 @@ type Admin interface {
 	GetAllUsers() ([]types.User, error)
 
 	GetAllPickupRequests() ([]types.PickupRequest, error)
+
+	// Facility management methods
+	GetFacilities(status string, location string, wasteType string) ([]types.Facility, error)
+	GetFacilityByID(facilityID int64) (types.Facility, error)
+	CreateFacility(facility types.Facility) (int64, error)
+	UpdateFacility(facilityID int64, facility types.UpdateFacilityRequest) error
+	DeleteFacility(facilityID int64) error
+
+	// Collector-Facility relationship methods
+	AssignCollectorToFacility(facilityID int64, collectorFacility types.CollectorFacility) error
+	UpdateCollectorFacility(facilityID int64, collectorID int64, request types.UpdateCollectorFacilityRequest) error
+	RemoveCollectorFromFacility(facilityID int64, collectorID int64) error
+	GetFacilityCollectors(facilityID int64) ([]types.CollectorFacility, error)
+	GetCollectorFacilities(collectorID int64) ([]types.CollectorFacility, error)
+
+	// Zone management methods
+	GetZones(zoneType string, status string) ([]types.Zone, error)
+	GetZoneByID(zoneID int64) (types.Zone, error)
+	CreateZone(zone types.Zone) (int64, error)
+	UpdateZone(zoneID int64, zone types.UpdateZoneRequest) error
+	DeleteZone(zoneID int64) error
 }
 
 type General interface {

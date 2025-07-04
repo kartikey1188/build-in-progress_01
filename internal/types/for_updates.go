@@ -74,3 +74,37 @@ type UpdatePickupRequest struct {
 	AssignedVehicle      int64    `json:"assigned_vehicle,omitempty"`
 	CreatedAt            DateTime `json:"created_at"`
 }
+
+type UpdateFacilityRequest struct {
+	FacilityID      int64    `json:"facility_id"`
+	Name            string   `json:"name,omitempty"`
+	Location        string   `json:"location,omitempty"`
+	Status          string   `json:"status,omitempty" binding:"omitempty,oneof=operational near-capacity maintenance closed"`
+	Capacity        float64  `json:"capacity,omitempty" binding:"omitempty,min=0,max=100"`
+	ComplianceScore int      `json:"compliance_score,omitempty" binding:"omitempty,min=0,max=100"`
+	DailyVolume     float64  `json:"daily_volume,omitempty" binding:"omitempty,min=0"`
+	Permit          string   `json:"permit,omitempty"`
+	WasteTypes      []string `json:"waste_types,omitempty"`
+	Collectors      int      `json:"collectors,omitempty"`
+	IsActive        *bool    `json:"is_active,omitempty"`
+}
+
+type UpdateCollectorFacilityRequest struct {
+	ProcessingVolume     float64   `json:"processing_volume,omitempty" binding:"omitempty,min=0"`
+	HandlingRequirements string    `json:"handling_requirements,omitempty"`
+	IsActive             *bool     `json:"is_active,omitempty"`
+	LastProcessingDate   *DateTime `json:"last_processing_date,omitempty"`
+}
+
+type UpdateZoneRequest struct {
+	ZoneID          int64    `json:"zone_id"`
+	Name            string   `json:"name,omitempty"`
+	Type            string   `json:"type,omitempty" binding:"omitempty,oneof=environmental cultural commercial security"`
+	Status          string   `json:"status,omitempty" binding:"omitempty,oneof=permanent time-based"`
+	Description     string   `json:"description,omitempty"`
+	Area            string   `json:"area,omitempty"`
+	ViolationsCount int      `json:"violations_count,omitempty"`
+	Authority       string   `json:"authority,omitempty"`
+	Restrictions    []string `json:"restrictions,omitempty"`
+	IsActive        *bool    `json:"is_active,omitempty"`
+}

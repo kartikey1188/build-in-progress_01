@@ -46,6 +46,7 @@ type Collector struct {
 	CollectorVehicles          []*CollectorVehicle         `gorm:"foreignKey:CollectorID;references:UserID;constraint:OnDelete:CASCADE"`
 	CollectorDrivers           []*CollectorDriver          `gorm:"foreignKey:CollectorID;references:UserID;constraint:OnDelete:CASCADE"`
 	PickupRequests             []*PickupRequest            `gorm:"foreignKey:CollectorID;references:UserID;constraint:OnDelete:CASCADE"`
+	CollectorFacilities        []*CollectorFacility        `gorm:"foreignKey:CollectorID;references:UserID;constraint:OnDelete:CASCADE"`
 }
 
 type ServiceCategory struct {
@@ -135,4 +136,47 @@ type DriverLocation struct {
 	Bearing     float32   `gorm:"column:bearing;type:decimal(5,2)"`  // Optional: Direction in degrees
 	Date        time.Time `gorm:"column:date;not null;default:CURRENT_TIMESTAMP"`
 	Point       string    `gorm:"column:point;not null"` // could be "START" or "END"
+}
+
+type Facility struct {
+	FacilityID      int64     `gorm:"primaryKey;autoIncrement;column:facility_id"`
+	Name            string    `gorm:"column:name;not null;size:255"`
+	Location        string    `gorm:"column:location;not null;type:text"`
+	Status          string    `gorm:"column:status;not null;size:50;check:status IN ('operational','near-capacity','maintenance','closed');default:'operational'"`
+	Capacity        float64   `gorm:"column:capacity;not null;type:decimal(5,2);check:capacity >= 0 AND capacity <= 100"`
+	ComplianceScore int       `gorm:"column:compliance_score;not null;check:compliance_score >= 0 AND compliance_score <= 100"`
+	DailyVolume     float64   `gorm:"column:daily_volume;not null;type:decimal(10,2)"`
+	Permit          string    `gorm:"column:permit;not null;unique;size:100"`
+	WasteTypes      string    `gorm:"column:waste_types;type:text"` // JSON array stored as text
+	Collectors      int       `gorm:"column:collectors;not null;default:0"`
+	CreatedAt       time.Time `gorm:"column:created_at;not null;default:CURRENT_TIMESTAMP"`
+	UpdatedAt       time.Time `gorm:"column:updated_at;not null;default:CURRENT_TIMESTAMP"`
+	IsActive        bool      `gorm:"column:is_active;not null;default:true"`
+
+	CollectorFacilities []*CollectorFacility `gorm:"foreignKey:FacilityID;references:FacilityID;constraint:OnDelete:CASCADE"`
+}
+
+type CollectorFacility struct {
+	CollectorID          int64     `gorm:"primaryKey;column:collector_id"`
+	FacilityID           int64     `gorm:"primaryKey;column:facility_id"`
+	AssignmentDate       time.Time `gorm:"column:assignment_date;not null;default:CURRENT_TIMESTAMP"`
+	LastProcessingDate   time.Time `gorm:"column:last_processing_date"`
+	ProcessingVolume     float64   `gorm:"column:processing_volume;type:decimal(10,2);not null;default:0"`
+	HandlingRequirements string    `gorm:"column:handling_requirements;type:text"`
+	IsActive             bool      `gorm:"column:is_active;not null;default:true"`
+}
+
+type Zone struct {
+	ZoneID          int64     `gorm:"primaryKey;autoIncrement;column:zone_id"`
+	Name            string    `gorm:"column:name;not null;size:255"`
+	Type            string    `gorm:"column:type;not null;size:50;check:type IN ('environmental','cultural','commercial','security')"`
+	Status          string    `gorm:"column:status;not null;size:50;check:status IN ('permanent','time-based');default:'permanent'"`
+	Description     string    `gorm:"column:description;type:text"`
+	Area            string    `gorm:"column:area;not null;type:text"` // JSON containing coordinates/boundaries
+	ViolationsCount int       `gorm:"column:violations_count;not null;default:0"`
+	Authority       string    `gorm:"column:authority;not null;type:text"` // JSON containing authority information
+	Restrictions    string    `gorm:"column:restrictions;type:text"`       // JSON array of restrictions
+	CreatedAt       time.Time `gorm:"column:created_at;not null;default:CURRENT_TIMESTAMP"`
+	UpdatedAt       time.Time `gorm:"column:updated_at;not null;default:CURRENT_TIMESTAMP"`
+	IsActive        bool      `gorm:"column:is_active;not null;default:true"`
 }

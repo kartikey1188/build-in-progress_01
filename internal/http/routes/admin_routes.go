@@ -32,4 +32,25 @@ func Admin(router *gin.Engine, storage storage.Storage, pubsubClient *pubsub.Cli
 	admin_routes.GET("/business/:id", business.GetBusinessByID(storage))
 
 	admin_routes.GET("/all/pickup-requests", admin.GetAllPickupRequests(storage))
+
+	// Facility management routes
+	admin_routes.GET("/facilities", admin.GetFacilities(storage))
+	admin_routes.GET("/facilities/:facility_id", admin.GetFacilityByID(storage))
+	admin_routes.POST("/facilities", admin.CreateFacility(storage))
+	admin_routes.PUT("/facilities/:facility_id", admin.UpdateFacility(storage))
+	admin_routes.DELETE("/facilities/:facility_id", admin.DeleteFacility(storage))
+
+	// Collector-Facility relationship management
+	admin_routes.POST("/facilities/:facility_id/collectors", admin.AssignCollectorToFacility(storage))
+	admin_routes.PUT("/facilities/:facility_id/collectors/:collector_id", admin.UpdateCollectorFacility(storage))
+	admin_routes.DELETE("/facilities/:facility_id/collectors/:collector_id", admin.RemoveCollectorFromFacility(storage))
+	admin_routes.GET("/facilities/:facility_id/collectors", admin.GetFacilityCollectors(storage))
+	admin_routes.GET("/collectors/:collector_id/facilities", admin.GetCollectorFacilities(storage))
+
+	// Zone management routes
+	admin_routes.GET("/zones", admin.GetZones(storage))
+	admin_routes.GET("/zones/:zone_id", admin.GetZoneByID(storage))
+	admin_routes.POST("/zones", admin.CreateZone(storage))
+	admin_routes.PUT("/zones/:zone_id", admin.UpdateZone(storage))
+	admin_routes.DELETE("/zones/:zone_id", admin.DeleteZone(storage))
 }

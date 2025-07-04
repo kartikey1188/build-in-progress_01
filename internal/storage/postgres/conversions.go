@@ -1,6 +1,8 @@
 package postgres
 
 import (
+	"encoding/json"
+
 	"github.com/kartikey1188/build-in-progress_01/internal/models"
 	"github.com/kartikey1188/build-in-progress_01/internal/types"
 )
@@ -97,5 +99,29 @@ func convertCollectorDriverModelToType(driver models.CollectorDriver, user model
 		IsActive:      driver.IsActive,
 		Rating:        driver.Rating,
 		JoiningDate:   types.Date{Time: driver.JoiningDate},
+	}
+}
+
+func convertFacilityModelToType(facility models.Facility) types.Facility {
+	var wasteTypes []string
+	if facility.WasteTypes != "" {
+		// Parse JSON string to slice
+		json.Unmarshal([]byte(facility.WasteTypes), &wasteTypes)
+	}
+
+	return types.Facility{
+		FacilityID:      facility.FacilityID,
+		Name:            facility.Name,
+		Location:        facility.Location,
+		Status:          facility.Status,
+		Capacity:        facility.Capacity,
+		ComplianceScore: facility.ComplianceScore,
+		DailyVolume:     facility.DailyVolume,
+		Permit:          facility.Permit,
+		WasteTypes:      wasteTypes,
+		Collectors:      facility.Collectors,
+		CreatedAt:       types.DateTime{Time: facility.CreatedAt},
+		UpdatedAt:       types.DateTime{Time: facility.UpdatedAt},
+		IsActive:        facility.IsActive,
 	}
 }
